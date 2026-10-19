@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Simulacro completo CELPIP · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+.mk-hero{display:grid;gap:18px;align-items:center;grid-template-columns:1fr}
+@media (min-width:760px){.mk-hero{grid-template-columns:1fr 200px}}
+.mk-hero img{width:170px;height:auto;justify-self:center}
+.mk-hero p{margin:0;color:var(--blp-muted)}
+.mk-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.mk-facts span{background:var(--blp-lav-soft);border-radius:99px;padding:5px 12px;font:600 .85rem var(--blp-display)}
+.mk-pick{display:flex;gap:8px;flex-wrap:wrap}
+.mk-pick .blp-chip small{font-weight:500;opacity:.75;margin-left:4px}
+.mk-secs{display:flex;flex-direction:column;gap:10px;counter-reset:sec}
+.mk-sec{background:var(--blp-card);border:1px solid var(--blp-line);border-left:5px solid var(--c);border-radius:16px;padding:14px 16px;
+  display:grid;gap:4px 14px;grid-template-columns:1fr auto;align-items:center}
+.mk-sec h3{font:600 1.1rem var(--blp-display);margin:0}
+.mk-sec .what{font-size:.86rem;color:var(--blp-muted)}
+.mk-sec .st{font-size:.86rem}
+.mk-sec .st b{font-family:var(--blp-display);font-size:1.05rem}
+.mk-sec .act{grid-row:1/4;grid-column:2}
+.mk-sec .act a{text-decoration:none;display:inline-block;text-align:center}
+.mk-sec.locked{opacity:.6}
+.mk-tips{margin:0;padding-left:20px;color:var(--blp-muted);font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+.mk-final{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.mk-final div{border-radius:14px;background:var(--blp-lav-soft);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.mk-final b{font:600 1.5rem var(--blp-display)}
+.mk-final span{font-size:.82rem;color:var(--blp-muted)}
+@media (max-width:520px){.mk-sec{grid-template-columns:1fr}.mk-sec .act{grid-row:auto;grid-column:auto}.mk-sec .act .blp-btn{width:100%}}
+</style>
+</head>
+<body class="blp-page" data-page="mock">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+
+<main class="blp-main" style="max-width:860px">
+  <section class="blp-card mk-hero">
+    <div class="blp-sec">
+      <span class="blp-eyebrow">CELPIP-General · examen completo</span>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.2rem)">🏁 Simulacro completo</h1>
+      <p>Igual que el examen real: las 4 secciones en el mismo orden, con las mismas partes, la misma cantidad de preguntas y los mismos tiempos. Reading y Listening se corrigen solos; tu Writing y tu Speaking llegan a tu coach.</p>
+      <div class="mk-facts"><span>≈ 2 h 40 min</span><span>38 + 38 preguntas</span><span>2 textos</span><span>8 respuestas habladas</span></div>
+    </div>
+    <img src="assets/koala/mock.png" alt="" width="320" height="320">
+  </section>
+
+  <section class="blp-sec">
+    <h2>Elige tu simulacro</h2>
+    <p style="margin:0;color:var(--blp-muted);font-size:.9rem">Hay 5 simulacros distintos; ninguno repite ejercicios de otro.</p>
+    <div class="mk-pick" id="pick" role="group" aria-label="Simulacro"></div>
+  </section>
+
+  <section class="blp-sec" aria-live="polite">
+    <div id="final"></div>
+    <div class="mk-secs" id="secs"></div>
+  </section>
+
+  <section class="blp-card blp-sec">
+    <h2 style="font-size:1.1rem">Antes de empezar</h2>
+    <ul class="mk-tips">
+      <li>Usa computador o tablet, con <b>audífonos</b> y <b>micrófono</b>, en un lugar tranquilo.</li>
+      <li>Dentro de cada sección las partes van seguidas, sin guías ni respuestas: como en el examen.</li>
+      <li>Puedes hacer una pausa <b>entre secciones</b>. Si sales en medio de una parte, esa parte se empieza de nuevo.</li>
+      <li>Al terminar Listening y Reading ves tu puntaje sobre 38 y tu nivel CLB orientativo. Tu coach califica Writing y Speaking en «Mis resultados».</li>
+    </ul>
+    <div class="blp-row"><button class="blp-btn ghost" type="button" id="restart">Reiniciar este simulacro</button></div>
+  </section>
+
+  <p class="blp-foot">@bilingualearn.au</p>
+</main>
+
+<script>
+(function(){
+  const esc = BL.esc, $ = id => document.getElementById(id);
+  const INFO = {
+    listening: { icon: "🎧", c: "var(--blp-L)", what: "Practice + Partes 1–6 · 38 preguntas · ≈ 47 min · el audio suena una vez" },
+    reading:   { icon: "📖", c: "var(--blp-R)", what: "Practice + Partes 1–4 · 38 preguntas · ≈ 45 min" },
+    writing:   { icon: "✍️", c: "var(--blp-W)", what: "Task 1 (27 min) + Task 2 (26 min) · 150–200 palabras" },
+    speaking:  { icon: "🎙️", c: "var(--blp-S)", what: "Tasks 1–8 · ≈ 15 min · se graba con tu micrófono" },
+  };
+  const params = new URLSearchParams(location.search);
+  let n = Math.min(BL.mocks.count, Math.max(1, Math.floor(+params.get("n")) || firstOpen()));
+
+  function firstOpen(){
+    for (let i = 1; i <= BL.mocks.count; i++) { const m = BL.mocks.get(i); if (!BL.mocks.sections.every(s => m.sections[s.id] && m.sections[s.id].done)) return i; }
+    return 1;
+  }
+  function status(m){
+    const done = BL.mocks.sections.filter(s => m.sections[s.id] && m.sections[s.id].done).length;
+    return done === 4 ? "✓" : done || m.started ? "en curso" : "";
+  }
+
+  function render(){
+    $("pick").innerHTML = Array.from({ length: BL.mocks.count }, (_, k) => k + 1).map(i =>
+      `<button class="blp-chip" type="button" data-n="${i}" aria-pressed="${i === n}">Simulacro ${i}<small>${status(BL.mocks.get(i))}</small></button>`).join("");
+    $("pick").querySelectorAll("button").forEach(b => b.onclick = () => { n = +b.dataset.n; history.replaceState(null, "", "?n=" + n); render(); });
+
+    const m = BL.mocks.get(n);
+    const nextIdx = BL.mocks.sections.findIndex(s => !(m.sections[s.id] && m.sections[s.id].done));
+    $("secs").innerHTML = BL.mocks.sections.map((s, i) => {
+      const st = m.sections[s.id] || {}, inf = INFO[s.id];
+      let state, act;
+      if (st.done) {
+        state = st.clb ? `✅ <b>${st.total}/${st.max}</b> → CLB ${esc(st.clb)}` : `✅ Enviado a tu coach`;
+        act = `<span class="blp-tag auto">Terminado</span>`;
+      } else if (i === nextIdx) {
+        const parts = Object.keys(st.parts || {}).length;
+        state = parts ? `En curso: ${parts} parte${parts > 1 ? "s" : ""} hecha${parts > 1 ? "s" : ""}` : (i === 0 ? "Empieza por aquí" : "Siguiente sección");
+        act = `<button class="blp-btn" type="button" data-go="${s.id}">${parts ? "Continuar" : "Empezar"} ${s.skill} →</button>`;
+      } else {
+        state = "Se habilita al terminar la sección anterior";
+        act = `<span class="blp-tag soon">Pendiente</span>`;
+      }
+      return `<article class="mk-sec${!st.done && i !== nextIdx ? " locked" : ""}" style="--c:${inf.c}">
+        <h3>${inf.icon} ${i + 1}. ${s.skill}</h3><div class="act">${act}</div>
+        <div class="what">${inf.what}</div><div class="st">${state}</div></article>`;
+    }).join("");
+    $("secs").querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+
+    if (nextIdx === -1) {
+      const L = m.sections.listening, R = m.sections.reading;
+      $("final").innerHTML = `<div class="blp-card blp-sec" style="margin-bottom:12px">
+        <h2>🎉 ¡Terminaste el Simulacro ${n}!</h2>
+        <div class="mk-final">
+          <div><span>🎧 Listening</span><b>CLB ${esc(L.clb)}</b><span>${L.total}/${L.max} correctas</span></div>
+          <div><span>📖 Reading</span><b>CLB ${esc(R.clb)}</b><span>${R.total}/${R.max} correctas</span></div>
+          <div><span>✍️ Writing</span><b>⏳</b><span>Lo califica tu coach</span></div>
+          <div><span>🎙️ Speaking</span><b>⏳</b><span>Lo califica tu coach</span></div>
+        </div>
+        <p style="margin:0;color:var(--blp-muted);font-size:.9rem">Los niveles de Listening y Reading son orientativos. Cuando tu coach califique Writing y Speaking, lo verás en «Mis resultados». Para repasar tus errores, vuelve a hacer estas mismas prácticas en cada sección (Práctica ${n}).</p>
+        <div class="blp-row"><a class="blp-btn lav" href="results.html" style="text-align:center;text-decoration:none">📊 Mis resultados</a></div></div>`;
+    } else $("final").innerHTML = "";
+  }
+
+  async function go(id){
+    // Results must reach the coach, so sign in first when the platform is connected.
+    if (BL.connected() && !BL.student && !await BL.requireStudent()) return;
+    location.href = `${id}.html?mock=${n}`;
+  }
+
+  $("restart").onclick = () => {
+    if (confirm(`¿Reiniciar el Simulacro ${n}? Se borra tu avance en este dispositivo (lo que ya llegó a tu coach se mantiene).`)) { BL.mocks.reset(n); render(); }
+  };
+  render();
+})();
+</script>
+</body>
+</html>

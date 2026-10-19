@@ -1015,7 +1015,7 @@ function startRec(){stopLoop();$("rec-note").hidden=true;if(window.BL)BL.rec.sta
   const tick=now=>{const left=R-(now-t0)/1000;fill.style.transform="scaleX("+Math.max(0,left/R)+")";if(left<=0){finish();return}raf=requestAnimationFrame(tick)};
   fill.style.transform="scaleX(1)";raf=requestAnimationFrame(tick);}
 function finish(){stopLoop();beep(520,.4);try{lock?.release()}catch(e){}
-  if(window.BL){const t=T(),q=Qn(),i=ti,k=qi,ch=t.select&&q.opts?q.opts[chosen].t:"";$("bl-take").innerHTML="";BL.rec.stop().then(take=>{if(ti!==i||qi!==k)return;BL.mountTake($("bl-take"),take,{filename:`speaking-task${i+1}-practica${k+1}`,build:()=>({skill:"Speaking",task:`Task ${i+1} · ${t.name}`,practice:k+1,prompt:q.p,choice:ch,selfCheck:$("score").textContent})})});}show(["s-done","s-check"]);window.scrollTo(0,0)}
+  if(window.BL){const t=T(),q=Qn(),i=ti,k=qi,ch=t.select&&q.opts?q.opts[chosen].t:"";$("bl-take").innerHTML="";BL.rec.stop().then(take=>{if(ti!==i||qi!==k)return;if(BL.mock){BL.mock.partDone(i,take?{send:async()=>({kind:"speaking",mime:take.blob.type||"audio/webm",seconds:take.seconds,audio:await BL.toBase64(take.blob),skill:"Speaking",task:`Task ${i+1} · ${t.name}`,practice:k+1,prompt:q.p,choice:ch})}:{note:"No se grabó audio en esta tarea (el micrófono no estaba disponible)."});return;}BL.mountTake($("bl-take"),take,{filename:`speaking-task${i+1}-practica${k+1}`,build:()=>({skill:"Speaking",task:`Task ${i+1} · ${t.name}`,practice:k+1,prompt:q.p,choice:ch,selfCheck:$("score").textContent})})});}show(["s-done","s-check"]);window.scrollTo(0,0)}
 
 $("btn-sel-start").onclick=startSelect;
 $("btn-start").onclick=startPrep;
@@ -1026,7 +1026,8 @@ $("btn-next").onclick=()=>{if(qi<T().qs.length-1)qi++;else{ti=(ti+1)%TASKS.lengt
 $("btn-guide").onclick=()=>reset(true);
 $("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
-reset(true);
+if(window.BL&&BL.mock)BL.mock.run({count:TASKS.length,name:i=>`Task ${i+1} · ${TASKS[i].name}`,note:i=>`Preparación ${TASKS[i].prep} s · Respuesta ${TASKS[i].rec} s. Se graba con tu micrófono.`,start:i=>{ti=i;qi=BL.mock.set;reset(false);if(T().select)startSelect();else startPrep()}});
+else reset(true);
 </script>
 </body>
 </html>

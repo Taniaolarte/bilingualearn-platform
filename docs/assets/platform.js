@@ -121,7 +121,8 @@
   const LINKS = [
     ["index", "index.html", "Inicio"], ["guia", "guia-celpip.html", "Guía CELPIP"], ["onboarding", "onboarding.html", "Onboarding"],
     ["notebook", "notebook.html", "Cuaderno"], ["listening", "listening.html", "Listening"], ["reading", "reading.html", "Reading"],
-    ["writing", "writing.html", "Writing"], ["speaking", "speaking.html", "Speaking"], ["results", "results.html", "Mis resultados"],
+    ["writing", "writing.html", "Writing"], ["speaking", "speaking.html", "Speaking"], ["mock", "mock.html", "🏁 Simulacro"],
+    ["results", "results.html", "Mis resultados"],
   ];
   let whoBtn = null;
   function paintWho() {
@@ -135,7 +136,9 @@
     nav.className = "blp-bar";
     nav.setAttribute("aria-label", "Bilingualearn");
     nav.innerHTML = `<a class="blp-brand" href="index.html"><img src="assets/koala/logo.png" alt="" width="34" height="34">Bilingualearn <small>${esc(CFG.course)}</small></a>
-      <div class="blp-links">${LINKS.map(([id, href, label]) => `<a href="${href}"${id === page ? ' aria-current="page"' : ""}>${label}</a>`).join("")}</div>
+      ${MOCK_SEC
+        ? `<div class="blp-links"><span class="blp-mocktag">🏁 Simulacro ${MOCK_N} · ${MOCK_SEC.skill}</span><a href="mock.html?n=${MOCK_N}">Salir</a></div>`
+        : `<div class="blp-links">${LINKS.map(([id, href, label]) => `<a href="${href}"${id === page ? ' aria-current="page"' : ""}>${label}</a>`).join("")}</div>`}
       <button class="blp-who" type="button"></button>`;
     document.body.prepend(nav);
     whoBtn = nav.querySelector(".blp-who");
@@ -145,6 +148,15 @@
     if (cur) cur.scrollIntoView({ block: "nearest", inline: "center" });
   }
   if (["listening", "reading", "writing", "speaking"].includes(page)) document.body.classList.add("blp-pad");
+  // Full mock test: a section page opened as listening.html?mock=N runs in exam mode (see makeMock below).
+  const MOCK_SECTIONS = [
+    { id: "listening", skill: "Listening" }, { id: "reading", skill: "Reading" },
+    { id: "writing", skill: "Writing" }, { id: "speaking", skill: "Speaking" },
+  ];
+  const MOCK_COUNT = 5;
+  const MOCK_N = Math.floor(Number(new URLSearchParams(location.search).get("mock"))) || 0;
+  const MOCK_SEC = MOCK_N >= 1 && MOCK_N <= MOCK_COUNT ? MOCK_SECTIONS.find(x => x.id === page) : null;
+  if (MOCK_SEC) document.body.classList.add("blp-mock");
   bar();
 
   /* ---------- auto-graded results (Reading / Listening) ----------
@@ -152,6 +164,7 @@
   let flushing = false, again = null;
   function submitObjective(r) {
     const item = Object.assign({ kind: "objective", course: CFG.course, id: uid(), at: new Date().toISOString(), owner: student ? student.email : "" }, r);
+    if (mock) item.task = mock.tag + " · " + item.task;
     const box = store.get(LS_OUTBOX, []);
     box.push(item);
     store.set(LS_OUTBOX, box.slice(-100));
@@ -310,8 +323,116 @@
     });
   }
 
+  /* ---------- full mock test ----------
+     State per mock lives on the device (bl-mock): which part of each section is next, part scores, totals.
+     Scores and answers still go to the coach exactly like normal practice, labelled "Simulacro N · …". */
+  const LS_MOCK = "bl-mock";
+  const mockAll = () => store.get(LS_MOCK, {});
+  const mockGet = n => mockAll()[n] || { n, sections: {} };
+  function mockPut(m) { const all = mockAll(); all[m.n] = m; store.set(LS_MOCK, all); }
+  function mockReset(n) { const all = mockAll(); delete all[n]; store.set(LS_MOCK, all); }
+
+  function makeMock(n, sec) {
+    let opts = null, gateEl = null, busy = false;
+    const back = "mock.html?n=" + n;
+    const state = () => { const m = mockGet(n); m.sections[sec.id] = m.sections[sec.id] || { next: 0, parts: {} }; return m; };
+    // Leaving in the middle of a part loses it; ask first.
+    window.addEventListener("beforeunload", e => { if (busy) { e.preventDefault(); e.returnValue = ""; } });
+    function gate(title, body, buttons) {
+      if (!gateEl) { gateEl = document.createElement("div"); gateEl.className = "blp-gate"; document.body.appendChild(gateEl); }
+      gateEl.innerHTML = `<div class="blp-gate-card" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+        <img src="assets/koala/mock.png" alt="" width="120" height="120">
+        <span class="blp-eyebrow">Simulacro ${n} · ${sec.skill}</span><h2>${title}</h2>${body}
+        <div class="blp-row">${buttons.map((b, i) => `<button class="blp-btn${b.ghost ? " ghost" : ""}" type="button" data-i="${i}">${esc(b.label)}</button>`).join("")}</div></div>`;
+      gateEl.hidden = false;
+      gateEl.querySelectorAll("button").forEach(btn => btn.onclick = () => buttons[+btn.dataset.i].run(btn));
+      document.documentElement.style.overflow = "hidden";
+    }
+    function ungate() { if (gateEl) gateEl.hidden = true; document.documentElement.style.overflow = ""; }
+    function start(i) {
+      const m = state();
+      m.started = m.started || new Date().toISOString();
+      mockPut(m);
+      ungate(); busy = true; window.scrollTo(0, 0);
+      opts.start(i);
+    }
+    function offer(i) {
+      const first = i === 0 && !Object.keys(state().sections[sec.id].parts).length;
+      gate(first ? `Empieza ${sec.skill}` : `Parte ${i + 1} de ${opts.count}`,
+        `<p class="blp-gate-next">${esc(opts.name(i))}</p>` + (opts.note ? `<p class="muted">${esc(opts.note(i))}</p>` : "") +
+        (first ? `<p class="muted">Como en el examen real: las partes van seguidas y verás tus respuestas corregidas al final del simulacro.</p>` : ""),
+        [{ label: first ? "Empezar →" : "Continuar →", run: () => start(i) }, { label: "Salir del simulacro", ghost: true, run: () => { location.href = back; } }]);
+    }
+    // Writing/Speaking: hand the answer to the coach before moving on (retry, or go on without sending).
+    function sendToCoach(build) {
+      return new Promise(resolve => {
+        const attempt = async () => {
+          gate("Enviando a tu coach…", `<p class="muted">Guardando tu respuesta en Google Drive. No cierres esta página.</p>`, []);
+          try {
+            if (!connected()) { resolve("offline"); return; }
+            if (!student && !await requireStudent()) throw Object.assign(new Error("UNKNOWN_STUDENT"), { code: "UNKNOWN_STUDENT" });
+            const payload = await build();
+            payload.task = mock.tag + " · " + payload.task;
+            await api("submit", Object.assign({ id, course: CFG.course }, payload, auth()));
+            resolve("sent");
+          } catch (e) {
+            gate("No se pudo enviar", `<p class="blp-err">${esc(errText(e))}</p>`,
+              [{ label: "Reintentar", run: attempt }, { label: "Seguir sin enviar", ghost: true, run: () => resolve("failed") }]);
+          }
+        };
+        const id = uid();
+        attempt();
+      });
+    }
+    const mock = {
+      n, skill: sec.skill, set: n - 1, tag: "Simulacro " + n,
+      // opts: { count, name(i), note?(i), start(i), clb?(total) } — clb marks an auto-graded section (part 0 = unscored practice task)
+      run(o) {
+        opts = o;
+        const s = state().sections[sec.id];
+        if (s.done) {
+          gate(`${sec.skill} ya está terminado`, `<p>Ya hiciste esta sección en el Simulacro ${n}.</p>`, [{ label: "Volver al simulacro →", run: () => { location.href = back; } }]);
+          return;
+        }
+        offer(Math.min(s.next || 0, o.count - 1));
+      },
+      async partDone(i, r = {}) {
+        busy = false;
+        const part = { at: new Date().toISOString() };
+        if (r.c != null) Object.assign(part, { c: r.c, n: r.n });
+        if (r.send) part.sent = await sendToCoach(r.send);
+        if (r.note) part.note = r.note;
+        const m = state(), s = m.sections[sec.id];
+        s.parts[i] = part;
+        s.next = i + 1;
+        mockPut(m);
+        if (i + 1 < opts.count) {
+          gate("✅ Parte terminada", (part.sent === "failed" ? `<p class="blp-err">Esta respuesta no llegó a tu coach.</p>` : "") +
+            (r.note ? `<p class="muted">${esc(r.note)}</p>` : "") + `<p>Siguiente:</p><p class="blp-gate-next">${esc(opts.name(i + 1))}</p>`,
+            [{ label: "Siguiente parte →", run: () => start(i + 1) }]);
+          return;
+        }
+        let body = `<p>Tus respuestas de ${sec.skill} ya están con tu coach para que las califique.</p>`;
+        if (opts.clb) {
+          const scored = Object.entries(s.parts).filter(([k, p]) => +k > 0 && p.c != null);
+          s.total = scored.reduce((a, [, p]) => a + p.c, 0);
+          s.max = scored.reduce((a, [, p]) => a + p.n, 0);
+          s.clb = opts.clb(s.total);
+          submitObjective({ skill: sec.skill, task: `TOTAL ${sec.skill}`, practice: n, correct: s.total, total: s.max, clb: s.clb, detail: "Simulacro completo: suma de las partes" });
+          body = `<p class="blp-gate-score">${s.total}/${s.max} <span>→ CLB ${esc(s.clb)}</span></p><p class="muted">Nivel orientativo según la tabla de CELPIP.</p>`;
+        }
+        s.done = new Date().toISOString();
+        mockPut(m);
+        gate(`${sec.skill} terminado 🎉`, body, [{ label: "Volver al simulacro →", run: () => { location.href = back; } }]);
+      },
+    };
+    return mock;
+  }
+  const mock = MOCK_SEC ? makeMock(MOCK_N, MOCK_SEC) : null;
+
   window.BL = {
-    config: CFG, connected, api, auth, toast, esc,
+    config: CFG, connected, api, auth, toast, esc, toBase64, mock,
+    mocks: { count: MOCK_COUNT, sections: MOCK_SECTIONS, get: mockGet, reset: mockReset },
     get student() { return student; },
     signIn, signOut, requireStudent, setStudent,
     submitObjective, flush, outboxCount,

@@ -151,3 +151,25 @@ img{max-width:100%}
 .blp-item .det{grid-column:1/-1;font-size:.82rem;color:var(--blp-muted);margin:0}
 .blp-item .det a{color:inherit;font-weight:700}
 .blp-empty{text-align:center;color:var(--blp-muted);padding:30px 10px}
+
+/* ---------- full mock test ---------- */
+.blp-mocktag{color:#fff;font-size:.9rem;font-weight:600;padding:6px 10px;white-space:nowrap}
+/* exam mode: no part/practice pickers, guides or retries inside a section */
+.blp-mock #tasknav,.blp-mock #qpick,.blp-mock #btn-guide,.blp-mock #btn-again,.blp-mock #btn-next,.blp-mock #btn-clear,.blp-mock #bl-send,.blp-mock #bl-take{display:none!important}
+.blp-gate{position:fixed;inset:0;z-index:60;background:var(--blp-bg);display:grid;place-items:center;padding:20px 16px;overflow:auto;font-family:var(--blp-body);color:var(--blp-ink)}
+.blp-gate-card{background:var(--blp-card);border:1px solid var(--blp-line);border-radius:24px;padding:26px 22px;width:min(520px,100%);display:flex;flex-direction:column;gap:10px;text-align:center;box-shadow:0 20px 60px rgba(23,21,59,.12)}
+.blp-gate-card img{width:110px;height:auto;align-self:center}
+.blp-gate-card h2{font:600 1.5rem var(--blp-display);margin:0}
+.blp-gate-card p{margin:0;line-height:1.5}
+.blp-gate-card .muted{color:var(--blp-muted);font-size:.9rem}
+.blp-gate-card .blp-row{margin-top:8px;justify-content:center}
+.blp-gate-next{font:600 1.05rem var(--blp-display);background:var(--blp-lav-soft);border-radius:12px;padding:10px 12px}
+.blp-gate-score{font:600 2.4rem var(--blp-display)}
+.blp-gate-score span{font-size:1.3rem;color:var(--blp-ok)}
+.blp-cta{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;text-decoration:none;color:inherit;background:var(--blp-card);
+  border:2px solid var(--blp-lav);border-radius:20px;padding:16px 20px;transition:transform .15s,box-shadow .15s}
+.blp-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(23,21,59,.08)}
+.blp-cta img{width:96px;height:auto}
+.blp-cta h2{font-size:1.25rem;margin:2px 0 4px}
+.blp-cta p{margin:0;color:var(--blp-muted);font-size:.9rem}
+@media (max-width:620px){.blp-cta{grid-template-columns:auto 1fr}.blp-cta img{width:72px}.blp-cta .blp-btn{grid-column:1/-1;text-align:center}}

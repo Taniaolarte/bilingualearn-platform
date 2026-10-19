@@ -629,7 +629,8 @@ function finish(timeUp){const used=Math.round(T().time*60-Math.max(0,(endAt-Date
   const n=words(v),c=$("my-cnt");c.textContent=n+" words";
   c.style.color=n>=150&&n<=200?"var(--ok)":n>200?"var(--warn)":"var(--rec)";
   const m=$("mytext");m.textContent=v||"No escribiste nada esta vez. Vuelve a intentarlo con 'Try this one again'.";m.classList.toggle("empty",!v);
-  if(window.BL){const t=T(),q=Qn();BL.mountSend($("bl-send"),{empty:!v,what:"texto",build:()=>({kind:"writing",skill:"Writing",task:`Task ${ti+1} · ${t.name}`,practice:qi+1,prompt:q.p,context:q.pts?[q.to,...q.pts]:["Choose the option that you prefer. Explain the reasons for your choice.",...q.opts.map((o,i)=>`Option ${"AB"[i]}: ${o.t} — ${o.d}`)],text:v,words:n,timeUsed:fmt(used),timeLimit:fmt(t.time*60),timeUp:!!timeUp,selfCheck:$("score").textContent})});}
+  if(window.BL){const t=T(),q=Qn();const pl=()=>({kind:"writing",skill:"Writing",task:`Task ${ti+1} · ${t.name}`,practice:qi+1,prompt:q.p,context:q.pts?[q.to,...q.pts]:["Choose the option that you prefer. Explain the reasons for your choice.",...q.opts.map((o,i)=>`Option ${"AB"[i]}: ${o.t} — ${o.d}`)],text:v,words:n,timeUsed:fmt(used),timeLimit:fmt(t.time*60),timeUp:!!timeUp,selfCheck:$("score").textContent});
+    if(BL.mock)BL.mock.partDone(ti,v?{send:pl}:{note:"No escribiste nada en esta tarea."});else BL.mountSend($("bl-send"),{empty:!v,what:"texto",build:pl});}
   show(["s-done","s-check"]);window.scrollTo(0,0);}
 
 $("draft").addEventListener("input",()=>{updateWC();save($("draft").value)});
@@ -645,7 +646,8 @@ $("btn-copy").onclick=()=>{const txt=$("draft").value.trim(),b=$("btn-copy");
   const fallback=()=>{const r=document.createRange();r.selectNodeContents($("mytext"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Texto seleccionado";};
   try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(e){fallback()}};
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
-reset(true);
+if(window.BL&&BL.mock)BL.mock.run({count:TASKS.length,name:i=>`Task ${i+1} · ${TASKS[i].name} · ${TASKS[i].time} min`,note:i=>"El tiempo empieza al tocar el botón. Sin corrector ortográfico, como en el examen.",start:i=>{ti=i;qi=BL.mock.set;save("");reset(false);startWriting()}});
+else reset(true);
 </script>
 </body>
 </html>

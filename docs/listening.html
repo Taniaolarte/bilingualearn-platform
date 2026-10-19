@@ -1062,6 +1062,7 @@ function finish(timeout){
   $("pt-count").textContent=`${c}/${n} correctas`;$("notesbox").open=!!$("notes").value.trim();
   renderResult(c,n,timeout);buildNav();renderLevel();buildChecklist();renderConv(c,n);
   show(["s-result","s-test","s-done","s-check"]);window.scrollTo(0,0);
+  if(window.BL&&BL.mock)BL.mock.partDone(ti,{c,n});
 }
 function renderResult(c,n,timeout){
   $("r-score").textContent=`${c}/${n}`;const p=c/n;let msg;
@@ -1102,7 +1103,8 @@ $("btn-again").onclick=()=>reset(false);
 $("btn-next").onclick=()=>{if(si<T().sets.length-1){si++;reset(false)}else{ti=(ti+1)%TASKS.length;si=0;reset(true)}};
 $("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
-reset(true);
+if(window.BL&&BL.mock)BL.mock.run({count:TASKS.length,name:i=>`${TASKS[i].short} · ${TASKS[i].name}`,note:i=>"El audio se reproduce una sola vez. Usa audífonos.",start:i=>{ti=i;si=BL.mock.set;reset(false)},clb:t=>clbFor38(t)});
+else reset(true);
 </script>
 </body>
 </html>

@@ -12,6 +12,7 @@ Student practice platform for Bilingualearn's CELPIP coaching.
 | `reading.html` | Reading Practice Task + Parts 1–4. **Auto-graded.** The score goes to the coach's gradebook |
 | `writing.html` | Writing Tasks 1–2. Students tap **Enviar a mi coach**, and the answer is saved as a **Google Doc** |
 | `speaking.html` | Speaking Tasks 1–8. Students record in the browser, and the **audio** is saved to **Google Drive** |
+| `mock.html` | **Simulacro completo**: 5 full CELPIP mock tests (Listening → Reading → Writing → Speaking, same parts, question counts and timings as the real exam). Mock N uses practice N of every part, so no mock repeats another. Sections open as `listening.html?mock=N` etc. in exam mode |
 | `results.html` | **Mis resultados**: auto scores, the coach's CLB level and comments |
 
 The site is static HTML/CSS/JS with no build step. The backend is a **Google Apps Script** that runs as the coach, inside a Google Sheet. That Sheet is the gradebook, and all files go into the coach's Drive.
@@ -60,6 +61,12 @@ After any later change to `Code.gs`, go to **Deploy → Manage deployments → �
 - **Speaking**: the recording (webm, or m4a on iPhone) goes into the same folder. The file description holds the question.
 - **To grade**: open the link in the **Archivo** column, then fill in **Nivel coach** (M, 3–12) and **Comentarios coach**. The status changes to `Corregido` automatically, and the student sees the level and comments in **Mis resultados**.
 - **Sharing with students**: on by default. Each new Doc is shared with the student's email as a commenter, and each audio file as a viewer. If the student has a Google account, they can read your Doc comments and get an "Abrir mi documento" link. To keep files private to your Drive, use **Bilingualearn → Compartir archivos con estudiantes: sí/no**.
+
+## Full mock test
+
+- Students pick Simulacro 1–5 on `mock.html` and do the sections in order. Inside a section the parts run back to back, with no guides, part pickers or answers shown until the end, like the real exam. They can pause between sections; leaving in the middle of a part asks first, and that part restarts.
+- Everything still reaches the gradebook like normal practice, with tasks labelled `Simulacro N · …`. Listening and Reading also add a `TOTAL` row (out of 38, with the CLB estimate). Writing and Speaking answers are sent to the coach automatically after each task.
+- Mock progress is saved on the student's device (`bl-mock` in the browser).
 
 ## Students
 
