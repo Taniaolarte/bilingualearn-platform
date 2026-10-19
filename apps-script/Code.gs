@@ -263,7 +263,10 @@ function saveWriting_(st, req) {
   para_(b, st.name + ' · ' + st.email + ' · Grupo ' + st.group + ' · ' + when, true);
   para_(b, 'Tarea').setHeading(H.HEADING2);
   para_(b, text_(req.prompt, 3000));
-  (Array.isArray(req.context) ? req.context : []).slice(0, 10).forEach(x => b.appendListItem(text_(x, 600)));
+  // First line is the instruction ("In your email:" / "Choose the option…"); the rest are its points/options.
+  const ctx = (Array.isArray(req.context) ? req.context : []).slice(0, 10);
+  if (ctx.length) para_(b, text_(ctx[0], 600));
+  ctx.slice(1).forEach(x => b.appendListItem(text_(x, 600)).setGlyphType(DocumentApp.GlyphType.BULLET));
   para_(b, 'Respuesta').setHeading(H.HEADING2);
   String(req.text || '').slice(0, 20000).split(/\r?\n/).forEach(p => para_(b, p));
   para_(b, (Number(req.words) || 0) + ' palabras · ' + text_(req.timeUsed, 8) + ' de ' + text_(req.timeLimit, 8) +
