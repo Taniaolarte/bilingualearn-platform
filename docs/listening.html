@@ -10,22 +10,1099 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: task nav on top; guide card → exam player (audio plays once, questions heard in Parts 1–3, on screen in 4–6) → review with transcript + level samples + checklist */
+:root{
+  --bg:#F3F1FB; --card:#FFFFFF; --ink:#17153B; --muted:#5B5878; --line:#E2DEF3;
+  --lav:#C4B5FD; --lav-soft:#EEE9FF; --navy:#17153B; --on-navy:#FFFFFF;
+  --rec:#E5484D; --rec-soft:#FDECEC; --ok:#2E8B6E; --ok-soft:#E3F5EE;
+  --ev:#FFF1B8; --ev-ink:#7A5B00; --paper:#FBFAFF;
+  --c45:#F59E0B; --c78:#3B82F6; --c1012:#2E8B6E;
+  --display:"Fredoka",system-ui,sans-serif; --body:"Comfortaa",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --ev:#4A3F12; --ev-ink:#FFE38A; --paper:#211E4A;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --ev:#4A3F12; --ev-ink:#FFE38A; --paper:#211E4A;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+body.wide .wrap{max-width:1180px}
+.topbar{background:var(--navy);color:var(--on-navy);border-radius:18px;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.topbar h1{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0}
+.topbar .sub{font-size:.78rem;opacity:.8}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font-family:var(--display);font-weight:500;border:1.5px solid rgba(196,181,253,.5);background:transparent;color:var(--on-navy);border-radius:999px;height:34px;padding:0 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}
+.chip .ck{margin-left:4px}
+.subbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid rgba(196,181,253,.25);padding-top:10px}
+.subbar b{font-family:var(--display);font-weight:600;color:var(--lav)}
+.topbtn{font-family:var(--display);font-weight:500;background:transparent;color:var(--on-navy);border:1.5px solid rgba(196,181,253,.5);border-radius:999px;padding:5px 12px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.label{font-family:var(--display);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+h2{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:0;text-wrap:balance}
+.lead{font-size:1rem;line-height:1.75;margin:0}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:var(--lav-soft);border-radius:14px;padding:12px;text-align:center}
+.fact b{display:block;font-family:var(--display);font-weight:600;font-size:1.4rem}
+.fact span{font-size:.8rem;color:var(--muted)}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crit div{border:1px solid var(--line);border-radius:14px;padding:12px}
+.crit b{font-family:var(--display);font-weight:600;display:block}
+.crit span{font-size:.86rem;color:var(--muted)}
+.callout{background:var(--navy);color:var(--on-navy);border-radius:16px;padding:14px 16px;font-size:.92rem}
+.callout strong{color:var(--lav);font-family:var(--display);font-weight:600}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd > div{border-radius:16px;padding:14px;min-width:0}
+.dd .yes{background:var(--ok-soft)} .dd .no{background:var(--rec-soft)}
+.dd h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0 0 6px}
+.dd ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:.88rem}
+.fixes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.fixes li{background:var(--lav-soft);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.fixes .w{color:var(--rec);text-decoration:line-through;font-weight:700}
+.fixes .r{color:var(--ok);font-weight:700}
+.fixes .why{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.flow.f3{grid-template-columns:repeat(3,1fr)}
+.step{border:2px solid var(--lav);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.step b{font-family:var(--display);font-weight:600}
+.step small{color:var(--muted);font-size:.78rem}
+.step em{font-size:.82rem;font-style:normal}
+.phr{display:flex;flex-wrap:wrap;gap:6px}
+.phr span{background:var(--lav-soft);border-radius:999px;padding:5px 12px;font-size:.86rem}
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button.main,button.ghost,button.cta{font-family:var(--display);font-weight:600;font-size:1rem;border-radius:999px;padding:12px 22px;cursor:pointer;border:2px solid var(--navy)}
+button.main{background:var(--navy);color:var(--on-navy)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.cta{background:var(--lav);color:#17153B;border-color:var(--lav);width:100%;padding:14px 18px;text-wrap:balance}
+:root[data-theme="dark"] button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+
+/* ---------- Exam screen ---------- */
+.exam{padding:0;gap:0;overflow:hidden}
+.exhead{background:var(--navy);color:var(--on-navy);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px}
+.exhead .pt{font-family:var(--display);font-weight:600;font-size:1rem}
+.exhead .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.timer{font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;background:rgba(196,181,253,.18);border-radius:999px;padding:6px 14px;font-size:.92rem}
+.timer.low{background:var(--rec);color:#fff}
+.submit{font-family:var(--display);font-weight:600;background:var(--lav);color:#17153B;border:0;border-radius:999px;padding:8px 18px;cursor:pointer;font-size:.95rem}
+.instr{background:var(--lav-soft);padding:12px 18px;font-size:.9rem;border-bottom:1px solid var(--line);margin:0}
+.divider{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy);cursor:col-resize;touch-action:none;user-select:none}
+.divider .grip{width:5px;height:44px;border-radius:999px;background:var(--lav)}
+.qcount{font-family:var(--display);font-weight:500;font-size:.85rem;opacity:.85;font-variant-numeric:tabular-nums}
+.split{display:grid;grid-template-columns:minmax(0,var(--left,1fr)) 16px minmax(0,1fr);min-height:0}
+.pane{padding:20px 22px;min-width:0;overflow:auto;max-height:calc(100vh - 210px)}
+.pane.left{background:var(--paper)}
+.passage h3{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:0 0 10px}
+.passage p{margin:0 0 12px;line-height:1.8}
+.passage .meta{font-size:.84rem;color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:12px}
+.tw{overflow-x:auto}
+.dtable{width:100%;border-collapse:collapse;font-size:.84rem;min-width:420px}
+.dtable th{background:var(--lav-soft);font-family:var(--display);font-weight:600;text-align:left;padding:7px 8px}
+.dtable td{border-top:1px solid var(--line);padding:7px 8px;vertical-align:top}
+.passage .para{display:grid;grid-template-columns:30px 1fr;gap:8px}
+.passage .para b{font-family:var(--display);font-weight:600;color:var(--muted)}
+.qblock{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.qblock .bi{font-size:.88rem;color:var(--muted);margin:0;font-style:italic}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:12px;padding:6px 8px;margin:0 -8px}
+.q p{margin:0;font-size:.95rem}
+.q p b{font-family:var(--display);font-weight:600}
+select.dd-sel{font:inherit;font-size:.92rem;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;max-width:100%;cursor:pointer}
+select.dd-sel[value]:not([value=""]){border-color:var(--lav)}
+.gaptext{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;line-height:2.2;font-size:.95rem}
+.gaptext p{margin:0 0 10px}
+.gaptext .slot{white-space:normal}
+.gaptext sup{font-family:var(--display);font-weight:600;color:var(--muted);margin-right:2px}
+select.inl{font:inherit;font-size:.9rem;color:var(--ink);background:var(--lav-soft);border:2px solid var(--lav);border-radius:8px;padding:2px 6px;max-width:100%;cursor:pointer}
+/* review state */
+.reviewing select{pointer-events:none}
+.q.ok select,select.inl.ok{border-color:var(--ok);background:var(--ok-soft)}
+.q.bad select,select.inl.bad{border-color:var(--rec);background:var(--rec-soft)}
+.why{font-size:.86rem;border-radius:10px;padding:8px 10px;background:var(--lav-soft)}
+.why .res{font-family:var(--display);font-weight:600}
+.why .res.ok{color:var(--ok)} .why .res.bad{color:var(--rec)}
+.gapwhy{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.ev{border-radius:4px;transition:background .2s}
+.reviewing .ev{background:var(--ev);color:var(--ink);box-shadow:0 0 0 2px var(--ev)}
+.reviewing .ev::before{content:attr(data-l);font-family:var(--display);font-weight:600;font-size:.7rem;color:var(--ev-ink);background:var(--card);border:1px solid var(--ev-ink);border-radius:999px;padding:0 6px;margin-right:4px;vertical-align:1px}
+/* flyer (Part 2 diagram) */
+.flyer{border:2px solid var(--navy);border-radius:18px;overflow:hidden;background:var(--card)}
+.flyer .fh{background:var(--navy);color:var(--on-navy);padding:12px 16px}
+.flyer .fh b{font-family:var(--display);font-weight:600;font-size:1.05rem;display:block}
+.flyer .fh span{font-size:.8rem;opacity:.85}
+.prog{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.pc{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:.84rem;min-width:0}
+.pc .pn{font-family:var(--display);font-weight:600;font-size:.98rem}
+.pc .ic{font-size:1.5rem;line-height:1}
+.pc dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:1px 8px}
+.pc dt{color:var(--muted)} .pc dd{margin:0}
+.ff{border-top:2px dashed var(--line);padding:10px 16px;font-size:.82rem;display:flex;flex-direction:column;gap:3px}
+.ff b{font-family:var(--display);font-weight:600}
+/* results */
+.result{border-radius:16px;padding:16px;background:var(--navy);color:var(--on-navy);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.score{font-family:var(--display);font-weight:600;font-size:2rem;font-variant-numeric:tabular-nums;color:var(--lav);flex:none}
+.result p{margin:0;font-size:.9rem;flex:1;min-width:200px}
+.mockline{display:flex;gap:6px;flex-wrap:wrap}
+.mockline span{border:1.5px solid var(--line);border-radius:999px;padding:3px 10px;font-size:.82rem;font-variant-numeric:tabular-nums}
+.mockline span.done{border-color:var(--ok);color:var(--ok)}
+.conv{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
+.conv th,.conv td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.conv th{font-family:var(--display);font-weight:600;color:var(--muted)}
+.conv tr.you td{background:var(--lav-soft);font-weight:700}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tabs button{font-family:var(--display);font-weight:600;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 6px;cursor:pointer;line-height:1.2}
+.tabs button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);margin-top:2px}
+.tabs button[aria-selected="true"]{border-color:var(--lvl);background:var(--lav-soft)}
+.lvl{border:2px solid var(--lvl);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lvlhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--lvl);color:#17153B;font-family:var(--display);font-weight:600;border-radius:999px;padding:3px 12px;font-size:.85rem}
+.lvlhead span:last-child{font-size:.85rem;color:var(--muted)}
+.how{margin:0;line-height:1.75}
+.extra{font-size:.88rem;background:var(--rec-soft);border-radius:12px;padding:10px 12px;margin:0}
+.group{display:flex;flex-direction:column;gap:6px}
+.group h3{font-family:var(--display);font-weight:600;font-size:.95rem;margin:4px 0 2px;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+.chk:hover{background:var(--lav-soft)}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok);flex:none}
+.warn{color:var(--rec);font-family:var(--display);font-weight:600;font-size:.88rem;margin:0}
+footer{text-align:center;font-family:var(--display);font-weight:500;color:var(--muted);font-size:.85rem}
+@media (max-width:880px){
+  /* phone/tablet: text on top, questions below, both visible; drag the bar to resize */
+  /* phone/tablet: still side by side, each pane scrolls on its own; drag the bar to resize */
+  .split{height:calc(100vh - 150px);height:calc(100dvh - 150px);min-height:380px}
+  .pane{max-height:none;min-height:0;overscroll-behavior:contain;padding:12px 10px;font-size:.84rem}
+  .passage p{line-height:1.65}
+  .passage .para{grid-template-columns:18px 1fr;gap:4px}
+  .q p{font-size:.84rem}
+  select.dd-sel,select.inl{font-size:.8rem;padding:5px 4px}
+  .gaptext{padding:10px;line-height:2;font-size:.84rem}
+  .prog{grid-template-columns:1fr !important;padding:8px}
+  .pc{font-size:.78rem}
+  .instr{font-size:.8rem;padding:8px 14px}
+}
+@media (max-width:560px){.crit,.dd,.prog{grid-template-columns:1fr}.flow,.flow.f3{grid-template-columns:1fr 1fr}.facts{grid-template-columns:repeat(3,1fr)}.fact b{font-size:1.15rem}.card{padding:18px}.pane{padding:16px}}
+@media (prefers-reduced-motion:reduce){.ev{transition:none}}
+/* ---------- Listening additions ---------- */
+[hidden]{display:none!important}
+.player{display:flex;flex-direction:column;gap:16px;padding:20px 22px}
+.scene{display:flex;gap:14px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.scene .big{font-size:2.4rem;line-height:1;flex:none}
+.scene b{font-family:var(--display);font-weight:600;font-size:1.02rem;display:block}
+.scene p{margin:2px 0 0;font-size:.86rem;color:var(--muted)}
+.spk{display:flex;gap:8px;flex-wrap:wrap}
+.spk span{border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-family:var(--display);font-weight:500;font-size:.86rem;transition:background .2s,border-color .2s}
+.spk span.on{border-color:var(--lav);background:var(--lav-soft)}
+.video{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vp{border:2px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;transition:border-color .2s,background .2s,transform .2s;min-width:0}
+.vp .av{font-size:2.4rem;line-height:1}
+.vp b{font-family:var(--display);font-weight:600;font-size:.95rem}
+.vp small{font-size:.75rem;color:var(--muted)}
+.vp.on{border-color:var(--lav);background:var(--lav-soft);transform:translateY(-3px)}
+.status{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600}
+.wave{display:inline-flex;gap:3px;align-items:flex-end;height:20px}
+.wave i{width:4px;background:var(--lav);border-radius:2px;height:6px;animation:wv 1s infinite ease-in-out}
+.wave i:nth-child(2){animation-delay:.15s}.wave i:nth-child(3){animation-delay:.3s}.wave i:nth-child(4){animation-delay:.45s}
+.wave.off i{animation:none;opacity:.35}
+@keyframes wv{50%{height:20px}}
+.bar{height:12px;border-radius:999px;background:var(--lav-soft);overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;width:100%;background:var(--lav);border-radius:999px;transform-origin:left;transform:scaleX(0);transition:transform .4s}
+.cap{background:var(--paper);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin:0;font-size:.92rem}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:.82rem;cursor:pointer;padding:0;align-self:flex-start}
+.qhead{display:flex;gap:14px;align-items:center}
+.qhead .ic{width:52px;height:52px;border-radius:50%;background:var(--navy);color:var(--lav);display:grid;place-items:center;font-size:1.5rem;flex:none}
+:root[data-theme="dark"] .qhead .ic{background:var(--lav-soft)}
+.qhead b{font-family:var(--display);font-weight:600;font-size:1.15rem;display:block}
+.ropts{display:flex;flex-direction:column;gap:10px}
+.ropt{display:flex;gap:12px;align-items:center;text-align:left;font:inherit;font-size:.98rem;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
+.ropt::before{content:"";width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex:none}
+.ropt:hover{border-color:var(--lav)}
+.ropt[aria-checked="true"]{border-color:var(--navy);background:var(--lav-soft)}
+.ropt[aria-checked="true"]::before{border:6px solid var(--navy)}
+:root[data-theme="dark"] .ropt[aria-checked="true"],:root[data-theme="dark"] .ropt[aria-checked="true"]::before{border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ropt[aria-checked="true"],:root:not([data-theme="light"]) .ropt[aria-checked="true"]::before{border-color:var(--lav)}:root:not([data-theme="light"]) .qhead .ic{background:var(--lav-soft)}}
+.notes{border-top:1px solid var(--line);padding:12px 18px}
+.notes summary{font-family:var(--display);font-weight:600;cursor:pointer}
+.notes textarea{width:100%;min-height:90px;margin-top:8px;font:inherit;font-size:.9rem;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px;resize:vertical}
+.ready{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.tl{margin:0 0 10px;line-height:1.75;border-radius:8px;padding:2px 6px;margin-left:-6px;transition:background .2s}
+.tl b{font-family:var(--display);font-weight:600}
+.tl.nar{font-style:italic;color:var(--muted)}
+.tl.now{background:var(--lav-soft)}
+.sech{font-family:var(--display);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:14px 0 8px}
+.replay{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.replay button{font-family:var(--display);font-weight:600;background:var(--lav);color:#17153B;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.ro{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.ro li{border:1.5px solid var(--line);border-radius:10px;padding:5px 10px}
+.ro li.right{border-color:var(--ok);background:var(--ok-soft)}
+.ro li.wrong{border-color:var(--rec);background:var(--rec-soft);text-decoration:line-through}
+.q.ok{background:transparent}.q.bad{background:transparent}
+.sound{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--lav-soft);border-radius:16px;padding:12px 14px}
+.sound .chip{color:var(--ink);border-color:var(--line);height:32px}
+.sound .chip[aria-pressed="true"]{background:var(--navy);color:var(--on-navy);border-color:var(--navy)}
+:root[data-theme="dark"] .sound .chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sound .chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}}
+.sound span{font-size:.86rem}
+@media (max-width:560px){.video{gap:6px}.vp .av{font-size:1.9rem}.player{padding:16px}}
+@media (prefers-reduced-motion:reduce){.wave i{animation:none}.vp,.fill{transition:none}}
+</style>
 </head>
-<body class="blp-page" data-page="listening">
+<body data-page="listening">
 <script src="assets/config.js"></script>
 <script src="assets/platform.js"></script>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <h1>CELPIP Listening Practice</h1>
+      <div class="sub">Practice Task + Parts 1–6 · Original practice by Bilingualearn</div>
+    </div>
+    <div class="row" id="tasknav" role="group" aria-label="Choose a part"></div>
+    <div class="subbar">
+      <span><b id="tname"></b></span>
+      <div class="row"><button class="topbtn" id="btn-guide">📘 Guía</button><span class="row" id="qpick" role="group" aria-label="Choose a practice"></span></div>
+    </div>
+  </header>
 
-<!-- Placeholder until the Listening practice is imported. When it is, its submit step should call:
-     BL.submitObjective({skill:"Listening", task, practice, correct, total, clb, detail})
-     exactly like reading.html does. -->
-<main class="blp-main" style="max-width:760px">
-  <div class="blp-card blp-sec">
-    <img src="assets/koala/listening.png" alt="" width="160" height="160" style="width:140px;height:auto;align-self:center">
-    <span class="blp-eyebrow">CELPIP Listening Practice</span>
-    <h1 style="font-size:1.6rem">🎧 Listening: muy pronto</h1>
-    <p style="margin:0">Estamos preparando las 6 partes del Listening en formato real: escuchas una sola vez, respondes con tiempo y la plataforma te corrige al instante con tu nivel CLB estimado. Tu puntaje se guardará para tu coach, igual que en Reading.</p>
-    <div class="blp-row"><a class="blp-btn" href="reading.html" style="text-align:center;text-decoration:none">Mientras tanto, practica Reading →</a></div>
-  </div>
-</main>
+  <section class="card" id="s-intro"></section>
+
+  <section class="card" id="s-result" hidden>
+    <div class="result"><span class="score" id="r-score"></span><p id="r-text"></p></div>
+    <p class="note">⬇️ Abajo está la transcripción con las respuestas resaltadas en amarillo. Ahora sí puedes volver a escuchar el audio las veces que quieras.</p>
+    <div class="mockline" id="r-mock"></div>
+  </section>
+
+  <section class="card exam" id="s-test" hidden>
+    <div class="exhead">
+      <span class="pt" id="ex-title"></span>
+      <div class="right"><span class="qcount" id="pt-count"></span><span class="timer" id="ex-timer" aria-live="off"></span><button class="submit" id="btn-submit">Submit</button></div>
+    </div>
+    <p class="instr" id="ex-instr"></p>
+    <div class="player" id="ex-live"></div>
+    <div class="split" id="split" hidden>
+      <div class="pane left passage" id="ex-left"></div>
+      <div class="divider" id="divider" role="separator" aria-label="Drag to resize transcript and questions"><span class="grip"></span></div>
+      <div class="pane right" id="ex-right"></div>
+    </div>
+    <details class="notes" id="notesbox" open><summary>📝 Mis notas (en el examen real tomas notas en papel)</summary><textarea id="notes" aria-label="Notes" placeholder="Anota nombres, números, lugares, decisiones y cambios de opinión…"></textarea></details>
+    <div style="padding:0 18px 14px" id="ex-foot">
+      <p class="warn" id="ex-warn" hidden></p>
+    </div>
+  </section>
+
+  <section class="card" id="s-done" hidden>
+    <button class="cta" id="btn-compare" aria-expanded="false">📊 Compara tu resultado con cómo escucha cada nivel</button>
+    <div id="compare" hidden>
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-l="c45" style="--lvl:var(--c45)">CLB 4–5<small>Básico</small></button>
+        <button role="tab" data-l="c78" style="--lvl:var(--c78)">CLB 7–8<small>Bueno</small></button>
+        <button role="tab" data-l="c1012" style="--lvl:var(--c1012)">CLB 10–12<small>Excelente</small></button>
+      </div>
+      <div class="lvl" id="lvl"></div>
+    </div>
+    <details>
+      <summary style="font-family:var(--display);font-weight:600;cursor:pointer">📏 Tabla oficial aproximada: respuestas correctas (de 38) → nivel CELPIP</summary>
+      <div style="overflow-x:auto;margin-top:10px"><table class="conv" id="conv"></table></div>
+      <p class="note" style="margin-top:6px">Fuente: tabla orientativa de Paragon para Listening (CELPIP). Los rangos se superponen un poco porque cada versión del test se ajusta según su dificultad.</p>
+    </details>
+  </section>
+
+  <section class="card" id="s-check" hidden>
+    <div>
+      <h2>✍️ Checklist de estrategia</h2>
+      <p class="note" style="margin-top:4px">Marca lo que sí hiciste durante esta parte. Tu puntaje te dice qué tal te fue; el checklist te dice por qué.</p>
+    </div>
+    <div id="checklist"></div>
+    <div class="result"><span class="score" id="score"></span><p id="verdict"></p></div>
+    <div class="btns">
+      <button class="main" id="btn-next">Siguiente parte →</button>
+      <button class="ghost" id="btn-again">Repetir esta práctica</button>
+    </div>
+  </section>
+
+  <footer>@bilingualearn.au</footer>
+</div>
+
+<script>
+/* ---------- Shared guide pieces ---------- */
+const CRIT=`<h2>🎯 ¿Qué miden las preguntas?</h2>
+<div class="crit">
+<div><b>Idea principal</b><span>De qué hablan, cuál es el problema o el propósito de la conversación.</span></div>
+<div><b>Detalle</b><span>Un dato concreto: quién, cuándo, cuánto, dónde, qué decidieron.</span></div>
+<div><b>Inferencia</b><span>Lo que alguien siente o quiere decir sin decirlo: tono, actitud, intención.</span></div>
+<div><b>Paráfrasis</b><span>La opción correcta casi nunca repite las palabras que escuchaste.</span></div></div>`;
+const CHK_TIME=["Respondí todas las preguntas (no dejé ninguna en blanco)","No me quedé pensando en una pregunta anterior mientras sonaba la siguiente"];
+const TASKS=[];
+/* ===== PRACTICE TASK ===== */
+TASKS.push({name:"Practice Task (calentamiento, 1 pregunta)",short:"Practice",mode:"heard",
+ instr:"Listen to a short conversation. Then you will hear one question. Choose the best answer. (Como en el examen real, esta tarea es un calentamiento y no cuenta para el puntaje.)",
+ guide:{what:"Antes de la Parte 1, el examen real te pone una <strong>tarea de práctica</strong>: una conversación corta y <strong>una sola pregunta</strong>. Lo más importante: la pregunta <strong>no aparece escrita</strong>. La escuchas, y en pantalla solo ves las 4 opciones. Sirve para que te acostumbres a ese formato antes de que cuente.",
+  facts:[["1","pregunta"],["30 s","para responder"],["0","puntos: no cuenta"]],
+  callout:"<strong>💡 Úsala para calentar tu oído, no para relajarte.</strong> En las Partes 1, 2 y 3 todas las preguntas se escuchan. Si aprendes aquí a leer las 4 opciones mientras suena la pregunta, ganas segundos valiosos en cada pregunta real.",
+  doo:["Haz la prueba de sonido antes de empezar y ajusta el volumen.","Mientras suena la conversación, anota quién habla y qué quiere cada persona.","Cuando suene la pregunta, mira rápido las 4 opciones en pantalla.","Elige, y si dudas, quédate con tu primera idea y sigue."],
+  dont:["Intentar escribir todo lo que escuchas.","Distraerte buscando la pregunta escrita: no va a aparecer.","Elegir una opción solo porque repite una palabra que escuchaste."],
+  errors:[["Esperar a ver la pregunta escrita","Escuchar la pregunta con atención la primera vez","En las Partes 1–3 no hay texto de la pregunta: si te la pierdes, solo te quedan las opciones."],["Anotar frases completas","Anotar 2–3 palabras clave por persona","Si escribes mucho, dejas de escuchar."],["Elegir la palabra que reconociste","Elegir la idea que escuchaste, dicha con otras palabras","La palabra repetida es la trampa más común del Listening."]],
+  flow:[["≈30 s","1. Escucha","Quién habla y qué quiere"],["5 s","2. Pregunta","Escúchala completa"],["25 s","3. Opciones","Descarta y elige"]],
+  phrases:["Do you want me to…? (oferta)","Could you…? (petición)","Why don't you…? (sugerencia)","Actually… (corrección)"],
+  tips:["Distingue <em>ofrecer</em> (I can…, Do you want me to…) de <em>pedir</em> (Could you…, Would you mind…). Las preguntas lo prueban mucho.","La palabra <em>actually</em> casi siempre anuncia un cambio o una corrección: lo que viene después suele ser la respuesta."]},
+ check:[["Método",["Hice la prueba de sonido antes de empezar","Anoté quién hablaba y qué quería","Escuché la pregunta completa antes de elegir"]],["Tiempo",["Respondí antes de que terminaran los 30 segundos"]]],
+ sets:[
+ {intro:"Listen to a conversation between two neighbours.",scene:["🏢","Two neighbours in an apartment hallway","Mina and Tom"],sp:{A:["Tom","m"],B:["Mina","f"]},
+  secs:[{lines:[["A","Hi Mina. Did you see the notice? The water's going to be shut off on Thursday morning, from nine until noon."],["B","Oh no, really? I always make coffee before work."],["A","Same here. I'm going to fill a couple of big jugs tonight. [[1|Do you want me to fill one for you too? I've got an extra one.]]"],["B","That would be great, thanks! And I guess I'll do my laundry tonight then."]],
+   qs:[{n:1,q:"What does Tom offer to do for Mina?",o:["Fill a water container for her.","Make her coffee on Thursday.","Do her laundry tonight.","Call the building manager."],why:"'Do you want me to fill one for you too?' es una oferta, y 'one' se refiere a 'a big jug'. El café y la ropa se mencionan, pero Tom no ofrece eso."}]}],
+  levels:{c45:{s:"0/1",d:"Reconoce 'coffee' y 'laundry' y elige una opción con esas palabras.",miss:[[1,1,"Escuchó 'coffee', pero Mina es quien hace café. Tom ofrece llenar un recipiente de agua."]],x:"🔁 La trampa de la palabra repetida. Pregúntate: ¿quién dijo eso y para qué?"},
+   c78:{s:"1/1",d:"Acierta, pero duda porque no está seguro de a qué se refiere 'one' en 'fill one for you'.",miss:[],x:"🎯 Practica las referencias: one, it, that, them casi siempre reemplazan algo que se dijo antes."},
+   c1012:{s:"1/1",d:"Reconoce la estructura de oferta 'Do you want me to…?' y conecta 'one' con 'jugs'.",g:["Identifica la estructura de oferta.","Conecta 'one' con 'big jugs'.","Descarta laundry: es plan de Mina, no oferta de Tom."]}}},
+ {intro:"Listen to a conversation between two coworkers.",scene:["💼","Two coworkers at the office","Priya and Daniel"],sp:{A:["Priya","f"],B:["Daniel","m"]},
+  secs:[{lines:[["A","Daniel, are you still coming to the team lunch on Friday?"],["B","I was planning to, but my dentist appointment got moved to Friday at noon."],["A","Oh, that's too bad. We booked the Thai place downtown."],["B","[[1|Could you save me a seat anyway? If the dentist is quick, I'll join you for dessert.]]"],["A","Sure, no problem."]],
+   qs:[{n:1,q:"What does Daniel ask Priya to do?",o:["Keep a place for him at the lunch.","Change the restaurant.","Move his dentist appointment.","Order dessert for him."],why:"'Could you save me a seat?' = guardarle un lugar. El postre lo menciona como plan suyo, no como pedido."}]}],
+  levels:{c45:{s:"0/1",d:"Escucha 'dessert' al final y lo elige porque es lo último que oyó.",miss:[[1,3,"Daniel dice que él llegará para el postre; no pide que le pidan uno."]],x:"🔁 Lo último que escuchas no siempre es la respuesta. Busca la petición: Could you…?"},
+   c78:{s:"1/1",d:"Entiende la petición, aunque no conocía 'save me a seat' y lo deduce por el contexto.",miss:[],x:"✅ Deducir por contexto funciona. Anota expresiones nuevas como 'save a seat'."},
+   c1012:{s:"1/1",d:"Detecta 'Could you…?' como señal de petición y la recuerda con sus palabras.",g:["Reconoce 'Could you…?' como petición.","Sabe que 'save a seat' = keep a place.","Ignora el detalle del restaurante."]}}},
+ {intro:"Listen to a conversation at a pharmacy.",scene:["💊","At a pharmacy counter","A customer and a pharmacist"],sp:{A:["Pharmacist","f"],B:["Customer","m"]},
+  secs:[{lines:[["B","Hi, I'm here to pick up a prescription for Carlos Mendez."],["A","Let me check. Hmm, it's not ready yet. We're waiting for the doctor's office to confirm the dose."],["B","Oh. How long will that take?"],["A","Usually about an hour. [[1|Why don't you leave your phone number, and I'll text you when it's ready?]]"],["B","Perfect, I'll do that."]],
+   qs:[{n:1,q:"What does the pharmacist suggest?",o:["The customer should leave a contact number.","The customer should call his doctor.","The customer should come back tomorrow.","The customer should change the dose."],why:"'Why don't you leave your phone number?' = sugerencia de dejar un número de contacto. El doctor y la dosis se mencionan, pero no son la sugerencia."}]}],
+  levels:{c45:{s:"0/1",d:"Escucha 'doctor' y supone que el cliente debe llamarlo.",miss:[[1,1,"Es la farmacia la que espera la confirmación del doctor; al cliente no le piden llamar."]],x:"🔁 Separa lo que hace cada persona: la farmacia espera, el cliente deja su número."},
+   c78:{s:"1/1",d:"Acierta, aunque al principio no reconoce 'Why don't you…?' como sugerencia.",miss:[],x:"🎯 'Why don't you…?' no es una pregunta real: es una sugerencia."},
+   c1012:{s:"1/1",d:"Reconoce la sugerencia al instante y relaciona 'phone number' con 'contact number'.",g:["Identifica 'Why don't you…?' como sugerencia.","Paráfrasis: phone number = contact number.","Responde en pocos segundos."]}}},
+ {intro:"Listen to a conversation between two friends.",scene:["☕","Two friends at a coffee shop","Lucía and Ben"],sp:{A:["Lucía","f"],B:["Ben","m"]},
+  secs:[{lines:[["B","So, are you taking the job in Calgary?"],["A","I really wanted to, but the salary is lower than what I make now."],["B","But housing is cheaper there, isn't it?"],["A","A little. [[1|Actually, I've decided to stay here. My manager just offered me a promotion.]]"],["B","Oh, congratulations!"]],
+   qs:[{n:1,q:"What has Lucía decided to do?",o:["Stay in her current city.","Move to Calgary.","Ask for a higher salary in Calgary.","Look for cheaper housing."],why:"'Actually, I've decided to stay here' + la promoción. 'Actually' marca el cambio de idea."}]}],
+  levels:{c45:{s:"0/1",d:"Escucha 'I really wanted to' y se queda con esa primera idea.",miss:[[1,1,"Al principio quería ir, pero 'actually' anuncia que cambió de decisión."]],x:"🔁 Escucha hasta el final: el Listening premia a quien detecta el cambio de opinión."},
+   c78:{s:"1/1",d:"Acierta, aunque duda unos segundos entre quedarse y mudarse.",miss:[],x:"🎯 Cuando escuches 'actually', 'but' o 'in the end', anota lo que viene después."},
+   c1012:{s:"1/1",d:"Usa 'actually' como señal y anota solo la decisión final.",g:["Detecta 'actually' como cambio de idea.","Anota solo la decisión final: stay + promotion.","Descarta las opciones de Calgary."]}}},
+ {intro:"Listen to a conversation between a mother and her son.",scene:["🏠","At home before school","Rosa and her son Leo"],sp:{A:["Rosa","f"],B:["Leo","m"]},
+  secs:[{lines:[["A","Leo, don't forget your field trip form. It needs to be signed today."],["B","I know, but I left it in my backpack at Grandma's house."],["A","Oh, Leo. [[1|Okay, I'll email your teacher and ask if I can sign it tomorrow.]]"],["B","Thanks, Mom. Sorry."]],
+   qs:[{n:1,q:"What will the mother probably do?",o:["Contact the teacher.","Drive to the grandmother's house.","Sign a new form today.","Cancel the field trip."],why:"'I'll email your teacher' = contactar a la profesora. La casa de la abuela es donde está la mochila, pero nadie dice que vayan allá."}]}],
+  levels:{c45:{s:"0/1",d:"Escucha 'Grandma's house' y supone que van a ir a buscar la mochila.",miss:[[1,1,"Nadie dice que van a ir. La mamá dice que le escribirá a la profesora."]],x:"🔁 No respondas con lo lógico en la vida real: responde con lo que dijeron."},
+   c78:{s:"1/1",d:"Acierta, aunque la palabra 'probably' en la pregunta le hace dudar.",miss:[],x:"🎯 'Probably' en la pregunta significa: elige lo que la persona dijo que haría."},
+   c1012:{s:"1/1",d:"Escucha 'I'll…' como señal de plan y lo parafrasea: email = contact.",g:["Detecta 'I'll + verbo' como plan futuro.","Paráfrasis: email your teacher = contact the teacher.","Descarta la casa de la abuela."]}}}
+ ]});
+
+/* ===== PART 1 ===== */
+TASKS.push({name:"Listening to Problem Solving",short:"Part 1",mode:"heard",
+ instr:"You will hear a conversation in 3 sections. After each section, you will hear 2 or 3 questions. Choose the best answer to each question. You will hear the conversation only once.",
+ guide:{what:"Vas a escuchar una <strong>conversación entre dos personas que tienen un problema</strong> y buscan cómo resolverlo (una gotera, un carro dañado, una fiesta que se complica). El audio viene en <strong>3 secciones</strong>. Después de cada sección <strong>escuchas</strong> 2 o 3 preguntas: no aparecen escritas, solo ves las 4 opciones en pantalla.",
+  facts:[["8","preguntas"],["3","secciones de audio"],["30 s","por pregunta"]],
+  callout:"<strong>💡 La clave: sigue el problema y sus soluciones.</strong> Casi todas las preguntas giran alrededor de 3 cosas: cuál es el problema, qué soluciones proponen (y por qué descartan algunas) y qué deciden al final. Si tus notas tienen esas 3 columnas, tienes casi todo.",
+  doo:["Anota el problema en 3–4 palabras apenas lo escuches.","Escribe cada solución propuesta con ✔ o ✘ según la acepten o la rechacen.","Anota quién propone qué: las preguntas preguntan por 'the man' o 'the woman'.","Escucha la pregunta completa: 'why', 'what will', 'how does she feel' piden cosas distintas.","Si una pregunta se te escapa, elige algo y concéntrate en la siguiente.","Fíjate en el tono: la voz dice si alguien está molesto, aliviado o dudando."],
+  dont:["Intentar escribir frases completas.","Quedarte pensando en la pregunta anterior cuando ya suena la nueva.","Elegir la primera solución que mencionan: muchas se rechazan después.","Confundir lo que dice el hombre con lo que dice la mujer.","Dejar preguntas sin responder.","Escuchar 'pasivamente' como si fuera una serie."],
+  errors:[["Elegir la primera solución que escuchaste","Esperar a ver si la aceptan o la rechazan","Las conversaciones de problema casi siempre proponen 2–3 ideas antes de decidir."],["Anotar todo lo que dicen","Anotar problema, soluciones (✔/✘) y decisión","Notas cortas = más atención para escuchar."],["Ignorar el tono de voz","Preguntarte cómo se siente cada persona","Hay preguntas de actitud: worried, relieved, annoyed, unsure."]],
+  flow:[["Sección 1","1. Problema","¿Qué pasó? ¿Quién?"],["Sección 2","2. Opciones","Soluciones ✔ / ✘"],["Sección 3","3. Decisión","¿Qué harán y cuándo?"],["Cada pregunta","4. 30 s","Escucha, descarta, elige"]],
+  phrases:["The thing is… (problema)","What if we…? (propuesta)","That won't work because… (rechazo)","I'd rather… (preferencia)","Let's go with… (decisión)","Hang on / Actually… (cambio)"],
+  tips:["Las preguntas siguen el orden del audio. Si suena la pregunta 4, la respuesta está en la sección 2.","Cuando alguien dice <em>That won't work</em>, <em>I'm not sure about that</em> o <em>The problem is…</em>, tacha esa solución en tus notas.","Las preguntas de inferencia (<em>What does the man mean when he says…</em>, <em>How does the woman feel</em>) se responden con el tono y el contexto, no con una palabra exacta.","La última pregunta suele ser sobre lo que harán después: busca <em>I'll…</em>, <em>Let's…</em>, <em>first thing tomorrow</em>."]},
+ check:[["Mientras escuchaba",["Anoté el problema en pocas palabras","Marqué cada solución con ✔ o ✘","Distinguí bien lo que decía cada persona","Presté atención al tono de voz"]],
+  ["Al responder",["Escuché la pregunta completa antes de mirar las opciones","Busqué la idea con otras palabras, no la palabra repetida","Cuando dudé, elegí y pasé a la siguiente"]],["Tiempo",CHK_TIME]],
+ sets:[
+ /* Set 1 */
+ {intro:"Listen to a conversation between a tenant and her building manager.",scene:["🚿","A water leak in an apartment","Maya calls the building manager"],sp:{A:["Maya","f"],B:["Greg","m"]},
+  secs:[
+   {lines:[["B","Good morning, Maple Court building office, Greg speaking."],["A","Hi Greg, it's Maya Chen from apartment 4B. I'm sorry to call so early, but [[1|there's water dripping from my bathroom ceiling. It started last night, and now there's a puddle on the floor.]]"],["B","Oh no. Is it coming from the light fixture?"],["A","No, thank goodness. It's near the shower. I put a bucket under it, but [[2|I have to leave for work at eight, and I'm worried it'll overflow while I'm gone.]]"],["B","Okay. The apartment above you belongs to Mr. Patel. [[3|He's away visiting his daughter in Vancouver until Sunday, so I can't just knock on his door.]]"],["A","So what can we do?"]],
+    qs:[{n:1,q:"What problem is Maya calling about?",o:["Water is leaking into her bathroom.","Her shower is not working.","A light in her bathroom is broken.","Her bathtub is overflowing."],why:"'Water dripping from my bathroom ceiling… a puddle on the floor' = una gotera en el baño. Greg pregunta por la luz, pero Maya dice que no viene de ahí."},
+     {n:2,q:"Why is Maya worried?",o:["She won't be home to empty the bucket.","She will be late for work.","The water might damage her light.","She can't reach Mr. Patel."],why:"'I have to leave for work… I'm worried it'll overflow while I'm gone' = no estará para vaciar el balde. No dice que llegará tarde."},
+     {n:3,q:"What does Greg say about Mr. Patel?",o:["He is out of town.","He caused the leak on purpose.","He is visiting Maya's daughter.","He doesn't answer his phone."],why:"'He's away visiting his daughter in Vancouver until Sunday' = está fuera de la ciudad. La hija es de Mr. Patel, no de Maya."}]},
+   {lines:[["B","Well, I have a master key, but I need to give the owner twenty-four hours' notice before I enter, unless it's an emergency."],["A","Water coming through my ceiling sounds like an emergency to me!"],["B","[[4|You're right, it counts. I'll go up there myself in about twenty minutes and turn off his water.]]"],["A","Thank you. And what about my ceiling? It looks a bit soft around the wet part."],["B","Hmm, that's not great. [[5|Please don't touch it. If it's soft, it could come down. I'll have our plumber look at it, and probably someone to repair the drywall later.]]"],["A","[[6|Okay, but I really can't take a day off this week. We have a big deadline.]]"]],
+    qs:[{n:4,q:"What will Greg do first?",o:["Go into Mr. Patel's apartment to stop the water.","Wait twenty-four hours before entering.","Call Mr. Patel's daughter.","Fix Maya's ceiling."],why:"'I'll go up there myself in about twenty minutes and turn off his water'. Las 24 horas son la regla normal, pero Greg acepta que es una emergencia."},
+     {n:5,q:"What does Greg tell Maya about the ceiling?",o:["She should leave it alone.","She should dry it with a towel.","She should paint over it.","She should press on it to test it."],why:"'Please don't touch it' = déjalo tranquilo. Las otras opciones son acciones que Greg no menciona."},
+     {n:6,q:"What concern does Maya express?",o:["She can't miss work this week.","She can't afford the repair.","She doesn't trust the plumber.","She has an important visitor coming."],why:"'I really can't take a day off this week' = no puede faltar al trabajo. 'Deadline' es la razón."}]},
+   {lines:[["B","No problem. You don't need to be there. As long as you give permission, [[7|the plumber can come in with my key while you're at work.]]"],["A","That's fine. Just text me before anyone goes in, okay?"],["B","Of course. I'll call the plumber as soon as we hang up. Oh, and take a few photos of the ceiling before you leave."],["A","Photos? Why?"],["B","[[8|For the insurance claim. It'll make things much easier if we need to repaint or replace anything in your unit.]]"],["A","Got it. I'll take them now."]],
+    qs:[{n:7,q:"How will the plumber get into Maya's apartment?",o:["Greg will let him in with a key.","Maya will leave the door open.","Maya will come home at lunch.","Mr. Patel will give him a key."],why:"'The plumber can come in with my key' (la llave de Greg). Maya solo pide un mensaje antes."},
+     {n:8,q:"Why does Greg ask Maya to take photos?",o:["They will help with insurance.","The plumber needs to see the damage first.","Mr. Patel wants proof.","Maya needs them for her employer."],why:"'For the insurance claim' = ayudarán con el seguro."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que hay agua en el baño, pero se pierde en los detalles de quién hace qué y elige opciones con palabras que reconoce.",miss:[[2,1,"Escuchó 'work at eight' y pensó que el problema era llegar tarde. Lo que le preocupa es que el balde se desborde."],[3,2,"Escuchó 'daughter' y no se fijó de quién era la hija."],[4,1,"Se quedó con la regla de las 24 horas y no escuchó 'You're right, it counts'."],[7,2,"No anotó la solución de la llave y adivinó."]],x:"🔁 Tu reto: anotar QUIÉN dice cada cosa. Usa dos columnas en tus notas: M (Maya) y G (Greg)."},
+   c78:{s:"6/8",d:"Sigue bien el problema y la solución principal, pero falla cuando la respuesta depende de una regla con excepción.",miss:[[4,1,"Escuchó la regla (24 hours' notice) y no la excepción (unless it's an emergency)."],[6,1,"Asoció 'deadline' con dinero. Maya habla de que no puede faltar al trabajo."]],x:"🎯 Para subir a CLB 9: anota las palabras de excepción (unless, except, as long as) y lo que viene después."},
+   c1012:{s:"8/8",d:"Usa notas de 3 columnas (problema / soluciones / decisión) y escucha con atención las excepciones y los cambios.",g:["Anota: leak bathroom / bucket / leaving 8.","Detecta 'unless it's an emergency' + 'it counts' = Greg entra hoy.","Separa las personas: hija de Mr. Patel, trabajo de Maya, llave de Greg.","Relaciona 'insurance claim' con la razón de las fotos."]}}},
+ /* Set 2 */
+ {intro:"Listen to a conversation between two friends on a road trip.",scene:["🚗","A car problem on a road trip","Sam and Nadia on the highway"],sp:{A:["Nadia","f"],B:["Sam","m"]},
+  secs:[
+   {lines:[["A","Sam, did you hear that? [[1|There's a strange clicking noise every time I turn the wheel.]]"],["B","Yeah, I noticed it a few minutes ago. And the battery light just came on too."],["A","Great. We're still two hours from Jasper, and [[2|the cabin check-in closes at six.]]"],["B","Let's not panic. [[3|There's a gas station about ten kilometres ahead. We can pull over there and take a look.]]"],["A","Okay, but I'm going to drive slowly."]],
+    qs:[{n:1,q:"What problem does Nadia notice first?",o:["A noise when she turns.","The battery light.","A flat tire.","The car is low on gas."],why:"'There's a strange clicking noise every time I turn the wheel'. La luz de la batería la menciona Sam después."},
+     {n:2,q:"Why are they worried about the time?",o:["They might miss the check-in at their cabin.","The gas station closes at six.","They have a dinner reservation.","It will get dark soon."],why:"'The cabin check-in closes at six'. La gasolinera no tiene hora de cierre en el audio."},
+     {n:3,q:"What does Sam suggest?",o:["Stopping at a nearby gas station.","Calling a tow truck right away.","Driving faster to arrive on time.","Turning back home."],why:"'We can pull over there (gas station) and take a look' = parar en una gasolinera cercana."}]},
+   {lines:[["B","Okay, I talked to the mechanic here. He says the clicking is probably the CV joint. [[4|It's not dangerous for a short distance, but it should be fixed this week.]]"],["A","And the battery light?"],["B","That's the bigger problem. He thinks the alternator is failing. [[5|He doesn't have the part, and the nearest shop that does is in Hinton, forty minutes away.]]"],["A","Could we just drive to Hinton?"],["B","He said we might make it, but if the battery dies on the highway, we'd be stuck. [[6|Honestly, I'd rather not risk it.]]"]],
+    qs:[{n:4,q:"What does the mechanic say about the clicking noise?",o:["It can wait a few days.","It must be fixed immediately.","It is caused by the battery.","It will be expensive to fix."],why:"'Not dangerous for a short distance, but it should be fixed this week' = puede esperar unos días."},
+     {n:5,q:"Why can't the mechanic fix the alternator?",o:["He doesn't have the right part.","His shop is closing.","He doesn't know how.","It would take too long."],why:"'He doesn't have the part'."},
+     {n:6,q:"How does Sam feel about driving to Hinton?",o:["He thinks it's too risky.","He thinks it's a good idea.","He is excited about the trip.","He doesn't care either way."],why:"'I'd rather not risk it' = cree que es muy arriesgado."}]},
+   {lines:[["A","So what do we do? Sleep at the gas station?"],["B","No. Our roadside assistance plan covers towing up to a hundred kilometres. [[7|I'll call them and have the car towed to the shop in Hinton.]]"],["A","And us?"],["B","We can ride in the tow truck. Then [[8|you call the cabin and ask if they can leave the key in a lockbox for a late arrival.]]"],["A","Good idea. I'll call them right now."]],
+    qs:[{n:7,q:"What will Sam do?",o:["Arrange for the car to be towed.","Buy a new battery.","Rent another car.","Drive to Hinton slowly."],why:"'I'll call them and have the car towed to the shop in Hinton'."},
+     {n:8,q:"What will Nadia ask the cabin to do?",o:["Allow them to get the key late.","Cancel their reservation.","Send someone to pick them up.","Give them a refund."],why:"'Leave the key in a lockbox for a late arrival' = permitir recoger la llave tarde."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que el carro tiene problemas, pero confunde los dos problemas (ruido y batería) y no escucha bien las decisiones.",miss:[[1,1,"Eligió la luz de la batería, pero eso fue lo segundo y lo notó Sam."],[4,1,"Escuchó 'should be fixed' y creyó que era urgente; no escuchó 'not dangerous'."],[6,1,"No reconoció 'I'd rather not risk it' como rechazo."],[8,1,"Escuchó 'cabin' y adivinó cancelar."]],x:"🔁 Cuando hay dos problemas, anótalos por separado: 1) ruido, 2) batería."},
+   c78:{s:"6/8",d:"Sigue la historia, pero falla en matices sobre urgencia y actitud.",miss:[[4,1,"'Should be fixed this week' no es 'immediately'."],[6,1,"Entendió que Sam dudaba, pero no que estaba en contra."]],x:"🎯 'I'd rather not…' es un 'no' educado. Repasa expresiones de rechazo suave."},
+   c1012:{s:"8/8",d:"Separa los dos problemas, escucha el nivel de urgencia y anota quién hará cada cosa al final.",g:["Notas: 1) click = can wait, 2) battery = serious.","Reconoce 'I'd rather not risk it' como rechazo.","Asigna tareas: Sam → towing, Nadia → cabin.","Parafrasea lockbox = get the key late."]}}},
+ /* Set 3 */
+ {intro:"Listen to a conversation between a brother and sister planning a party.",scene:["🎉","A surprise party in trouble","Ana and her brother Marco"],sp:{A:["Ana","f"],B:["Marco","m"]},
+  secs:[
+   {lines:[["A","Marco, we have a problem. [[1|The restaurant just called. They double-booked the private room for Saturday.]]"],["B","Are you serious? The party for Mom and Dad's anniversary is in four days!"],["A","I know. [[2|They offered us a table in the main dining room, but it's way too noisy for speeches.]]"],["B","And we've already invited thirty people. [[3|Did they at least give back the deposit?]]"],["A","They said they'd refund it today."]],
+    qs:[{n:1,q:"Why did the restaurant call Ana?",o:["The room was reserved for two groups.","They had to close on Saturday.","They raised their prices.","They needed the final number of guests."],why:"'They double-booked the private room' = la sala quedó reservada para dos grupos."},
+     {n:2,q:"Why doesn't Ana like the restaurant's offer?",o:["It would be too loud.","It is too expensive.","It is too small for thirty people.","It is too far away."],why:"'Way too noisy for speeches' = demasiado ruido."},
+     {n:3,q:"What does Marco ask about?",o:["Getting their money back.","Changing the date.","Inviting fewer people.","Speaking to the manager."],why:"'Did they give back the deposit?' = recuperar el dinero."}]},
+   {lines:[["B","What about having it at my place?"],["A","[[4|Your apartment is lovely, but it only fits about fifteen people.]]"],["B","True. What about the community hall near Mom's house? My friend Leila rented it last year."],["A","That could work. It's big and it has a kitchen. [[5|But who's going to cook for thirty people?]]"],["B","[[6|We could order catering. Tía Rosa knows someone who makes amazing empanadas and tamales.]]"],["A","Oh, Mom would love that."]],
+    qs:[{n:4,q:"Why doesn't Ana want to use Marco's apartment?",o:["It's not big enough.","It's too far from their parents.","Marco's neighbours would complain.","It doesn't have a kitchen."],why:"'It only fits about fifteen people' y son 30 invitados. La cocina se menciona sobre el salón comunitario."},
+     {n:5,q:"What concern does Ana have about the community hall?",o:["Preparing the food.","The cost of renting it.","The size of the kitchen.","Its distance from home."],why:"'Who's going to cook for thirty people?' = preparar la comida."},
+     {n:6,q:"What does Marco suggest?",o:["Hiring someone to provide the food.","Asking their aunt to cook.","Cooking the food together.","Going back to the restaurant."],why:"'We could order catering'. Tía Rosa conoce a alguien; ella no va a cocinar."}]},
+   {lines:[["A","Okay, I'll call the community centre right now to check if Saturday is free."],["B","[[7|And I'll call Tía Rosa about the catering, as long as it's not too expensive.]]"],["A","Perfect. Then [[8|tonight we need to send everyone a message with the new address. Can you do that? You're faster with the group chat.]]"],["B","Sure. But don't tell Mom anything. It's still a surprise!"]],
+    qs:[{n:7,q:"What will Marco do?",o:["Contact their aunt about the food.","Book the community hall.","Cook the empanadas.","Tell their mother the plan."],why:"'I'll call Tía Rosa about the catering'. El salón lo llama Ana."},
+     {n:8,q:"What does Ana ask Marco to do tonight?",o:["Tell the guests where the party will be.","Pay for the hall.","Buy decorations.","Write a speech."],why:"'Send everyone a message with the new address' = informar el nuevo lugar."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que la fiesta tiene problemas, pero se confunde con los lugares y con quién hará qué.",miss:[[2,2,"Pensó que el problema era el espacio. Ana dice que es el ruido (noisy)."],[4,3,"Escuchó 'kitchen' más adelante y lo aplicó al apartamento."],[6,1,"Escuchó 'Tía Rosa' y supuso que ella cocinaría."],[7,1,"Mezcló las tareas: Ana llama al salón y Marco a la tía."]],x:"🔁 Haz una lista de lugares con ✔/✘: restaurante ✘ (ruido), apartamento ✘ (pequeño), salón ✔."},
+   c78:{s:"6/8",d:"Sigue los lugares, pero falla en quién hace qué.",miss:[[6,1,"Tía Rosa 'knows someone': ella no cocina."],[7,1,"Ana llama al salón; Marco, a la tía."]],x:"🎯 En la última sección, anota tareas con iniciales: A → hall, M → Rosa."},
+   c1012:{s:"8/8",d:"Lleva una lista de opciones con razones y asigna cada tarea a una persona.",g:["Restaurante ✘ ruido · Apto ✘ 15 personas · Salón ✔.","Detecta 'knows someone' = otra persona cocina.","Anota A: hall / M: Rosa + group chat.","Parafrasea new address = where the party will be."]}}},
+ /* Set 4 */
+ {intro:"Listen to a conversation between a traveller and an airline agent.",scene:["🧳","Lost luggage at the airport","Isabel speaks to an airline agent"],sp:{A:["Isabel","f"],B:["Agent","m"]},
+  secs:[
+   {lines:[["B","Next, please. How can I help you?"],["A","Hi. I just arrived from Mexico City on flight 482, and [[1|my suitcase never came out on the belt.]] I waited almost an hour."],["B","I'm sorry about that. Can I see your baggage tag?"],["A","Here. [[2|The thing is, I have a job interview tomorrow morning, and my suit is in that bag.]]"],["B","I understand. Let me check the system. [[3|Okay, it looks like your bag missed the connection in Toronto. It's still there.]]"]],
+    qs:[{n:1,q:"What is Isabel's problem?",o:["Her suitcase did not arrive.","Her suitcase was damaged.","She missed her flight.","She lost her baggage tag."],why:"'My suitcase never came out on the belt' = no llegó."},
+     {n:2,q:"Why is Isabel especially worried?",o:["She needs clothes for an important meeting.","She has medication in her bag.","Her bag has expensive gifts.","She is leaving again tomorrow."],why:"'A job interview tomorrow… my suit is in that bag' = ropa para una reunión importante."},
+     {n:3,q:"Where is Isabel's suitcase?",o:["At the airport in Toronto.","In Mexico City.","On another belt.","On a different flight to Vancouver."],why:"'It missed the connection in Toronto. It's still there.'"}]},
+   {lines:[["B","The next flight from Toronto lands at eleven tonight. [[4|We can deliver the bag to your hotel by about one in the morning.]]"],["A","One a.m.? That's late, but I guess it's okay."],["B","There's a small risk, though. [[5|If the bag doesn't make that flight, the next one isn't until tomorrow afternoon.]]"],["A","That would be too late for my interview. [[6|Is there anything else you can do?]]"],["B","[[6|Yes. Since your bag is delayed, you can buy essential items, like a shirt or toiletries, and the airline will pay you back up to two hundred dollars.]]"]],
+    qs:[{n:4,q:"When could the bag arrive at Isabel's hotel?",o:["After midnight.","At eleven p.m.","Tomorrow morning.","Tomorrow afternoon."],why:"'By about one in the morning' = después de medianoche. Las 11 es la hora del vuelo."},
+     {n:5,q:"What risk does the agent mention?",o:["The bag may not be on the evening flight.","The hotel may not accept the bag.","The bag may be lost forever.","The delivery may cost extra."],why:"'If the bag doesn't make that flight' = podría no ir en el vuelo de la noche."},
+     {n:6,q:"What does the airline offer?",o:["To refund some things she buys.","To give her a free suit.","To pay for a better hotel.","To change her interview time."],why:"'The airline will pay you back up to two hundred dollars' = reembolsar compras."}]},
+   {lines:[["A","Two hundred won't buy a whole suit, but [[7|I could get a nice blouse and borrow a jacket from my cousin. She lives here.]]"],["B","That sounds like a smart backup plan. Just keep all your receipts."],["A","[[8|And can you call me as soon as you know the bag is on the plane?]]"],["B","Absolutely. I'll put a note on your file to contact you by phone."]],
+    qs:[{n:7,q:"What is Isabel's backup plan?",o:["Buy one item and borrow another.","Buy a whole new suit.","Wear the clothes she has on.","Postpone the interview."],why:"'Get a nice blouse and borrow a jacket from my cousin' = comprar una cosa y pedir prestada otra."},
+     {n:8,q:"What does Isabel ask the agent to do?",o:["Phone her with an update.","Send her the receipts.","Deliver the bag to her cousin's.","Write a note to her employer."],why:"'Call me as soon as you know the bag is on the plane' = llamarla con noticias."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que la maleta se perdió, pero confunde horas y lugares.",miss:[[3,1,"Escuchó 'Mexico City' al principio y no lo actualizó con Toronto."],[4,1,"Confundió la hora del vuelo (11 p.m.) con la de entrega (1 a.m.)."],[6,1,"Escuchó 'suit' y supuso que le darían uno."],[7,1,"No escuchó que 200 dólares no alcanzan para un traje."]],x:"🔁 Para horas y números, anota el número junto a lo que significa: 11 = vuelo, 1 a.m. = hotel."},
+   c78:{s:"6/8",d:"Sigue la historia, pero se confunde con números.",miss:[[4,1,"Anotó '11' sin escribir que era la llegada del vuelo."],[7,1,"No escuchó 'won't buy a whole suit'."]],x:"🎯 Cuando escuches 2 horas seguidas, anota a qué corresponde cada una."},
+   c1012:{s:"8/8",d:"Anota horas con su función y escucha con atención el plan B.",g:["Notas: 11 pm flight / 1 am hotel / risk → tomorrow pm.","Parafrasea pay you back = refund.","Escucha 'won't buy a whole suit' → plan mixto.","Responde la última pregunta con la petición final."]}}},
+ /* Set 5 */
+ {intro:"Listen to a conversation between two parents.",scene:["👶","A childcare problem","Julia and David talk after dinner"],sp:{A:["Julia","f"],B:["David","m"]},
+  secs:[
+   {lines:[["A","David, I just got an email from the daycare. [[1|They're closing for two weeks in March because they're renovating the building.]]"],["B","Two weeks? Do they have another location?"],["A","They do, but [[2|it's across the city. It would add almost an hour to the drive every morning.]]"],["B","That's a lot. [[3|And I have that training course in Ottawa that week, so I can't help with drop-offs.]]"]],
+    qs:[{n:1,q:"Why is the daycare closing?",o:["The building is being renovated.","The staff are on holiday.","There are not enough children.","It is moving to a new city."],why:"'Because they're renovating the building'."},
+     {n:2,q:"What is the problem with the other location?",o:["It is far from their home.","It is too expensive.","It is full.","It opens too late."],why:"'Across the city… almost an hour' = queda lejos."},
+     {n:3,q:"Why can't David help?",o:["He will be away for work.","He doesn't have a car.","He starts work very early.","He will be on holiday."],why:"'A training course in Ottawa that week' = estará fuera por trabajo."}]},
+   {lines:[["A","What about asking my mom? She's retired."],["B","[[4|She'd be great, but she just had knee surgery. Running after a two-year-old for two weeks would be too much.]]"],["A","You're right. Okay, what about a nanny for two weeks?"],["B","It's possible, [[5|but finding someone we trust in a month isn't easy.]]"],["A","Hmm. [[6|Actually, my boss said I could work from home a few days a week if I need to.]]"],["B","Really? That would change things."]],
+    qs:[{n:4,q:"Why do they decide not to ask Julia's mother?",o:["She is recovering from an operation.","She lives too far away.","She is still working.","She doesn't like children."],why:"'She just had knee surgery' = se recupera de una operación."},
+     {n:5,q:"What worries David about hiring a nanny?",o:["Finding a trustworthy person quickly.","The cost.","The nanny's schedule.","Their son doesn't like strangers."],why:"'Finding someone we trust in a month isn't easy'."},
+     {n:6,q:"What new information does Julia give?",o:["She may be able to work from home.","She can take two weeks off.","Her boss has a nanny.","Her office has a daycare."],why:"'My boss said I could work from home a few days a week' = podría trabajar desde casa. 'Actually' introduce la información nueva."}]},
+   {lines:[["A","So, here's an idea. [[7|I'll work from home three days a week, and for the other two days, we use the other daycare location.]]"],["B","That's only two long drives a week. That's manageable."],["A","Exactly. [[8|I'll talk to my boss tomorrow to confirm, and you call the daycare to reserve two days at the other location.]]"],["B","Deal."]],
+    qs:[{n:7,q:"What is their plan?",o:["Combine working from home with the other daycare.","Hire a nanny for two days.","Ask Julia's mother for two days.","Use the other daycare every day."],why:"'Work from home three days… the other two days, the other daycare location' = combinar."},
+     {n:8,q:"What will David do?",o:["Book days at the other daycare.","Speak to Julia's boss.","Cancel his course.","Look for a nanny."],why:"'You call the daycare to reserve two days' (dicho a David)."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que la guardería cierra, pero pierde el hilo de las soluciones rechazadas.",miss:[[2,1,"Supuso que el problema era el precio, pero nadie lo menciona."],[4,1,"No entendió 'knee surgery'."],[6,1,"Escuchó 'a few days' y pensó en vacaciones."],[8,1,"Mezcló las tareas: Julia habla con su jefe, David llama a la guardería."]],x:"🔁 La palabra 'you' en la última sección te dice a quién le toca cada tarea."},
+   c78:{s:"6/8",d:"Entiende las soluciones, pero falla en el plan final combinado.",miss:[[7,1,"Escuchó 'two days' y lo relacionó con la niñera ya descartada."],[8,1,"No notó que 'you call the daycare' iba dirigido a David."]],x:"🎯 Planes con números (3 días + 2 días) requieren anotar ambas partes."},
+   c1012:{s:"8/8",d:"Lleva la lista de soluciones con ✘ y escribe el plan final con sus dos partes.",g:["Abuela ✘ cirugía · Niñera ✘ confianza.","Detecta 'Actually' como información nueva.","Plan: 3 home + 2 daycare.","Tareas: J → boss, D → daycare."]}}}
+ ]});
+
+/* ===== PART 2 ===== */
+TASKS.push({name:"Listening to a Daily Life Conversation",short:"Part 2",mode:"heard",
+ instr:"You will hear a conversation. Then you will hear 5 questions. Choose the best answer to each question. You will hear the conversation only once.",
+ guide:{what:"Vas a escuchar <strong>una conversación cotidiana</strong> entre dos personas: compañeros de trabajo, un cliente en un gimnasio, vecinos, amigos. El audio dura unos 1,5–2 minutos y se escucha <strong>de una sola vez</strong>. Después <strong>escuchas</strong> 5 preguntas (no aparecen escritas) y eliges entre 4 opciones.",
+  facts:[["5","preguntas"],["1","audio de ≈2 min"],["30 s","por pregunta"]],
+  callout:"<strong>💡 La clave: aquí no hay pausas entre secciones.</strong> Escuchas todo seguido y las preguntas llegan al final. Por eso tus notas son tu memoria: sin ellas, la pregunta 1 te encuentra ya olvidando el principio.",
+  doo:["Escucha la introducción del narrador: te dice quiénes hablan y dónde.","Divide tu hoja en dos columnas, una por persona.","Anota razones (because, since, so) y decisiones (I'll, let's).","Fíjate en cómo responde cada persona a una propuesta: ¿acepta, duda o rechaza?","Escucha el final con atención: muchas preguntas son sobre el próximo paso."],
+  dont:["Dejar de tomar notas porque 'te vas a acordar'.","Elegir una opción porque oíste una palabra igual.","Asumir que la primera respuesta de alguien es su opinión final.","Perder la pregunta siguiente por pensar en la anterior."],
+  errors:[["Confiar solo en la memoria","Notas cortas en dos columnas","Las 5 preguntas llegan después de 2 minutos de audio."],["Responder con la primera propuesta","Escuchar si la aceptan o no","Muchas conversaciones cambian de plan a mitad de camino."],["Ignorar preguntas de opinión o sentimiento","Notar el tono: duda, entusiasmo, molestia","Hay preguntas como 'How does the man feel about…?'"]],
+  flow:[["Intro","1. Contexto","¿Quiénes? ¿Dónde?"],["Audio","2. Notas","Columna por persona"],["Final","3. Próximo paso","I'll… / Let's…"],["Preguntas","4. 30 s c/u","Escucha y descarta"]],
+  phrases:["I was wondering if… (petición)","To be honest… (opinión real)","I'm not so sure… (duda)","That makes sense (acuerdo)","In that case… (decisión)","I'll get back to you (respuesta pendiente)"],
+  tips:["<em>To be honest</em> y <em>Honestly</em> introducen la opinión real de alguien: anótala.","Si alguien dice <em>I see what you mean, but…</em>, lo importante viene después del <em>but</em>.","Las preguntas de 'why' suelen tener la respuesta después de <em>because</em>, <em>since</em> o <em>the reason is</em>.","Al final, escucha quién se compromete a hacer algo: suele ser la última pregunta."]},
+ check:[["Mientras escuchaba",["Usé dos columnas, una por persona","Anoté razones y decisiones","Noté cambios de opinión (but, actually)"]],
+  ["Al responder",["Escuché la pregunta completa antes de elegir","Busqué la paráfrasis, no la palabra exacta"]],["Tiempo",CHK_TIME]],
+ sets:[
+ {intro:"Listen to a conversation between two coworkers about getting to work.",scene:["🚌","Two coworkers talk about a carpool","Kevin and Leila at the office"],sp:{A:["Kevin","m"],B:["Leila","f"]},
+  secs:[{lines:[["A","Leila, you live in Riverside too, right?"],["B","Yeah, near the big park. Why?"],["A","Well, [[1|the city's closing the bridge on Highway 3 for repairs next month, so the bus will take forever.]] I was wondering if you'd want to carpool."],["B","Oh, that's a great idea. I hate driving in traffic alone. But I start at eight, and you start at nine, don't you?"],["A","[[2|I can start at eight too. My manager said it's fine, as long as I leave at four.]]"],["B","Perfect. I usually leave at four anyway. So who drives?"],["A","Well, [[3|my car's pretty old and the heater doesn't work very well. Not great for a Winnipeg winter.]]"],["B","Ha, then I'll drive. [[4|But you pay for gas every other week. Deal?]]"],["A","Deal. Should we start next Monday, to get used to it before the bridge closes?"],["B","[[5|Let's start the Monday after. I have a dentist appointment next Monday morning.]]"]],
+   qs:[{n:1,q:"Why does Kevin suggest carpooling?",o:["His bus trip will become much longer.","His car broke down.","He wants to save money on parking.","He is moving to Riverside."],why:"'The city's closing the bridge… so the bus will take forever' = el viaje en bus será mucho más largo."},
+    {n:2,q:"How will Kevin solve the problem with their different schedules?",o:["He will change his start time.","Leila will start at nine.","They will only carpool in the afternoon.","His manager will drive him."],why:"'I can start at eight too' = cambiará su hora de entrada."},
+    {n:3,q:"Why doesn't Kevin want to drive?",o:["His car is not good in cold weather.","He doesn't have a licence.","He doesn't like traffic.","His car is too small."],why:"'The heater doesn't work very well. Not great for a Winnipeg winter.' Quien odia el tráfico es Leila."},
+    {n:4,q:"What does Leila ask Kevin to do?",o:["Share the cost of fuel.","Drive every other week.","Pay for parking.","Buy a new heater."],why:"'You pay for gas every other week' = compartir el costo de la gasolina."},
+    {n:5,q:"When will they probably start carpooling?",o:["In two weeks.","Next Monday.","When the bridge reopens.","Tomorrow."],why:"'Let's start the Monday after' (no el próximo lunes, el siguiente) = en dos semanas."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que van a compartir carro, pero falla en detalles de tiempo y en quién dijo qué.",miss:[[3,2,"Escuchó 'I hate driving in traffic', pero eso lo dijo Leila."],[5,1,"Escuchó 'next Monday' y no 'the Monday after'."]],x:"🔁 Pequeñas palabras como 'after' cambian toda la fecha. Escucha hasta el final de la frase."},
+   c78:{s:"4/5",d:"Sigue bien la conversación, pero se le escapa un matiz de tiempo.",miss:[[5,1,"Entendió que había una cita, pero no calculó que empezaban una semana después."]],x:"🎯 Cuando alguien propone una fecha y el otro responde con otra, la segunda es la decisión."},
+   c1012:{s:"5/5",d:"Usa dos columnas y anota cada razón y cada condición.",g:["K: bus slow (bridge) · old car/heater.","L: hates traffic · drives · K pays gas.","Detecta 'the Monday after' = dos semanas.","Parafrasea gas = fuel."]}}},
+ {intro:"Listen to a conversation between a gym member and a receptionist.",scene:["🏋️","At a fitness centre front desk","Omar wants to change his membership"],sp:{A:["Receptionist","f"],B:["Omar","m"]},
+  secs:[{lines:[["A","Hi there! How can I help you?"],["B","Hi. [[1|I'd like to cancel my membership. I'm moving to a new job, and my hours will be really unpredictable.]]"],["A","Oh, I'm sorry to hear that. Just so you know, [[2|cancelling before your one-year contract ends means a fee of seventy-five dollars.]]"],["B","Seventy-five? I didn't realize that."],["A","It's in the contract. But there's another option. [[3|You could freeze your membership for up to three months for only ten dollars a month.]]"],["B","Hmm. That might work, actually. I'm not sure I'll stop coming forever."],["A","And if your schedule settles down, you just reactivate it. [[4|You'd also keep your current rate, which is lower than what new members pay now.]]"],["B","Okay, that convinces me. Let's freeze it starting the first of next month."],["A","Great. [[5|I just need you to fill out this form and sign at the bottom.]]"]],
+   qs:[{n:1,q:"Why did Omar come to the front desk?",o:["He wanted to end his membership.","He wanted to upgrade his membership.","He wanted to complain about the fee.","He wanted to ask about class times."],why:"'I'd like to cancel my membership' = terminar su membresía."},
+    {n:2,q:"What does the receptionist tell Omar about cancelling?",o:["He would have to pay a charge.","It is free after one month.","He must give three months' notice.","He would lose his locker."],why:"'Cancelling before your contract ends means a fee of seventy-five dollars' = un cargo."},
+    {n:3,q:"What does the receptionist suggest?",o:["Pausing his membership.","Switching to a cheaper gym.","Changing to evening classes.","Paying the fee in instalments."],why:"'Freeze your membership' = pausarla."},
+    {n:4,q:"What benefit does the receptionist mention?",o:["He can keep his current price.","He gets a free month.","He can bring a friend.","He gets personal training."],why:"'You'd keep your current rate, which is lower' = mantener el precio actual."},
+    {n:5,q:"What will Omar probably do next?",o:["Complete a document.","Pay seventy-five dollars.","Talk to his new employer.","Start a new class."],why:"'Fill out this form and sign' = completar un documento."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que Omar quiere cambiar algo, pero no sigue el cambio de decisión.",miss:[[3,3,"Escuchó 'ten dollars a month' y pensó en pagar en cuotas."],[5,1,"Se quedó con el número 75 y no escuchó que Omar cambió de idea."]],x:"🔁 Cuando alguien dice 'that convinces me', la decisión cambia. Actualiza tus notas."},
+   c78:{s:"4/5",d:"Entiende la propuesta, pero no conoce 'freeze' en este contexto.",miss:[[3,3,"No sabía que 'freeze a membership' significa pausarla."]],x:"🎯 Vocabulario de servicios: freeze, cancel, upgrade, reactivate, fee, rate."},
+   c1012:{s:"5/5",d:"Reconoce el vocabulario de membresías y sigue el cambio de cancelar a pausar.",g:["Notas: cancel → $75 fee → freeze $10/mo ✔.","Sabe que freeze = pause.","Parafrasea rate = price.","Anota el último paso: form."]}}},
+ {intro:"Listen to a conversation between two neighbours.",scene:["🏡","Two neighbours talk over the fence","Grace and Paul"],sp:{A:["Grace","f"],B:["Paul","m"]},
+  secs:[{lines:[["B","Morning, Grace! Your garden looks amazing this year."],["A","Thanks, Paul. Actually, I wanted to ask you something. [[1|I'm going to Halifax for my sister's wedding next week, and I need someone to water my plants.]]"],["B","Sure, I can do that. How long will you be away?"],["A","Eight days. [[2|The tomatoes need water every day, but the flowers in the front only need it twice a week.]]"],["B","Got it. Every day for the tomatoes. Do you have a hose I can use?"],["A","[[3|The hose has a hole in it, so please use the watering can by the back door.]]"],["B","No problem. Oh, what about your mail?"],["A","[[4|My son will pick up the mail. He lives close by.]] But if you see any packages at the door, could you take them inside?"],["B","Of course. And help yourself to some tomatoes, right?"],["A","[[5|Please do! I'd much rather you eat them than let them go to waste.]]"]],
+   qs:[{n:1,q:"Why is Grace going away?",o:["To attend a family event.","For a work trip.","To visit a friend in hospital.","To move to Halifax."],why:"'For my sister's wedding' = un evento familiar."},
+    {n:2,q:"What does Grace say about the flowers?",o:["They need less water than the tomatoes.","They need water every day.","Her son will water them.","They don't need any water."],why:"'Only need it twice a week' vs los tomates 'every day'."},
+    {n:3,q:"Why should Paul use the watering can?",o:["The hose is damaged.","The hose is too short.","The watering can is easier.","There is a water restriction."],why:"'The hose has a hole in it' = está dañada."},
+    {n:4,q:"Who will collect the mail?",o:["Grace's son.","Paul.","Grace's sister.","A delivery company."],why:"'My son will pick up the mail'. Paul solo entrará paquetes."},
+    {n:5,q:"How does Grace feel about Paul taking tomatoes?",o:["She is happy for him to have them.","She would prefer he didn't.","She wants him to sell them.","She wants him to save them for her."],why:"'Please do! I'd much rather you eat them' = está feliz."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende la idea general, pero se confunde con quién hace qué tarea.",miss:[[4,1,"Escuchó que Paul ayudaría con algo y supuso que era el correo; Paul solo entra paquetes."],[5,1,"No entendió 'I'd much rather' como algo positivo."]],x:"🔁 'I'd rather A than B' = prefiero A. Anota siempre lo que viene primero."},
+   c78:{s:"4/5",d:"Sigue las tareas, pero duda en la pregunta de sentimiento.",miss:[[5,1,"Escuchó 'go to waste' y lo asoció con algo negativo."]],x:"🎯 Las preguntas de 'how does she feel' se responden con el tono: ¿suena contenta?"},
+   c1012:{s:"5/5",d:"Anota las tareas con responsables y escucha el tono final.",g:["Tomates diario · flores 2/semana.","Manguera rota → regadera.","Correo: hijo · paquetes: Paul.","Tono entusiasta: 'Please do!'"]}}},
+ {intro:"Listen to a conversation between a student and a college advisor.",scene:["🎓","At a college advising office","Hana talks to her advisor"],sp:{A:["Advisor","m"],B:["Hana","f"]},
+  secs:[{lines:[["A","Hi Hana, come in. What can I do for you?"],["B","Hi. [[1|I want to switch from the evening accounting course to the weekend one. My new job has me working late on Tuesdays and Thursdays.]]"],["A","Let me check. Hmm, the weekend section is full right now. [[2|But I can put you on the waiting list. You'd be number three.]]"],["B","Number three? Is that likely to open up?"],["A","Usually a few people drop out in the first two weeks, so yes, it's quite likely. [[3|In the meantime, you could take the online version for the first two weeks.]]"],["B","Online? I'm not great at studying on my own."],["A","[[4|It's not completely on your own. There's a live video session with the instructor every Saturday.]]"],["B","Oh, that's better. Okay, let's do that."],["A","Great. [[5|I'll email you the login details tomorrow, and I'll call you if a weekend spot opens.]]"]],
+   qs:[{n:1,q:"Why does Hana want to change courses?",o:["Her work schedule changed.","The evening course is too difficult.","She is moving.","She prefers online classes."],why:"'My new job has me working late on Tuesdays and Thursdays' = su horario de trabajo cambió."},
+    {n:2,q:"What does the advisor offer?",o:["To add her name to a waiting list.","To open a new weekend section.","To give her a refund.","To change her job schedule."],why:"'I can put you on the waiting list'."},
+    {n:3,q:"What does the advisor suggest Hana do for now?",o:["Study online temporarily.","Stay in the evening course.","Wait until next term.","Hire a tutor."],why:"'In the meantime, you could take the online version for the first two weeks' = online temporalmente."},
+    {n:4,q:"Why does Hana feel better about the online option?",o:["She can talk to the instructor live.","It is cheaper.","It is shorter.","Her friend is taking it."],why:"'There's a live video session with the instructor every Saturday'."},
+    {n:5,q:"What will the advisor do tomorrow?",o:["Send Hana information to access the course.","Call Hana's employer.","Move Hana to the weekend class.","Cancel Hana's registration."],why:"'I'll email you the login details tomorrow'. La llamada es solo si se abre un cupo."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que Hana quiere cambiar de curso, pero se pierde en la solución temporal.",miss:[[3,1,"No escuchó 'in the meantime' y pensó que debía quedarse en la noche."],[5,2,"Escuchó 'weekend spot' y supuso que ya la movían."]],x:"🔁 'In the meantime' = mientras tanto. Lo que viene después es una solución temporal."},
+   c78:{s:"4/5",d:"Sigue la conversación, pero confunde lo seguro con lo condicional.",miss:[[5,2,"'I'll call you IF a spot opens' es condicional, no un hecho."]],x:"🎯 Distingue 'I'll…' (seguro) de 'I'll… if…' (depende)."},
+   c1012:{s:"5/5",d:"Distingue acciones seguras de condicionales y anota la razón de cada cambio.",g:["Razón: trabajo martes y jueves.","Waitlist #3 + online temporal.","Live session = motivo de aceptar.","Mañana: email · llamada solo si hay cupo."]}}},
+ {intro:"Listen to a conversation between two friends planning a weekend.",scene:["⛺","Two friends plan a camping trip","Rafael and Chloe"],sp:{A:["Chloe","f"],B:["Rafael","m"]},
+  secs:[{lines:[["A","Rafa, are you still up for camping at Lake Louise this weekend?"],["B","Well, [[1|I checked the forecast, and it's supposed to rain all day Saturday.]]"],["A","Oh no. We already paid for the campsite."],["B","[[2|I know. I called the park, and they said we can move our booking to next weekend for free.]]"],["A","Next weekend? I promised to help my brother move on Saturday."],["B","What about Sunday to Monday? Monday's a holiday."],["A","[[3|That works! I can help my brother all day Saturday, and we leave Sunday at noon.]]"],["B","Great. [[4|And this time, let's bring the bigger tent. The small one was so uncomfortable last time.]]"],["A","Agreed. My back still hurts thinking about it. [[5|I'll borrow my cousin's tent. He has a really good one.]]"]],
+   qs:[{n:1,q:"What problem does Rafael mention?",o:["The weather will be bad.","The campsite is full.","His car isn't working.","The lake is closed."],why:"'It's supposed to rain all day Saturday'."},
+    {n:2,q:"What did the park tell Rafael?",o:["They can change the date at no cost.","They will get a refund.","They must pay an extra fee.","They can only come on Saturday."],why:"'Move our booking to next weekend for free' = cambiar la fecha sin costo."},
+    {n:3,q:"Why does Chloe agree to leave on Sunday?",o:["She can still help her brother on Saturday.","She doesn't work on Sunday.","Her brother is coming with them.","It's cheaper on Sunday."],why:"Ayuda a su hermano el sábado y salen el domingo al mediodía."},
+    {n:4,q:"What does Rafael suggest about the tent?",o:["They should take a larger one.","They should buy a new one.","They should sleep in the car.","They should rent one at the park."],why:"'Let's bring the bigger tent'."},
+    {n:5,q:"What will Chloe do?",o:["Ask a relative for his tent.","Buy a tent.","Call the park.","Help Rafael pack."],why:"'I'll borrow my cousin's tent' = pedir prestada la carpa a un familiar."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que el plan cambia, pero se pierde con días y personas.",miss:[[2,1,"Escuchó 'for free' y pensó en reembolso; lo gratis es cambiar la fecha."],[3,2,"Escuchó 'brother' y supuso que iría con ellos."]],x:"🔁 Haz una línea de tiempo: sábado ✘ lluvia → próximo finde: sáb mudanza, dom–lun camping."},
+   c78:{s:"4/5",d:"Sigue el cambio de fechas, pero se equivoca en la razón.",miss:[[3,1,"Pensó en el trabajo, pero la razón es ayudar a su hermano."]],x:"🎯 Para preguntas 'why', anota la razón al lado de cada decisión."},
+   c1012:{s:"5/5",d:"Lleva una línea de tiempo con razones y responsables.",g:["Lluvia → cambio gratis.","Sábado = hermano → domingo al mediodía.","Carpa grande · primo = relative.","Tareas claras."]}}}
+ ]});
+
+/* ===== PART 3 ===== */
+TASKS.push({name:"Listening for Information",short:"Part 3",mode:"heard",
+ instr:"You will hear a conversation. Then you will hear 6 questions. Choose the best answer to each question. You will hear the conversation only once.",
+ guide:{what:"Vas a escuchar una conversación en la que <strong>una persona le da información a otra</strong>: una coordinadora explica cómo funciona un voluntariado, un arrendador explica las reglas, alguien de la ciudad explica un programa nuevo. Hay muchos <strong>datos concretos</strong>: horarios, precios, reglas, pasos. Después <strong>escuchas</strong> 6 preguntas.",
+  facts:[["6","preguntas"],["≈2,5 min","de audio"],["30 s","por pregunta"]],
+  callout:"<strong>💡 La clave: es la parte más 'de datos'.</strong> Aquí ganas puntos anotando números, días, lugares y reglas. Pero cuidado: las opciones incorrectas usan los otros números que también escuchaste. Anota cada número con su significado.",
+  doo:["Anota cada número, día y hora con una palabra que diga a qué corresponde.","Escucha las reglas: must, have to, don't need to, not allowed.","Escucha las excepciones: except, unless, only if.","Fíjate en los pasos: first, then, after that, finally.","Anota lo que la persona que pregunta decide hacer."],
+  dont:["Anotar números sueltos sin contexto.","Confundir 'don't have to' (no es necesario) con 'mustn't' (está prohibido).","Elegir el primer número que escuchaste.","Distraerte con detalles de conversación social al principio."],
+  errors:[["Anotar '9' y '30' sin contexto","Anotar '9 = start · 30 = minutes break'","Las opciones incorrectas reciclan los otros números del audio."],["Confundir obligación y opción","Separar must (obligatorio) de can/don't need (opcional)","Muchas preguntas preguntan qué es obligatorio."],["Perder el orden de los pasos","Numerar los pasos en tus notas: 1, 2, 3","Las preguntas de 'What should she do first?' dependen del orden."]],
+  flow:[["Intro","1. Contexto","¿Quién informa a quién?"],["Audio","2. Datos","Número = significado"],["Audio","3. Reglas","must / don't need / unless"],["Preguntas","4. 30 s c/u","Descarta los otros números"]],
+  phrases:["You'll need to… (obligación)","You don't have to… (opcional)","The only exception is… (excepción)","First… then… (pasos)","Keep in mind… (aviso)","That's included (incluido)"],
+  tips:["<em>You don't have to</em> = no es necesario. <em>You mustn't</em> / <em>You're not allowed to</em> = está prohibido. Es una de las trampas favoritas.","Cuando escuches dos números seguidos (<em>It used to be 20, but now it's 25</em>), la respuesta casi siempre es el nuevo.","<em>Keep in mind</em> y <em>Just so you know</em> anuncian información que muchas veces se pregunta.","Si la persona que pregunta repite algo para confirmar (<em>So, Tuesdays at 6?</em>), escucha si el otro dice <em>exactly</em> o <em>actually, no…</em>."]},
+ check:[["Mientras escuchaba",["Anoté cada número con su significado","Separé reglas obligatorias de opcionales","Anoté los pasos en orden"]],
+  ["Al responder",["Descarté opciones con números que eran de otra cosa","Busqué la paráfrasis de la regla"]],["Tiempo",CHK_TIME]],
+ sets:[
+ {intro:"Listen to a conversation between a new volunteer and a coordinator at a food bank.",scene:["🥫","Volunteer orientation at a food bank","Rita (coordinator) and Joseph (new volunteer)"],sp:{A:["Rita","f"],B:["Joseph","m"]},
+  secs:[{lines:[["A","Welcome, Joseph! Thanks for signing up. Let me tell you how things work here."],["B","Great, thanks."],["A","[[1|Shifts are three hours long. Most volunteers come once a week, but the minimum is twice a month.]]"],["B","Okay. I'm free Saturday mornings."],["A","Perfect, that's our busiest time. [[2|On your first day, please come fifteen minutes early so I can show you the safety video.]]"],["B","Do I need to bring anything?"],["A","[[3|Closed-toe shoes are a must, because we move heavy boxes. Gloves and aprons are provided.]]"],["B","Got it. What will I be doing?"],["A","[[4|Most new volunteers start by sorting donations. After a month, you can move to packing hampers or helping at the front desk.]]"],["B","And if I can't make a shift?"],["A","[[5|Just let us know at least forty-eight hours in advance through the volunteer app. Please don't email; we don't check it on weekends.]]"],["B","Makes sense. Oh, and can I get a reference letter later? I'm applying to nursing school."],["A","[[6|Sure. After twenty hours of volunteering, you can ask me for one.]]"]],
+   qs:[{n:1,q:"How often must volunteers come at minimum?",o:["Twice a month.","Once a week.","Every Saturday.","Three times a month."],why:"'The minimum is twice a month'. Una vez por semana es lo que hacen la mayoría, no el mínimo."},
+    {n:2,q:"Why should Joseph arrive early on his first day?",o:["To watch a safety video.","To get his gloves.","To meet the other volunteers.","To fill out a form."],why:"'Come fifteen minutes early so I can show you the safety video'."},
+    {n:3,q:"What does Joseph have to bring?",o:["Proper shoes.","Gloves.","An apron.","His own boxes."],why:"'Closed-toe shoes are a must'. Guantes y delantal 'are provided' (los dan)."},
+    {n:4,q:"What will Joseph do at first?",o:["Organize donated items.","Work at the front desk.","Pack hampers.","Drive deliveries."],why:"'Start by sorting donations' = organizar donaciones. Las otras tareas son después de un mes."},
+    {n:5,q:"How should Joseph cancel a shift?",o:["Use the app two days ahead.","Send an email.","Call Rita on the weekend.","Tell another volunteer."],why:"'At least forty-eight hours in advance through the volunteer app' = 2 días antes, por la app."},
+    {n:6,q:"When can Joseph ask for a reference letter?",o:["After completing twenty hours.","After one month.","On his first day.","After applying to nursing school."],why:"'After twenty hours of volunteering'."}]}],
+  levels:{c45:{s:"3/6",d:"Reconoce palabras y números, pero no los conecta con su significado.",miss:[[1,1,"Eligió 'once a week', que es lo habitual, no el mínimo."],[3,1,"Escuchó 'gloves' y no 'are provided'."],[4,1,"Escuchó 'front desk' y no notó 'after a month'."]],x:"🔁 Anota palabras de condición junto a los datos: minimum, provided, after a month."},
+   c78:{s:"5/6",d:"Anota bien los datos, pero cae en la trampa de 'lo habitual vs. lo mínimo'.",miss:[[1,1,"Confundió lo que hacen 'most volunteers' con el requisito mínimo."]],x:"🎯 Cuando escuches 'most…, but the minimum is…', la pregunta suele ir por la segunda parte."},
+   c1012:{s:"6/6",d:"Anota cada dato con su etiqueta y separa lo obligatorio de lo provisto.",g:["min 2/mo · most 1/wk.","Shoes = must · gloves/apron = provided.","Sorting → after 1 month: hampers/desk.","48h app (no email) · 20h → letter."]}}},
+ {intro:"Listen to a conversation between a library visitor and a librarian.",scene:["📚","At the public library desk","Mei asks about a library card"],sp:{A:["Librarian","m"],B:["Mei","f"]},
+  secs:[{lines:[["B","Hi, I just moved to Surrey and I'd like to get a library card."],["A","Welcome! [[1|You'll need a photo ID and something with your new address, like a bill or a lease.]]"],["B","I have my lease on my phone. Is that okay?"],["A","[[2|Yes, a digital copy is fine.]] The card is free for residents."],["B","Great. How many books can I take out?"],["A","[[3|Up to fifty items at a time. Books are three weeks, but DVDs are only one week.]]"],["B","And if I'm late?"],["A","[[4|Actually, we stopped charging late fees last year. But if something is lost, you pay to replace it.]]"],["B","That's good to know. Do you have anything for kids? My son is six."],["A","[[5|Story time is every Wednesday at ten-thirty, and on Saturdays we have a Lego club for ages six to twelve.]]"],["B","He'd love the Lego club. Does he need to register?"],["A","[[6|Yes, space is limited, so register online on our website. It opens every Monday for that week's club.]]"]],
+   qs:[{n:1,q:"What does Mei need to get a card?",o:["Identification and proof of address.","Only a photo ID.","A letter from her landlord.","A fee of ten dollars."],why:"'A photo ID and something with your new address' = identificación y prueba de dirección."},
+    {n:2,q:"What does the librarian say about Mei's lease?",o:["Showing it on her phone is acceptable.","She must print it.","It is not valid.","She must bring the original."],why:"'A digital copy is fine'."},
+    {n:3,q:"How long can Mei keep a DVD?",o:["One week.","Three weeks.","Two weeks.","Fifty days."],why:"'DVDs are only one week'. Tres semanas es para libros."},
+    {n:4,q:"What happens if Mei returns items late?",o:["She doesn't have to pay.","She pays a small fee.","She loses her card.","She can't borrow for a week."],why:"'We stopped charging late fees' = no paga."},
+    {n:5,q:"When is the Lego club?",o:["On Saturdays.","On Wednesdays.","On Mondays.","Every day at ten-thirty."],why:"'On Saturdays we have a Lego club'. El miércoles es story time."},
+    {n:6,q:"How can Mei register her son?",o:["Online.","At the front desk.","By phone.","On Saturday morning."],why:"'Register online on our website'."}]}],
+  levels:{c45:{s:"3/6",d:"Escucha muchos datos, pero los mezcla entre libros, DVDs y actividades.",miss:[[3,1,"Escuchó 'three weeks' primero y no esperó a 'DVDs'."],[4,1,"Esperaba una multa y no escuchó 'stopped charging'."],[5,1,"Mezcló story time (miércoles) con Lego (sábado)."]],x:"🔁 Haz una mini-tabla en tus notas: cosa → dato."},
+   c78:{s:"5/6",d:"Organiza bien los datos, pero se le escapa un cambio de regla.",miss:[[4,1,"No notó 'stopped' (ya no cobran)."]],x:"🎯 Palabras como stopped, used to, no longer anuncian que una regla cambió."},
+   c1012:{s:"6/6",d:"Arma una tabla rápida y escucha los cambios de regla.",g:["Card: ID + address (digital OK).","Books 3 wk · DVD 1 wk · no late fees.","Wed 10:30 story · Sat Lego 6–12.","Register online, Mondays."]}}},
+ {intro:"Listen to a conversation between a new tenant and a landlord.",scene:["🔑","Moving into a rental house","Luis and his landlord, Mrs. Carter"],sp:{A:["Mrs. Carter","f"],B:["Luis","m"]},
+  secs:[{lines:[["A","So, Luis, here are your keys. Let me go over a few things before you move in."],["B","Sure, go ahead."],["A","[[1|Rent is due on the first of each month. The easiest way is an e-transfer to my email.]]"],["B","Okay. What about utilities?"],["A","[[2|Water is included in the rent, but you'll need to set up hydro and internet in your own name.]]"],["B","Got it. Is there parking?"],["A","[[3|You can use the driveway, but please don't park on the street on Tuesdays. That's street-cleaning day, and you'll get a ticket.]]"],["B","Good to know. And garbage day?"],["A","[[4|Garbage is every Thursday. Recycling is every other Thursday. There's a calendar on the fridge.]]"],["B","What if something breaks?"],["A","[[5|Text me first. For small things, like a light bulb, you can fix them yourself. For anything bigger, I'll send my handyman.]]"],["B","And painting? I'd love to paint the bedroom."],["A","[[6|That's fine, as long as you ask me about the colour first.]]"]],
+   qs:[{n:1,q:"How should Luis pay his rent?",o:["By electronic transfer.","By cheque.","In cash.","At the bank."],why:"'An e-transfer to my email' = transferencia electrónica."},
+    {n:2,q:"Which bill is included in the rent?",o:["Water.","Hydro.","Internet.","Parking."],why:"'Water is included in the rent'. Hydro e internet van a nombre de Luis."},
+    {n:3,q:"What does Mrs. Carter say about parking?",o:["He shouldn't park on the street on one day.","He must park on the street.","Parking costs extra.","He can only use the driveway on Tuesdays."],why:"'Don't park on the street on Tuesdays'."},
+    {n:4,q:"How often is recycling collected?",o:["Every two weeks.","Every Thursday.","Every Tuesday.","Once a month."],why:"'Recycling is every other Thursday' = cada dos semanas."},
+    {n:5,q:"What should Luis do first if something breaks?",o:["Send Mrs. Carter a message.","Call a handyman.","Fix it himself.","Check the calendar."],why:"'Text me first'."},
+    {n:6,q:"What condition does Mrs. Carter give for painting?",o:["He must check the colour with her.","He must pay for it.","He must hire a painter.","He must paint before moving in."],why:"'As long as you ask me about the colour first'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende las reglas generales, pero no las excepciones ni las frecuencias.",miss:[[2,1,"Escuchó 'hydro' en la misma frase y no notó 'in your own name'."],[4,1,"Escuchó 'Thursday' dos veces y no 'every other'."],[5,2,"Escuchó 'fix them yourself' y no 'Text me first'."]],x:"🔁 'Every other' = cada dos. Es una de las expresiones más preguntadas."},
+   c78:{s:"5/6",d:"Organiza bien las reglas, pero se pierde en el orden de los pasos.",miss:[[5,2,"Arreglarlo solo es posible, pero el primer paso es escribirle."]],x:"🎯 Cuando la pregunta dice 'first', busca el primer paso: 'first', 'before anything'."},
+   c1012:{s:"6/6",d:"Anota reglas con condición y frecuencia exacta.",g:["Rent 1st · e-transfer.","Water ✔ incl · hydro/internet ✘.","No street parking Tue · recycling = every other Thu.","Text first · paint if colour OK."]}}},
+ {intro:"Listen to a conversation between a resident and a city information officer.",scene:["♻️","Calling the city about a new compost program","Fatima speaks to a city officer"],sp:{A:["Officer","m"],B:["Fatima","f"]},
+  secs:[{lines:[["A","City of Kitchener, information line. How can I help?"],["B","Hi, I got a flyer about a new compost program, but I'm a bit confused."],["A","No problem. [[1|Starting in April, every house will get a green bin for food scraps, free of charge.]]"],["B","Free? Great. What can I put in it?"],["A","[[2|Fruit, vegetables, meat, bones, coffee grounds, even paper towels. But no plastic bags, even the ones that say 'compostable'.]]"],["B","Really? Not even those?"],["A","[[2|They don't break down fast enough at our facility. Use paper bags or newspaper instead.]]"],["B","Okay. And when is it collected?"],["A","[[3|Every week, on the same day as your garbage. Garbage will change to every two weeks.]]"],["B","Every two weeks for garbage? That's a big change."],["A","[[4|That's the goal: to send less to the landfill. Since food is about a third of household waste, it shouldn't smell as much.]]"],["B","I live in an apartment, though. Do I get a bin?"],["A","[[5|Not yet. Apartments will join in the fall. Your building manager will get information in August.]]"],["B","Okay, thanks. Can I get a small kitchen container too?"],["A","[[6|Yes, you can pick one up at any community centre, starting in March.]]"]],
+   qs:[{n:1,q:"What will houses receive in April?",o:["A free container for food waste.","A new garbage bin.","A paper bag kit.","A recycling calendar."],why:"'A green bin for food scraps, free of charge'."},
+    {n:2,q:"What does the officer say about plastic bags?",o:["They aren't allowed in the bin.","Compostable ones are fine.","They should be used for meat.","They are free at community centres."],why:"'No plastic bags, even the ones that say compostable'."},
+    {n:3,q:"How often will garbage be collected?",o:["Every two weeks.","Every week.","Once a month.","Twice a week."],why:"'Garbage will change to every two weeks'. El compost es cada semana."},
+    {n:4,q:"What is the main purpose of the program?",o:["To reduce waste going to the landfill.","To save the city money.","To stop bad smells.","To create jobs."],why:"'That's the goal: to send less to the landfill'."},
+    {n:5,q:"What does the officer say about apartments?",o:["They will join the program later.","They are not included at all.","They get bins in April.","They must buy their own bins."],why:"'Apartments will join in the fall' = más adelante."},
+    {n:6,q:"Where can Fatima get a kitchen container?",o:["At a community centre.","From her building manager.","At city hall.","Online."],why:"'Pick one up at any community centre'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende que hay un programa de compost, pero confunde frecuencias y excepciones.",miss:[[2,1,"Escuchó 'compostable' y supuso que sí se permitían."],[3,1,"Mezcló compost (semanal) con basura (cada dos semanas)."],[5,1,"Escuchó 'not yet' y pensó que nunca."]],x:"🔁 'Not yet' = todavía no, pero sí en el futuro."},
+   c78:{s:"5/6",d:"Sigue el programa, pero cae en una trampa de 'even'.",miss:[[2,1,"No escuchó 'even the ones that say…' y eligió la opción permitida."]],x:"🎯 'Even' introduce una excepción sorprendente. Anótala con ✘."},
+   c1012:{s:"6/6",d:"Anota qué se permite y qué no, y distingue las dos frecuencias.",g:["Green bin free · April.","✔ food/paper towels · ✘ any plastic bag.","Compost weekly · garbage every 2 weeks.","Apartments fall · container at community centre."]}}},
+ {intro:"Listen to a conversation between a new employee and a human resources officer.",scene:["🗂️","First day at a new job","Aiden from HR meets new employee Sofia"],sp:{A:["Aiden","m"],B:["Sofia","f"]},
+  secs:[{lines:[["A","Welcome to Northwind Logistics, Sofia. I'll walk you through your benefits."],["B","Thanks, Aiden."],["A","[[1|Your health and dental coverage starts after three months, once your probation period is finished.]]"],["B","Three months. Okay."],["A","[[2|You get fifteen vacation days a year. In your first year, you can't take more than five in a row, though.]]"],["B","That's fine. I don't have any big trips planned."],["A","[[3|We also offer two personal days for things like appointments. Those don't carry over to the next year.]]"],["B","Good to know. What about working from home?"],["A","[[4|After probation, you can work from home on Fridays, but only if your manager approves it.]]"],["B","And the parking here?"],["A","[[5|Parking is fifty dollars a month, taken from your paycheque. But if you bike to work, we give you a free locker and shower access.]]"],["B","I actually bike most days in summer."],["A","Perfect. [[6|Before Friday, please send me your banking information so we can set up direct deposit.]]"]],
+   qs:[{n:1,q:"When does Sofia's health coverage begin?",o:["After her first three months.","On her first day.","After one year.","After her first vacation."],why:"'Starts after three months, once your probation period is finished'."},
+    {n:2,q:"What rule applies to vacations in the first year?",o:["She can't take more than five days at once.","She can only take five days in total.","She must take them in summer.","She can't take any."],why:"'You can't take more than five in a row' = no más de 5 seguidos. Tiene 15 en total."},
+    {n:3,q:"What does Aiden say about personal days?",o:["Unused days are lost at the end of the year.","She gets five of them.","She can use them for vacation.","They start after probation."],why:"'Those don't carry over to the next year' = si no se usan, se pierden."},
+    {n:4,q:"What is needed to work from home?",o:["Permission from her manager.","A doctor's note.","At least one year of work.","Her own computer."],why:"'Only if your manager approves it'."},
+    {n:5,q:"What benefit is there for cycling to work?",o:["A free locker and shower.","Free parking.","Fifty dollars a month.","An extra vacation day."],why:"'If you bike to work, we give you a free locker and shower access'."},
+    {n:6,q:"What does Sofia need to do before Friday?",o:["Send her bank details.","Choose a parking spot.","Meet her manager.","Sign a vacation request."],why:"'Send me your banking information'."}]}],
+  levels:{c45:{s:"3/6",d:"Reconoce números, pero no entiende las condiciones que los acompañan.",miss:[[2,1,"Escuchó 'five' y lo tomó como total, no 'in a row'."],[3,1,"No entendió 'carry over'."],[5,2,"Escuchó 'fifty dollars' y lo eligió."]],x:"🔁 Aprende estas expresiones de trabajo: in a row, carry over, probation, direct deposit."},
+   c78:{s:"5/6",d:"Organiza bien los beneficios, pero falla con un phrasal verb.",miss:[[3,1,"Sin conocer 'carry over', adivinó."]],x:"🎯 Los phrasal verbs de trabajo aparecen mucho: carry over, sign up, fill out, set up."},
+   c1012:{s:"6/6",d:"Anota cada beneficio con su condición y conoce el vocabulario laboral.",g:["Health 3 mo (probation).","15 days · max 5 in a row (1st yr).","2 personal · don't carry over.","WFH Fri if manager OK · bike = locker/shower · bank info by Fri."]}}}
+ ]});
+
+/* ===== PART 4 ===== */
+TASKS.push({name:"Listening to a News Item",short:"Part 4",mode:"screen",time:180,
+ instr:"Listen to a news item. Then answer 5 questions. The questions appear on the screen after the news item. Choose the best answer from the drop-down menu. You will hear the news item only once.",
+ guide:{what:"Vas a escuchar <strong>una noticia local</strong> leída por un reportero: un proyecto nuevo en la ciudad, un cambio en el transporte, un evento. Desde aquí cambia el formato: <strong>las preguntas ya no se escuchan</strong>. Aparecen <strong>escritas en pantalla</strong> después del audio, todas juntas, con un menú desplegable y un solo tiempo para responderlas en el orden que quieras.",
+  facts:[["5","preguntas"],["≈1,5 min","de noticia"],["≈3 min","para responder"]],
+  callout:"<strong>💡 La clave: las noticias siguen una estructura fija.</strong> Primero QUÉ pasó, luego QUIÉN y DÓNDE, después POR QUÉ, alguna OPINIÓN o cita, y al final QUÉ VIENE. Si tus notas siguen ese orden, cada pregunta tiene su lugar.",
+  doo:["Escucha la primera frase con toda tu atención: es el resumen de la noticia.","Organiza tus notas en: Qué · Quién/Dónde · Por qué · Opiniones · Próximo paso.","Anota nombres de personas con su rol (alcaldesa, vecino, experto).","Anota números con su significado (fecha, costo, cantidad).","Responde primero las preguntas que tienes claras y luego vuelve a las difíciles."],
+  dont:["Perder la primera frase por estar acomodándote.","Anotar nombres sin el rol de cada persona.","Confundir la opinión de un vecino con la posición oficial.","Quedarte sin tiempo en una sola pregunta."],
+  errors:[["Escuchar la noticia como fondo","Escucharla con las 5 W en mente","Qué, quién, dónde, por qué y qué sigue: casi todas las preguntas salen de ahí."],["Mezclar las opiniones de las personas citadas","Anotar persona + rol + opinión","Las noticias citan a 2 o 3 personas con posturas distintas."],["Olvidar el final","Anotar el próximo paso","La última frase suele decir qué pasará después: es una pregunta frecuente."]],
+  flow:[["Inicio","1. Qué pasó","La primera frase"],["Medio","2. Quién y por qué","Personas y razones"],["Final","3. Qué sigue","Fechas y próximos pasos"],["3 min","4. Responde","Lo fácil primero"]],
+  phrases:["According to… (fuente)","Officials say… (posición oficial)","However, some residents… (opinión contraria)","The project is expected to… (futuro)","This comes after… (antecedente)","The decision will be made… (próximo paso)"],
+  tips:["La primera frase de una noticia responde casi siempre la pregunta de idea principal (<em>What is the news item mainly about?</em>).","<em>However</em> y <em>But critics say</em> anuncian la otra cara: muchas preguntas preguntan por la preocupación de un grupo.","Como ahora las preguntas están escritas, léelas todas antes de empezar a responder: a veces una pregunta te ayuda a recordar la respuesta de otra.","Usa todo el tiempo: si terminas antes, revisa las preguntas donde dudaste."]},
+ check:[["Mientras escuchaba",["Puse toda mi atención en la primera frase","Anoté personas con su rol","Anoté el próximo paso al final"]],
+  ["Al responder",["Leí las 5 preguntas antes de responder","Respondí primero las fáciles y volví a las difíciles"]],["Tiempo",["Respondí todas las preguntas (no dejé ninguna en blanco)","Terminé antes de que se acabara el tiempo"]]],
+ sets:[
+ {intro:"Listen to a news item.",scene:["📰","Local news: community gardens","CityNews Edmonton"],sp:{R:["Reporter","f"]},
+  secs:[{lines:[["R","[[1|The City of Edmonton announced today that it will double the number of community gardens over the next three years.]]"],["R","There are currently twenty-four gardens across the city, and most have long waiting lists."],["R","[[2|City councillor Maria Ostrowski says the main reason for the expansion is the rising cost of food. Many families want to grow their own vegetables to save money, she said.]]"],["R","The new gardens will be built on empty city land, including parts of parks and school yards."],["R","[[3|However, some residents near Westwood Park are concerned. They worry the gardens will reduce space for children's sports.]]"],["R","The city says each location will be reviewed separately. [[4|The first eight gardens will open next spring, and each plot will cost twenty-five dollars a season, the same as now.]]"],["R","[[5|Residents can share their opinion at a public meeting at city hall on May twelfth, or by filling out an online survey.]]"]],
+   qs:[{n:1,q:"What is the news item mainly about?",o:["A plan to increase the number of community gardens","A new farmers' market in Edmonton","The rising price of vegetables","Changes to children's sports programs"],why:"La primera frase: la ciudad duplicará los huertos comunitarios. El precio de la comida es la razón, no el tema."},
+    {n:2,q:"According to the councillor, why is the city making this change?",o:["Food is becoming more expensive.","The gardens are too old.","Parks are not being used.","Schools asked for more gardens."],why:"'The main reason… is the rising cost of food'."},
+    {n:3,q:"What concern do some residents have?",o:["There will be less room for sports.","The plots will cost more.","The gardens will attract animals.","Food will be stolen."],why:"'Reduce space for children's sports' = menos espacio para deportes."},
+    {n:4,q:"What will happen to the price of a plot?",o:["It will stay the same.","It will double.","It will be free.","It will increase slightly."],why:"'Twenty-five dollars a season, the same as now'."},
+    {n:5,q:"How can residents give their opinion?",o:["At a meeting or through a survey","Only by calling the councillor","By visiting Westwood Park","By writing to the newspaper"],why:"'A public meeting at city hall… or by filling out an online survey'."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende el tema, pero confunde la razón con la idea principal.",miss:[[1,2,"La subida de precios es la razón; la noticia trata sobre los huertos."],[4,1,"Escuchó 'double' al principio y lo aplicó al precio."]],x:"🔁 Idea principal = la primera frase. La razón viene después."},
+   c78:{s:"4/5",d:"Sigue bien la noticia, pero no escucha el detalle del precio.",miss:[[4,3,"Esperaba una subida y no escuchó 'the same as now'."]],x:"🎯 No respondas con lo que esperarías: responde con lo que dijeron."},
+   c1012:{s:"5/5",d:"Organiza la noticia en 5 W y anota cada número con su significado.",g:["Qué: 24 → 48 gardens / 3 años.","Por qué: food cost.","Preocupación: sports space.","$25 same · May 12 meeting or survey."]}}},
+ {intro:"Listen to a news item.",scene:["🚍","Local news: transit changes","Halifax Today"],sp:{R:["Reporter","m"]},
+  secs:[{lines:[["R","[[1|Halifax Transit will launch a new express bus route between the downtown ferry terminal and the airport starting September first.]]"],["R","Currently, travellers without a car must take two buses, and the trip can take more than an hour and a half."],["R","[[2|The new route, called the Airport Express, will make the trip in about forty-five minutes, with only three stops.]]"],["R","[[3|Buses will run every thirty minutes from five a.m. until midnight.]]"],["R","[[4|Transit director Paul Leblanc said the route was created mainly for airport workers, many of whom start very early in the morning.]] Tourists will also benefit, he added."],["R","The fare will be the same as a regular bus ticket."],["R","[[5|However, the city also announced that Route 32, which many students use, will be cancelled to pay for the new service.]] Student groups say they will protest at the next council meeting."]],
+   qs:[{n:1,q:"What is the news item mainly about?",o:["A new bus connecting downtown and the airport","Higher bus fares","A new ferry terminal","Student protests about tuition"],why:"La primera frase anuncia la nueva ruta exprés al aeropuerto."},
+    {n:2,q:"How long will the new trip take?",o:["About 45 minutes","More than an hour and a half","Thirty minutes","About an hour"],why:"'In about forty-five minutes'. Hora y media es el viaje actual; 30 minutos es la frecuencia."},
+    {n:3,q:"How often will the buses run?",o:["Every half hour","Every hour","Every forty-five minutes","Only in the morning"],why:"'Every thirty minutes' = cada media hora."},
+    {n:4,q:"Who is the route mainly for?",o:["People who work at the airport","Tourists","Students","Ferry passengers"],why:"'Created mainly for airport workers'. Los turistas 'también' se benefician."},
+    {n:5,q:"Why are student groups unhappy?",o:["A route they use will end.","The new bus is too expensive.","The new bus doesn't stop at their school.","Fares will increase for students."],why:"'Route 32, which many students use, will be cancelled'."}]}],
+  levels:{c45:{s:"3/5",d:"Reconoce los números, pero no sabe a qué corresponde cada uno.",miss:[[2,1,"Eligió el tiempo actual (hora y media), no el nuevo."],[4,1,"Escuchó 'tourists' y no 'mainly for airport workers'."]],x:"🔁 Tres números de tiempo en una noticia = anota cada uno con etiqueta: now / new / frequency."},
+   c78:{s:"4/5",d:"Organiza bien los tiempos, pero no distingue 'mainly' de 'also'.",miss:[[4,1,"Los turistas son beneficiarios secundarios ('also')."]],x:"🎯 'Mainly' = principal; 'also' = secundario. Las preguntas preguntan por el principal."},
+   c1012:{s:"5/5",d:"Etiqueta cada número y separa al beneficiario principal del secundario.",g:["now 90+ min · new 45 min · every 30 min.","Mainly workers · also tourists.","Same fare.","Route 32 cancelled → students protest."]}}},
+ {intro:"Listen to a news item.",scene:["🌡️","Local news: heat warning","Ottawa Evening News"],sp:{R:["Reporter","f"]},
+  secs:[{lines:[["R","[[1|Environment Canada has issued a heat warning for Ottawa, with temperatures expected to reach thirty-six degrees by Thursday.]]"],["R","With humidity, it could feel closer to forty-two."],["R","[[2|In response, the city is opening six cooling centres in community centres and libraries. They will stay open until nine p.m., three hours later than usual.]]"],["R","[[3|Public health officials are asking residents to check on elderly neighbours and people who live alone, since they are most at risk.]]"],["R","Pets should not be left in cars, even for a few minutes."],["R","[[4|The city has also cancelled outdoor sports leagues for children on Thursday and Friday.]] Some parents have complained, saying games could simply move to the evening."],["R","[[5|Officials say the heat should break by Saturday, when a cold front is expected to bring thunderstorms.]]"]],
+   qs:[{n:1,q:"What is the main topic of the news item?",o:["A warning about very hot weather","A thunderstorm warning","New community centres","Pet safety rules"],why:"Primera frase: aviso de calor."},
+    {n:2,q:"What has changed about the cooling centres?",o:["They will close later than normal.","They will open earlier.","They are moving to schools.","They now charge a fee."],why:"'Until nine p.m., three hours later than usual'."},
+    {n:3,q:"What are residents asked to do?",o:["Check on vulnerable people nearby.","Stay inside all day.","Bring pets to cooling centres.","Avoid driving."],why:"'Check on elderly neighbours and people who live alone' = personas vulnerables."},
+    {n:4,q:"What have some parents complained about?",o:["The cancellation of children's sports.","The cooling centre hours.","The cost of air conditioning.","The lack of information."],why:"La cancelación de las ligas; dicen que podrían jugar en la tarde."},
+    {n:5,q:"What is expected on Saturday?",o:["Cooler weather with storms","Even hotter temperatures","A second heat warning","The reopening of sports leagues"],why:"'The heat should break by Saturday… thunderstorms'."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que hace calor, pero no sigue los detalles de cambios y quejas.",miss:[[2,1,"Escuchó 'later' pero no sabía si era cierre o apertura."],[5,1,"No conocía 'the heat should break'."]],x:"🔁 'Break' con el clima = terminar (the heat breaks, the rain breaks)."},
+   c78:{s:"4/5",d:"Sigue la noticia, pero se le escapa una expresión idiomática.",miss:[[5,1,"No entendió 'the heat should break'."]],x:"🎯 Expresiones de clima en noticias: heat breaks, cold snap, feels like, cold front."},
+   c1012:{s:"5/5",d:"Usa la estructura de noticia y reconoce las expresiones de clima.",g:["36° (feels 42) · Thursday.","6 centres until 9 p.m. (+3h).","Check elderly/alone · no pets in cars.","Sports cancelled → parents · Sat cold front."]}}},
+ {intro:"Listen to a news item.",scene:["⛴️","Local news: ferry service","Island Radio, Victoria"],sp:{R:["Reporter","m"]},
+  secs:[{lines:[["R","[[1|BC Ferries says the route between Swartz Bay and Salt Spring Island will run on a reduced schedule for six weeks starting Monday.]]"],["R","[[2|The main vessel on the route needs urgent engine repairs, and a smaller ship will replace it.]]"],["R","The smaller ship can carry only forty cars instead of eighty."],["R","[[3|Islanders who travel for medical appointments will have priority boarding, as long as they show a letter from their doctor.]]"],["R","Salt Spring business owner Janet Wu says the timing is terrible. [[4|Summer is when we make most of our money, she said. Fewer tourists means fewer customers.]]"],["R","[[5|BC Ferries recommends that walk-on passengers use the service whenever possible, and that drivers reserve their spot online at least a day in advance.]]"]],
+   qs:[{n:1,q:"What is the news item mainly about?",o:["A temporary reduction in ferry service","A new ferry route","Higher ferry prices","A strike by ferry workers"],why:"'Reduced schedule for six weeks' = reducción temporal."},
+    {n:2,q:"Why is the service changing?",o:["The usual boat needs repairs.","There are not enough workers.","The weather is bad.","Fewer people are travelling."],why:"'The main vessel… needs urgent engine repairs'."},
+    {n:3,q:"Who will get priority?",o:["People going to medical appointments with proof","Business owners","Tourists with reservations","People with small cars"],why:"Personas con citas médicas que muestren una carta del doctor."},
+    {n:4,q:"Why is Janet Wu worried?",o:["Her business depends on summer visitors.","She can't get to her doctor.","Her employees can't get to work.","She has to pay more for shipping."],why:"'Summer is when we make most of our money… fewer tourists'."},
+    {n:5,q:"What does BC Ferries suggest drivers do?",o:["Book in advance.","Travel at night.","Leave their cars at home every day.","Use another ferry company."],why:"'Drivers reserve their spot online at least a day in advance'. Lo de ir a pie es para pasajeros."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende que hay un problema con el ferry, pero no los detalles.",miss:[[1,2,"Escuchó 'reduced' y pensó en precios."],[5,2,"Escuchó 'walk-on' y lo aplicó a los conductores."]],x:"🔁 Separa los consejos por grupo: walk-on passengers vs drivers."},
+   c78:{s:"4/5",d:"Sigue la noticia, pero mezcla los consejos de dos grupos.",miss:[[5,2,"El consejo de caminar es para pasajeros a pie, no para conductores."]],x:"🎯 Cuando una oración tiene dos consejos para dos grupos, anótalos en dos líneas."},
+   c1012:{s:"5/5",d:"Anota la causa, el efecto y los consejos por grupo.",g:["Reduced 6 weeks · engine repairs.","80 → 40 cars.","Priority: medical + doctor letter.","Janet: summer income · drivers reserve 1 day before."]}}},
+ {intro:"Listen to a news item.",scene:["🏒","Local news: a new arena","Saskatoon Morning Report"],sp:{R:["Reporter","f"]},
+  secs:[{lines:[["R","[[1|Saskatoon city council voted last night to build a new community arena in the Stonebridge neighbourhood, after more than two years of debate.]]"],["R","The arena will include two ice rinks, a running track and meeting rooms for local groups."],["R","[[2|The project will cost forty-two million dollars. Half will come from the province, and the rest from the city and private sponsors.]]"],["R","[[3|Supporters say the neighbourhood has grown quickly and families currently drive thirty minutes to the nearest rink.]]"],["R","[[4|But councillor Dev Patel voted against the plan. He argued the money should first go to repairing older arenas, two of which have leaking roofs.]]"],["R","[[5|Construction begins next spring, and the arena is scheduled to open in the fall of twenty twenty-eight.]]"]],
+   qs:[{n:1,q:"What did city council decide?",o:["To build a new arena","To repair two old arenas","To close an arena","To delay the arena decision"],why:"'Voted… to build a new community arena'."},
+    {n:2,q:"Who will pay half of the cost?",o:["The province","Private sponsors","The city","Local families"],why:"'Half will come from the province'."},
+    {n:3,q:"Why do supporters want the arena?",o:["Families must travel far to skate now.","The old arena is closing.","It will create jobs.","It will attract tourists."],why:"'Families currently drive thirty minutes to the nearest rink'."},
+    {n:4,q:"Why did Dev Patel vote against the plan?",o:["He thinks existing arenas should be fixed first.","He thinks it is too far from downtown.","He doesn't like hockey.","He wants a swimming pool instead."],why:"'The money should first go to repairing older arenas'."},
+    {n:5,q:"When is the arena expected to open?",o:["In fall 2028","Next spring","In two years","Next fall"],why:"'Scheduled to open in the fall of 2028'. La primavera es cuando empieza la construcción."}]}],
+  levels:{c45:{s:"3/5",d:"Entiende el tema, pero se confunde entre fechas y opiniones.",miss:[[4,3,"No escuchó la razón y adivinó."],[5,1,"Eligió cuando empieza la construcción, no cuando abre."]],x:"🔁 Begin ≠ open. Anota las dos fechas con su verbo."},
+   c78:{s:"4/5",d:"Organiza bien la noticia, pero confunde inicio y apertura.",miss:[[5,1,"'Construction begins next spring' no es la apertura."]],x:"🎯 En noticias de proyectos siempre hay 2 fechas: inicio y fin. Anota ambas."},
+   c1012:{s:"5/5",d:"Usa la estructura de noticia y separa a favor / en contra.",g:["Decisión: new arena Stonebridge.","$42M · half province.","✔ 30-min drive · ✘ Patel: fix old first.","Start spring · open fall 2028."]}}}
+ ]});
+
+/* ===== PART 5 ===== */
+TASKS.push({name:"Listening to a Discussion",short:"Part 5",mode:"screen",video:true,time:240,
+ instr:"Watch a video of a discussion between three people. Then answer 8 questions. The questions appear on the screen after the video. Choose the best answer from the drop-down menu. You will watch the video only once.",
+ guide:{what:"En el examen real esta parte es un <strong>video</strong>: ves a <strong>tres personas discutiendo</strong> un tema (compañeros de trabajo, familia, compañeros de casa). Aquí lo simulamos con tres personajes que se iluminan cuando hablan. Las <strong>8 preguntas aparecen escritas</strong> después del video y casi todas preguntan <strong>quién</strong> opina qué.",
+  facts:[["8","preguntas"],["3","personas"],["≈4 min","para responder"]],
+  callout:"<strong>💡 La clave: no es qué se dijo, sino QUIÉN lo dijo.</strong> Con tres voces, la trampa más común es atribuirle a una persona la opinión de otra. Divide tu hoja en tres columnas, una por persona, antes de que empiece el video.",
+  doo:["Escucha la presentación y anota los 3 nombres en columnas.","Asocia cada voz con una persona en los primeros segundos (en el examen real, mira la cara).","Anota la postura de cada uno: a favor, en contra, con dudas, con una condición.","Escucha cómo cambian de opinión durante la discusión.","Anota la decisión final del grupo y quién hace qué después."],
+  dont:["Tomar notas sin indicar quién habla.","Pensar que el primero que habla es el que decide.","Ignorar a la persona que habla menos: también le preguntan por ella.","Asumir que un 'yes, but…' es un sí."],
+  errors:[["Notas en una sola lista","Tres columnas con los nombres","Las preguntas dicen 'What does Ravi think…?'. Si no sabes quién dijo qué, adivinas."],["Tomar 'Yes, but…' como acuerdo","Anotar la condición después del 'but'","Muchas posturas son 'de acuerdo con una condición'."],["Olvidar la decisión final","Escuchar el cierre: 'So, we agree…'","Siempre hay una pregunta sobre lo que decidieron o harán."]],
+  flow:[["Inicio","1. Nombres","3 columnas"],["Video","2. Posturas","✔ / ✘ / condición"],["Cierre","3. Decisión","¿Qué acordaron?"],["4 min","4. Responde","Revisa quién dijo qué"]],
+  phrases:["I see your point, but… (desacuerdo suave)","I'm on the fence (indeciso)","As long as… (condición)","I'll go along with that (acepta)","Can I just add… (interrumpe)","So, are we all agreed? (cierre)"],
+  tips:["En el examen real, <strong>mira las caras</strong>: el video ayuda a saber quién habla. Aquí, el personaje que habla se ilumina.","<em>I'm on the fence</em>, <em>I could go either way</em> y <em>I'm not sure yet</em> = indeciso. Hay preguntas de actitud que lo prueban.","Si alguien dice <em>I'll go along with it</em>, acepta aunque no esté entusiasmado: la opción correcta suele decir <em>reluctantly agrees</em>.","Las preguntas aparecen todas juntas: léelas primero y responde las de la persona que mejor recuerdas."]},
+ check:[["Mientras escuchaba",["Hice tres columnas con los nombres","Anoté la postura de cada persona","Noté cambios de opinión durante la discusión","Anoté la decisión final"]],
+  ["Al responder",["Comprobé quién dijo qué antes de elegir","Leí todas las preguntas antes de empezar"]],["Tiempo",["Respondí todas las preguntas (no dejé ninguna en blanco)","Terminé antes de que se acabara el tiempo"]]],
+ sets:[
+ {intro:"Watch a discussion between three coworkers planning a team event.",scene:["🎳","Planning the end-of-year team event","Three coworkers in a meeting room"],sp:{A:["Ravi","m","👨🏽‍💼","Team lead"],B:["Claire","f","👩🏼","Designer"],C:["Tomás","m","👨🏻","Developer"]},
+  secs:[{lines:[["A","Okay, we have a budget of fifteen hundred dollars for the end-of-year team event. Any ideas?"],["B","[[1|I'd love an escape room. It's fun, and it's great for teamwork.]]"],["C","Hmm, I'm not sure. [[2|We have twenty people, and most escape rooms only fit eight. We'd have to split up.]]"],["B","That's true, but splitting up could be fun. We could compete against each other."],["A","[[3|Actually, I'm worried about Hana and Peter. They work remotely and live in other cities.]]"],["C","Right. What about something online, then? Like a virtual cooking class?"],["B","[[4|Online? We spend all day on video calls. I think people want to see each other in person.]]"],["A","Here's an idea. [[5|We do something in person, and we pay for Hana and Peter to fly in. The company has a separate travel budget.]]"],["C","That changes things. [[6|In that case, I'd suggest a bowling alley. It fits everyone, and nobody needs special skills.]]"],["B","[[7|Well, I'll go along with bowling, as long as there's good food.]]"],["A","Great. [[8|So, Tomás, can you check prices for a Friday evening? And I'll talk to HR about the flights.]]"]],
+   qs:[{n:1,q:"What does Claire first suggest?",o:["An escape room","A bowling night","A cooking class","A team dinner"],why:"'I'd love an escape room'."},
+    {n:2,q:"What problem does Tomás see with Claire's idea?",o:["The group is too large.","It is too expensive.","It is too far away.","It is boring."],why:"'Twenty people… most escape rooms only fit eight' = el grupo es muy grande."},
+    {n:3,q:"What is Ravi worried about?",o:["Including employees who work from other cities","Staying within the budget","Finding a date","People not getting along"],why:"'Hana and Peter… work remotely and live in other cities'."},
+    {n:4,q:"What is Claire's opinion of an online event?",o:["People would prefer to meet face to face.","It is a good solution for everyone.","It is too difficult to organize.","It is cheaper than other options."],why:"'People want to see each other in person'. La idea online es de Tomás."},
+    {n:5,q:"How does Ravi solve the problem of the remote workers?",o:["The company will pay for their travel.","They will join by video.","The event will be held in their city.","They will have a separate event."],why:"'We pay for Hana and Peter to fly in'."},
+    {n:6,q:"Why does Tomás suggest bowling?",o:["Everyone can take part easily.","It's his favourite activity.","It's the cheapest option.","It's close to the office."],why:"'It fits everyone, and nobody needs special skills'."},
+    {n:7,q:"How does Claire react to the bowling idea?",o:["She agrees, with a condition.","She is very excited.","She refuses.","She suggests an escape room again."],why:"'I'll go along with bowling, as long as there's good food' = acepta con condición."},
+    {n:8,q:"What will Tomás do next?",o:["Find out the cost of bowling","Talk to HR","Book flights","Order food"],why:"'Tomás, can you check prices for a Friday evening?' HR lo hace Ravi."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende las ideas, pero no sabe bien quién dijo cada una.",miss:[[4,1,"La idea online fue de Tomás; Claire la rechaza."],[6,2,"Pensó en el precio porque al principio hablaron del presupuesto."],[7,1,"No notó la condición 'as long as' ni el tono poco entusiasta."],[8,1,"HR lo menciona Ravi para sí mismo."]],x:"🔁 Haz 3 columnas antes de empezar: R · C · T. Cada idea va debajo de su nombre."},
+   c78:{s:"6/8",d:"Sigue la discusión, pero falla en actitudes y en la tarea final.",miss:[[7,1,"'I'll go along with' no es entusiasmo: es aceptar sin mucha emoción."],[8,1,"Escuchó 'HR' al final y no a quién iba dirigida cada tarea."]],x:"🎯 Las preguntas de actitud premian a quien escucha el tono, no solo las palabras."},
+   c1012:{s:"8/8",d:"Usa tres columnas, anota la postura con su condición y el reparto final de tareas.",g:["C: escape ✔ · online ✘ · bowling = OK si hay comida.","T: escape ✘ (20 vs 8) · online? · bowling ✔ todos.","R: remote workers → pagar vuelos · HR.","Tareas: T → prices · R → HR."]}}},
+ {intro:"Watch a discussion between three roommates about getting a pet.",scene:["🐶","Should we get a dog?","Three roommates in their living room"],sp:{A:["Mia","f","👩🏻","Nurse"],B:["Jordan","m","👨🏾","Student"],C:["Aisha","f","👩🏽","Teacher"]},
+  secs:[{lines:[["B","So, I've been thinking. [[1|What if we adopted a dog? The shelter down the street has so many.]]"],["A","I love dogs, but [[2|I work twelve-hour night shifts. I wouldn't be able to walk it much.]]"],["C","[[3|And our lease says no pets over ten kilos. Most shelter dogs are bigger than that.]]"],["B","Okay, a small dog, then. I'm home most afternoons, so I could do most of the walks."],["C","[[4|I'm on the fence. I'm worried about what happens in the summer when you go home to Calgary for three months, Jordan.]]"],["B","Hmm, good point."],["A","What about a cat? They're more independent, and nobody needs to walk them."],["C","[[5|I'm allergic to cats, remember? That's a hard no for me.]]"],["B","[[6|What if we fostered a dog for a few months instead? The shelter pays for food and vet bills, and we'd see if it works.]]"],["A","[[7|Oh, I like that. It's not a lifetime commitment.]]"],["C","[[8|Okay, I'm in, as long as we agree on a walking schedule before we bring it home.]]"]],
+   qs:[{n:1,q:"What does Jordan propose?",o:["Adopting a dog","Moving to a bigger apartment","Getting a cat","Volunteering at a shelter"],why:"'What if we adopted a dog?'"},
+    {n:2,q:"Why can't Mia help much with a dog?",o:["Her work schedule is very long.","She is allergic.","She doesn't like dogs.","She is moving soon."],why:"'I work twelve-hour night shifts'."},
+    {n:3,q:"What does Aisha say about the lease?",o:["It only allows small pets.","It doesn't allow any pets.","It allows cats only.","It ends next year."],why:"'No pets over ten kilos' = solo mascotas pequeñas."},
+    {n:4,q:"What is Aisha's concern about Jordan?",o:["He will be away in the summer.","He doesn't have time.","He has never had a dog.","He can't afford a dog."],why:"'When you go home to Calgary for three months'."},
+    {n:5,q:"Why does Aisha reject the cat idea?",o:["She has an allergy.","Cats are too independent.","The lease doesn't allow cats.","She prefers dogs."],why:"'I'm allergic to cats'."},
+    {n:6,q:"What is Jordan's final suggestion?",o:["Taking care of a dog temporarily","Adopting a small dog","Asking the landlord for permission","Waiting until summer"],why:"'Fostered a dog for a few months' = cuidarlo temporalmente."},
+    {n:7,q:"Why does Mia like the final idea?",o:["It is not a permanent commitment.","It is free.","She can walk the dog at night.","The shelter is close."],why:"'It's not a lifetime commitment'."},
+    {n:8,q:"What condition does Aisha give?",o:["They must plan who walks the dog.","The dog must be small.","Jordan must stay in summer.","The shelter must pay for food."],why:"'As long as we agree on a walking schedule'."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende el tema, pero mezcla las objeciones de cada persona.",miss:[[2,1,"La alergia es de Aisha, no de Mia."],[4,1,"No escuchó 'Calgary for three months'."],[6,1,"No conocía 'foster' y eligió adoptar."],[8,1,"El tamaño fue tema anterior; la condición final es el horario de paseos."]],x:"🔁 Cada persona tiene su objeción: Mia = turnos, Aisha = contrato + alergia + verano."},
+   c78:{s:"6/8",d:"Sigue las objeciones, pero no conoce 'foster' ni la condición final.",miss:[[6,1,"'Foster' = cuidar temporalmente, no adoptar."],[8,1,"Se quedó con una condición anterior."]],x:"🎯 La última condición que alguien pone suele ser una pregunta: anótala aunque sea al final."},
+   c1012:{s:"8/8",d:"Anota cada objeción con su dueño y sigue la evolución hasta la decisión.",g:["J: dog → small dog → foster.","M: night shifts · likes foster (not lifetime).","A: lease 10 kg · fence (summer) · allergic · in if schedule.","Decisión: foster."]}}},
+ {intro:"Watch a discussion between three volunteers planning a neighbourhood clean-up.",scene:["🧤","Planning a park clean-up","Three neighbours at a community centre"],sp:{A:["Linda","f","👩🏼‍🦳","Organizer"],B:["Kenji","m","👨🏻","Neighbour"],C:["Grace","f","👩🏾","Neighbour"]},
+  secs:[{lines:[["A","Thanks for coming. Let's plan the spring clean-up at Elm Park."],["B","[[1|Should we do it the same weekend as last year, the last Saturday in April?]]"],["C","[[2|That's the weekend of the marathon. Half the streets around the park will be closed.]]"],["B","Oh, right. The first Saturday in May, then?"],["A","Works for me. Now, last year only fifteen people came. [[3|How do we get more volunteers?]]"],["C","[[4|We should go where people already are. I could set up a table at the farmers' market and sign people up.]]"],["B","And social media. [[5|I can make a post for the neighbourhood group. But honestly, people need a reason to come. What about a free lunch at the end?]]"],["A","[[6|I love the idea, but our budget is only two hundred dollars, and we still need gloves and garbage bags.]]"],["C","[[7|The grocery store on Elm Street sponsored the hockey team last year. Maybe they'd donate sandwiches.]]"],["A","Worth a try. [[8|Grace, can you ask them when you're at the market? And Kenji, the post.]]"]],
+   qs:[{n:1,q:"What does Kenji first suggest?",o:["Holding the event on the same date as last year","Moving the event to another park","Holding it in May","Cancelling the event"],why:"'The same weekend as last year, the last Saturday in April'."},
+    {n:2,q:"Why does Grace disagree with the first date?",o:["Another event will close streets.","She will be away.","It might rain.","The park is closed."],why:"'The weekend of the marathon. Half the streets… will be closed'."},
+    {n:3,q:"What problem does Linda raise?",o:["Too few people participated before.","The park is too big.","The volunteers didn't work hard.","There was too much garbage."],why:"'Last year only fifteen people came. How do we get more volunteers?'"},
+    {n:4,q:"What does Grace offer to do?",o:["Sign up volunteers in person","Make a social media post","Buy the gloves","Organize the lunch"],why:"'Set up a table at the farmers' market and sign people up'."},
+    {n:5,q:"Why does Kenji suggest a free lunch?",o:["To give people a reason to join","To thank the sponsors","Because the event is long","Because Linda asked for it"],why:"'People need a reason to come'."},
+    {n:6,q:"What is Linda's concern about the lunch?",o:["There isn't enough money.","It will take too long.","People will only come for food.","The park doesn't allow food."],why:"'Our budget is only two hundred dollars'."},
+    {n:7,q:"How does Grace suggest solving the lunch problem?",o:["Asking a local business to donate food","Asking volunteers to bring lunch","Cancelling the gloves","Charging a small fee"],why:"'Maybe they'd donate sandwiches' (la tienda)."},
+    {n:8,q:"What will Kenji do?",o:["Post about the event online","Talk to the grocery store","Set up a table at the market","Buy garbage bags"],why:"'And Kenji, the post' = la publicación en redes."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende el plan general, pero se confunde con quién propone qué.",miss:[[1,2,"Mayo fue la segunda propuesta, no la primera."],[4,1,"El post era de Kenji; Grace ofrece la mesa en el mercado."],[6,2,"Pensó que a Linda no le gustaba la idea, pero dice 'I love the idea, but…'."],[8,1,"La tienda le toca a Grace."]],x:"🔁 'I love the idea, but…' = el problema viene después del but."},
+   c78:{s:"6/8",d:"Sigue bien la discusión, pero falla en la primera propuesta y el reparto final.",miss:[[1,2,"Recordó la fecha final, no la primera propuesta."],[8,1,"Mezcló las tareas finales."]],x:"🎯 Cuando la pregunta dice 'first suggest', busca la primera idea, no la que ganó."},
+   c1012:{s:"8/8",d:"Lleva el historial de propuestas y anota el reparto final con nombres.",g:["Fecha: April ✘ marathon → May 1st Sat.","G: market table · store sponsor.","K: post · free lunch.","L: $200 budget → G store, K post."]}}},
+ {intro:"Watch a discussion between three family members planning a holiday.",scene:["🧳","Where should we go this summer?","A family at the kitchen table"],sp:{A:["Mom","f","👩🏽","Carmen"],B:["Dad","m","👨🏽","Javier"],C:["Lucas","m","🧑🏽","Their son, 19"]},
+  secs:[{lines:[["B","So, where are we going this summer? I was thinking of a beach in Mexico."],["A","[[1|I'd love that, but flights in July are so expensive. Last year they almost doubled.]]"],["C","[[2|And I can only take one week off. My summer job starts in June.]]"],["A","[[3|What about a road trip in the Rockies? We could drive, so no flights, and camping is cheap.]]"],["B","[[4|Camping? My back can't handle another week on the ground, Carmen.]]"],["C","We could rent a cabin instead. My friend's family rented one near Banff last year. It had a kitchen, so they saved on restaurants."],["A","[[5|A cabin with a kitchen would keep costs down. I'm in.]]"],["B","Hmm. I still miss the ocean, though."],["C","[[6|Dad, there's a lake right next to those cabins. You could go kayaking every day.]]"],["B","[[7|Kayaking? Okay, now you're talking. Fine, the mountains it is.]]"],["A","Great. [[8|Lucas, send me your friend's link tonight, and I'll check if they have anything free for the second week of August.]]"]],
+   qs:[{n:1,q:"Why does Mom hesitate about Mexico?",o:["The flights cost too much.","It is too hot in July.","She doesn't like the beach.","Lucas can't come."],why:"'Flights in July are so expensive'."},
+    {n:2,q:"What limits Lucas?",o:["He has only one week free.","He doesn't have money.","He wants to stay home.","He has exams."],why:"'I can only take one week off'."},
+    {n:3,q:"What does Mom suggest?",o:["A road trip with camping","A cabin by a lake","A cheaper beach","Staying at home"],why:"'A road trip in the Rockies… camping is cheap'. La cabaña la propone Lucas."},
+    {n:4,q:"Why does Dad reject camping?",o:["It would be uncomfortable for him.","It's too expensive.","He doesn't like mountains.","He wants to fly."],why:"'My back can't handle another week on the ground'."},
+    {n:5,q:"Why does Mom like the cabin idea?",o:["They could save money by cooking.","It is close to the airport.","It has a hot tub.","Lucas's friend will join."],why:"'A cabin with a kitchen would keep costs down'."},
+    {n:6,q:"How does Lucas convince his father?",o:["He mentions an activity his father enjoys.","He offers to pay.","He finds a beach in the mountains.","He promises to drive."],why:"'There's a lake… You could go kayaking every day'."},
+    {n:7,q:"How does Dad feel at the end?",o:["He is happy with the plan.","He is still disappointed.","He wants to think about it.","He prefers camping."],why:"'Now you're talking. Fine, the mountains it is' = contento con el plan."},
+    {n:8,q:"What will Mom do?",o:["Check if a cabin is available","Book flights","Call Lucas's friend's family","Buy kayaks"],why:"'I'll check if they have anything free for the second week of August'."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende que eligen un destino, pero mezcla propuestas y actitudes.",miss:[[3,1,"La cabaña la propuso Lucas; Mom propuso camping."],[6,1,"No entendió 'kayaking' como actividad que le gusta al papá."],[7,1,"Recordó 'I still miss the ocean' y no el cambio final."],[8,2,"Lucas manda el enlace; Mom revisa la disponibilidad."]],x:"🔁 Las actitudes cambian: actualiza tus notas cuando escuches 'Okay, now you're talking'."},
+   c78:{s:"6/8",d:"Sigue el destino final, pero se confunde con quién propuso qué.",miss:[[3,1,"Atribuyó la cabaña a Mom."],[7,1,"Pensó que el papá aceptaba a regañadientes, pero su tono cambia a entusiasta."]],x:"🎯 'Now you're talking' = ¡eso sí me gusta! Escucha el tono."},
+   c1012:{s:"8/8",d:"Anota cada propuesta con su autor y sigue el cambio de tono del papá.",g:["Mom: Mexico ✘ flights · camping · cabin ✔ (kitchen).","Dad: Mexico · camping ✘ back · kayak → ✔.","Lucas: 1 week · cabin · lake/kayak.","Mom checks Aug wk 2."]}}},
+ {intro:"Watch a discussion between three colleagues about a new office policy.",scene:["🏢","Back to the office?","Three colleagues discuss a new policy"],sp:{A:["Nadia","f","👩🏻‍💼","Manager"],B:["Sam","m","👨🏼","Accountant"],C:["Priya","f","👩🏾‍💻","Analyst"]},
+  secs:[{lines:[["A","So, head office wants everyone in the office three days a week starting in January. I want to hear what you both think."],["B","[[1|Honestly, I think it's a good idea. I miss the quick conversations. Problems get solved faster in person.]]"],["C","[[2|I see your point, but my commute is an hour each way. Three days means six extra hours a week.]]"],["B","That's fair."],["A","[[3|Head office did say teams can choose which three days.]] So we have some flexibility."],["C","[[4|That helps. If we picked Tuesday to Thursday, I could avoid the Monday and Friday traffic.]]"],["B","[[5|Tuesday to Thursday works for me, but our client meetings are usually on Mondays.]]"],["A","[[6|We could move client meetings to Tuesdays. Most clients wouldn't mind.]]"],["C","Okay. And can we keep Fridays meeting-free? That's when I do my deep work."],["A","[[7|I can't promise that for the whole company, but for our team, yes.]]"],["B","Sounds like a plan."],["A","[[8|Great. I'll send the schedule to head office this week, and I'll email the clients about Tuesdays.]]"]],
+   qs:[{n:1,q:"What is Sam's opinion of the policy?",o:["He supports it.","He is against it.","He is undecided.","He thinks it should be five days."],why:"'Honestly, I think it's a good idea'."},
+    {n:2,q:"Why is Priya concerned?",o:["Her travel time is long.","She doesn't like her coworkers.","She has young children.","She works better at night."],why:"'My commute is an hour each way'."},
+    {n:3,q:"What flexibility does head office allow?",o:["Teams can choose their office days.","Employees can work from home on Mondays.","Teams can choose two days instead of three.","Employees can start later."],why:"'Teams can choose which three days'."},
+    {n:4,q:"Why does Priya prefer Tuesday to Thursday?",o:["There is less traffic on those days.","She has meetings on Mondays.","The office is quieter.","Her children have school."],why:"'I could avoid the Monday and Friday traffic'."},
+    {n:5,q:"What problem does Sam mention?",o:["Client meetings are usually on Mondays.","He prefers Fridays.","He doesn't have a parking spot.","His commute is long."],why:"'Our client meetings are usually on Mondays'."},
+    {n:6,q:"How does Nadia solve Sam's problem?",o:["By changing the day of client meetings","By cancelling client meetings","By letting Sam come on Mondays","By holding meetings online"],why:"'We could move client meetings to Tuesdays'."},
+    {n:7,q:"What does Nadia say about meeting-free Fridays?",o:["She can only guarantee it for her team.","She will ask head office.","It is not possible.","It applies to the whole company."],why:"'I can't promise that for the whole company, but for our team, yes'."},
+    {n:8,q:"What will Nadia do this week?",o:["Send the schedule and contact clients","Call a team meeting","Talk to Priya about her commute","Book a meeting room"],why:"'I'll send the schedule to head office… and email the clients'."}]}],
+  levels:{c45:{s:"4/8",d:"Entiende el tema, pero se pierde con posturas y condiciones.",miss:[[1,2,"No conocía 'honestly' como introducción de opinión real."],[2,2,"Adivinó la razón sin escuchar 'commute'."],[5,3,"La distancia es el problema de Priya, no de Sam."],[7,3,"No escuchó 'can't promise… for the whole company'."]],x:"🔁 Separa por persona: Sam ✔ política · Priya ✘ commute."},
+   c78:{s:"6/8",d:"Sigue las posturas, pero falla con promesas parciales.",miss:[[7,1,"'I can't promise that for the whole company, but for our team, yes' = solo para su equipo."],[6,3,"Pensó en reuniones online porque la discusión es sobre trabajo remoto."]],x:"🎯 Las respuestas a medias (yes for X, but not for Y) son trampas típicas."},
+   c1012:{s:"8/8",d:"Anota postura, problema y solución de cada persona.",g:["S: ✔ in person · Monday clients.","P: commute 1h · Tue–Thu · Friday no meetings.","N: teams choose days · clients → Tue · Fridays team only.","N sends schedule + emails clients."]}}}
+ ]});
+
+/* ===== PART 6 ===== */
+TASKS.push({name:"Listening to Viewpoints",short:"Part 6",mode:"screen",time:210,
+ instr:"Listen to a report about a topic. Then answer 6 questions. The questions appear on the screen after the report. Choose the best answer from the drop-down menu. You will hear the report only once.",
+ guide:{what:"Es la parte más académica: escuchas a <strong>una persona presentando un tema debatido</strong> (la semana laboral de 4 días, las propinas, las tareas escolares). Explica <strong>dos o más puntos de vista</strong>, da ejemplos y a veces su propia opinión. Dura unos 3 minutos y las <strong>6 preguntas aparecen escritas</strong> después.",
+  facts:[["6","preguntas"],["≈3 min","de audio"],["≈3,5 min","para responder"]],
+  callout:"<strong>💡 La clave: separa los puntos de vista.</strong> El audio dice 'supporters argue…', 'critics say…', 'researchers found…', 'in my view…'. Las preguntas te piden exactamente eso: qué piensa CADA grupo. Haz columnas: A favor · En contra · Evidencia · Opinión del hablante.",
+  doo:["Escucha la introducción: casi siempre presenta el tema y la pregunta del debate.","Organiza tus notas en: A favor · En contra · Ejemplos/datos · Opinión del hablante.","Anota los conectores que cambian de lado: however, on the other hand, critics.","Escucha los ejemplos: suelen preguntar para qué sirve un ejemplo.","Al final, escucha si el hablante da su opinión o una recomendación."],
+  dont:["Pensar que la primera opinión que escuchas es la del hablante.","Confundir lo que dicen los críticos con lo que dicen los partidarios.","Anotar todos los datos: solo los que apoyan una idea.","Responder con tu propia opinión sobre el tema."],
+  errors:[["Tomar la opinión de un grupo como la del hablante","Esperar a 'in my view', 'personally', 'I believe'","Muchos hablantes presentan las dos caras antes de dar la suya, o no la dan."],["Anotar el ejemplo sin para qué sirve","Anotar 'ejemplo → apoya X'","Las preguntas de ejemplo preguntan 'why does the speaker mention…?'"],["Distraerte con vocabulario difícil","Seguir la estructura: tema → a favor → en contra → conclusión","Aunque no entiendas una palabra, la estructura te dice dónde estás."]],
+  flow:[["Intro","1. Tema","¿Cuál es el debate?"],["Medio","2. Dos lados","A favor / en contra"],["Medio","3. Evidencia","Ejemplos y estudios"],["Final","4. Conclusión","¿Qué opina o recomienda?"]],
+  phrases:["Supporters argue that… (a favor)","Critics point out… (en contra)","On the other hand… (cambio de lado)","A recent study found… (evidencia)","Take, for example… (ejemplo)","In my view… / The answer may lie… (conclusión)"],
+  tips:["La pregunta de idea principal se responde con la introducción: <em>Today I want to look at…</em>, <em>The question is…</em>.","Cuando escuches <em>Take, for example…</em>, anota el ejemplo y la idea que apoya. Preguntas como <em>Why does the speaker mention Iceland?</em> son muy comunes.","La conclusión suele ser un punto medio: <em>The answer may lie somewhere in between</em>. Busca la opción equilibrada.","Si el hablante cita a un experto, anota su nombre y qué piensa: también lo preguntan."]},
+ check:[["Mientras escuchaba",["Identifiqué el tema en la introducción","Separé a favor y en contra en mis notas","Anoté para qué servía cada ejemplo","Escuché la conclusión del hablante"]],
+  ["Al responder",["Distinguí la opinión del hablante de la de otros grupos","Leí las 6 preguntas antes de responder"]],["Tiempo",["Respondí todas las preguntas (no dejé ninguna en blanco)","Terminé antes de que se acabara el tiempo"]]],
+ sets:[
+ {intro:"Listen to a report about a four-day work week.",scene:["🗓️","Radio commentary: the four-day work week","Speaker: Dr. Helen Moore"],sp:{H:["Helen Moore","f"]},
+  secs:[{lines:[["H","[[1|Good morning. Today I want to look at a question many Canadian employers are asking: should we move to a four-day work week, with no reduction in pay?]]"],["H","[[2|Supporters argue that employees who work four days are happier, healthier and more focused. They say that people waste a lot of time at work anyway, in long meetings and on email.]]"],["H","[[3|Take, for example, a trial in the United Kingdom, where over sixty companies tested the idea. Most reported that productivity stayed the same, and staff took fewer sick days.]]"],["H","[[4|On the other hand, critics point out that the model doesn't work for every industry. A hospital, a restaurant or a daycare can't simply close on Fridays. They would have to hire more staff, which costs money.]]"],["H","There is also a concern that some employees would simply try to fit five days of work into four, leading to longer, more stressful days."],["H","[[5|In my view, the four-day week is not a magic solution, but it is worth testing. I believe each organization should try it for six months, measure the results, and then decide.]]"],["H","[[6|The most important thing is not the number of days. It's whether we're measuring people by the hours they sit at a desk or by the results they produce.]]"]],
+   qs:[{n:1,q:"What is the main topic of the report?",o:["Whether a shorter work week with the same pay is a good idea","How to make meetings shorter","Why Canadians take many sick days","How to get a higher salary"],why:"La introducción: 'should we move to a four-day work week, with no reduction in pay?'"},
+    {n:2,q:"According to supporters, what is one benefit of a four-day week?",o:["Workers are more focused.","Companies make more money.","Meetings become longer.","Employees earn more."],why:"'Employees who work four days are happier, healthier and more focused'."},
+    {n:3,q:"Why does the speaker mention the trial in the United Kingdom?",o:["To show that productivity did not fall","To show that the idea failed","To compare salaries","To criticize British companies"],why:"El ejemplo apoya la idea: 'productivity stayed the same'."},
+    {n:4,q:"What concern do critics raise?",o:["Some workplaces would need to hire more people.","Employees would earn less.","Productivity would drop everywhere.","Workers would take more sick days."],why:"'A hospital… would have to hire more staff'."},
+    {n:5,q:"What does the speaker recommend?",o:["Trying it for a period and evaluating the results","Adopting it immediately everywhere","Rejecting the idea","Waiting for the government to decide"],why:"'Try it for six months, measure the results, and then decide'."},
+    {n:6,q:"What does the speaker suggest is most important?",o:["Judging workers by what they achieve","Reducing the number of meetings","Hiring more staff","Working fewer hours"],why:"'Whether we're measuring people by… the results they produce'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende el tema general, pero mezcla los argumentos de cada lado.",miss:[[3,1,"No entendió que el ejemplo apoya la idea, no la critica."],[4,3,"Las bajas por enfermedad aparecen en el ejemplo positivo, no en las críticas."],[5,1,"No escuchó 'is not a magic solution, but worth testing'."]],x:"🔁 Haz columnas: A favor · En contra · Ejemplo → apoya qué · Opinión."},
+   c78:{s:"5/6",d:"Separa bien los dos lados, pero no capta el matiz de la conclusión.",miss:[[6,3,"'Working fewer hours' es el tema, pero la idea final es medir por resultados."]],x:"🎯 La última frase de un hablante suele ir un paso más allá del tema: escúchala con atención."},
+   c1012:{s:"6/6",d:"Organiza la charla en columnas y distingue el tema de la conclusión.",g:["✔ happier/focused · UK trial = productivity same.","✘ hospitals → more staff · 5 in 4.","Opinión: test 6 months.","Clave final: results > hours."]}}},
+ {intro:"Listen to a report about tipping in restaurants.",scene:["🧾","Podcast: is tipping out of control?","Speaker: Marcus Bell"],sp:{M:["Marcus Bell","m"]},
+  secs:[{lines:[["M","[[1|Hi everyone. Lately I've heard a lot of complaints about tipping. So today, I want to explore why tipping has become so controversial in Canada.]]"],["M","[[2|Not long ago, people tipped mainly at sit-down restaurants. Now payment machines ask for a tip at coffee shops, bakeries, even self-serve frozen yogurt stores.]]"],["M","[[3|Many customers say they feel pressured. The screen turns towards you, the cashier watches, and the options start at eighteen or twenty percent.]]"],["M","[[4|But restaurant workers see it differently. A server in Toronto told me that tips make up more than half of her income. Without them, she said, she couldn't afford rent.]]"],["M","[[5|Some restaurant owners have tried a different model: no tipping, but higher menu prices, so staff get a better hourly wage. A café in Montreal tried this and lost customers, because people thought the prices looked too high.]]"],["M","[[6|So where does that leave us? Personally, I think tipping at a counter where nobody serves you is unnecessary. But at a full-service restaurant, the tip is still part of how workers get paid, and that won't change until wages do.]]"]],
+   qs:[{n:1,q:"What is the purpose of the report?",o:["To explain why tipping has become a debate","To teach people how much to tip","To promote a restaurant","To compare tipping in different countries"],why:"'Explore why tipping has become so controversial'."},
+    {n:2,q:"What change does the speaker describe?",o:["Tips are now requested in more types of businesses.","People tip less than before.","Restaurants stopped accepting tips.","Payment machines are cheaper."],why:"'Now payment machines ask for a tip at coffee shops, bakeries…'."},
+    {n:3,q:"Why do many customers feel uncomfortable?",o:["They feel pressured to tip a high amount.","They don't understand the machines.","They don't have cash.","The service is bad."],why:"'They feel pressured… options start at eighteen or twenty percent'."},
+    {n:4,q:"Why does the speaker mention the server in Toronto?",o:["To show that tips are important for workers' income","To show that servers earn too much","To complain about rent prices","To give an example of bad service"],why:"'Tips make up more than half of her income'."},
+    {n:5,q:"What happened at the café in Montreal?",o:["Customers left because prices seemed high.","Workers quit.","Customers tipped more.","The model was very successful."],why:"'Lost customers, because people thought the prices looked too high'."},
+    {n:6,q:"What is the speaker's opinion?",o:["Tipping makes sense only in some situations.","Tipping should be banned.","Customers should always tip 20%.","Tipping should increase."],why:"Sin servicio no hace falta; en restaurante completo sí."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende que se habla de propinas, pero no la función de los ejemplos.",miss:[[4,2,"Escuchó 'rent' y lo eligió; el ejemplo sirve para mostrar lo importantes que son las propinas."],[5,3,"Escuchó 'better wage' y supuso éxito."],[6,1,"Escuchó 'unnecessary' y no la segunda parte."]],x:"🔁 Pregúntate siempre: ¿para qué menciona este ejemplo?"},
+   c78:{s:"5/6",d:"Sigue los puntos de vista, pero simplifica la opinión final.",miss:[[6,1,"El hablante dice dos cosas: innecesaria en mostrador, necesaria en restaurante."]],x:"🎯 Las opiniones con 'but' son mixtas: busca la opción que mantiene ambos lados."},
+   c1012:{s:"6/6",d:"Asocia cada ejemplo con su función y capta la opinión equilibrada.",g:["Cambio: tips everywhere.","Clientes: pressure 18–20%.","Toronto → income · Montreal → prices scared customers.","Opinión: counter ✘ · restaurant ✔."]}}},
+ {intro:"Listen to a report about homework in elementary school.",scene:["✏️","Education report: homework for young kids","Speaker: Professor Anna Lindqvist"],sp:{L:["Anna Lindqvist","f"]},
+  secs:[{lines:[["L","[[1|Every September, parents ask me the same question: how much homework should young children have? Today I'll share what research says about homework in elementary school.]]"],["L","[[2|Many parents believe homework teaches responsibility and good study habits, which children will need later.]]"],["L","[[3|However, a review of over a hundred studies found that, for children under eleven, homework has very little effect on test scores. For teenagers, the effect is much stronger.]]"],["L","[[4|Some teachers also worry about fairness. Children whose parents work evenings, or don't speak English at home, may get less help, so homework can increase the gap between students.]]"],["L","[[5|Finland is often mentioned here. Children there have very little homework, yet the country does well in international tests.]] But Finland also has smaller classes and highly trained teachers, so homework isn't the only difference."],["L","[[6|So what do I recommend? For young children, I suggest replacing most worksheets with reading for twenty minutes a day, ideally something they choose themselves. It builds the habit parents want, without the stress.]]"]],
+   qs:[{n:1,q:"What is the report mainly about?",o:["Whether young children benefit from homework","How to help teenagers study","Problems with the Finnish school system","How to choose a school"],why:"'What research says about homework in elementary school'."},
+    {n:2,q:"According to many parents, why is homework useful?",o:["It develops responsibility.","It improves test scores.","It keeps children busy.","It reduces stress."],why:"'Homework teaches responsibility and good study habits'."},
+    {n:3,q:"What did the review of studies find?",o:["Homework helps young children very little.","Homework is useless at all ages.","Young children need more homework.","Homework helps young children more than teenagers."],why:"'For children under eleven, homework has very little effect'. Para adolescentes sí funciona."},
+    {n:4,q:"What concern do some teachers have?",o:["Not all children get the same help at home.","Homework takes too long to grade.","Parents complain too much.","Children forget their homework."],why:"Algunos niños reciben menos ayuda en casa: aumenta la brecha."},
+    {n:5,q:"What point does the speaker make about Finland?",o:["Other factors may explain its success.","It proves homework is bad.","Its students do poorly on tests.","It gives a lot of homework."],why:"'Smaller classes and highly trained teachers, so homework isn't the only difference'."},
+    {n:6,q:"What does the speaker recommend?",o:["Daily reading instead of most worksheets","No reading at home","More homework for teenagers","Shorter school days"],why:"'Replacing most worksheets with reading for twenty minutes a day'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende el tema, pero pierde los matices de la evidencia.",miss:[[3,1,"Escuchó 'very little effect' y generalizó a todas las edades."],[5,1,"Se quedó con la primera parte del ejemplo de Finlandia y no escuchó el 'But…'."],[4,2,"No entendió 'increase the gap'."]],x:"🔁 Los ejemplos con 'but' tienen dos partes: la segunda cambia el sentido."},
+   c78:{s:"5/6",d:"Sigue el argumento, pero no escucha la segunda parte del ejemplo.",miss:[[5,1,"El ejemplo de Finlandia no prueba nada solo: la hablante lo matiza."]],x:"🎯 Los hablantes académicos matizan sus ejemplos. Escucha hasta el final de cada ejemplo."},
+   c1012:{s:"6/6",d:"Separa la creencia de los padres de la evidencia y escucha cada matiz.",g:["Padres: responsibility.","Estudios: <11 little effect · teens strong.","Docentes: fairness/gap.","Finland matizado · reading 20 min."]}}},
+ {intro:"Listen to a report about self-checkout machines.",scene:["🛒","Radio report: self-checkouts in grocery stores","Speaker: Daniel Okafor"],sp:{D:["Daniel Okafor","m"]},
+  secs:[{lines:[["D","[[1|If you've been to a grocery store recently, you've probably used a self-checkout machine. Today, I'd like to look at whether these machines are really good for stores and their customers.]]"],["D","[[2|Stores say the machines reduce waiting times, because one employee can supervise six machines at once.]] Many shoppers, especially younger ones, say they prefer scanning their own items."],["D","[[3|But not everyone is happy. Older customers and people with disabilities often find the machines confusing. And when something goes wrong, they still have to wait for help.]]"],["D","[[4|There's also a surprising problem for the stores themselves: theft. Some retailers in the United States reported more losses after adding self-checkouts, and a few have removed them.]]"],["D","[[5|Unions are worried too. They say the machines are slowly replacing cashier jobs, which are often first jobs for students and newcomers.]]"],["D","[[6|In my opinion, the best approach is a mix. Stores should keep self-checkouts for people with a few items, but always keep at least two staffed lanes open. Customers should have the choice.]]"]],
+   qs:[{n:1,q:"What is the main question of the report?",o:["Whether self-checkout machines are beneficial","How to use a self-checkout machine","Why groceries are expensive","How to become a cashier"],why:"'Whether these machines are really good for stores and their customers'."},
+    {n:2,q:"According to stores, what is an advantage of the machines?",o:["Customers wait less.","They are cheaper to buy.","They prevent theft.","They create jobs."],why:"'The machines reduce waiting times'."},
+    {n:3,q:"Who finds the machines difficult?",o:["Older customers and people with disabilities","Young shoppers","Store employees","Students"],why:"'Older customers and people with disabilities often find the machines confusing'."},
+    {n:4,q:"What problem have some stores experienced?",o:["An increase in stolen products","Machines that break often","Customers complaining about prices","Fewer young customers"],why:"'Theft… more losses after adding self-checkouts'."},
+    {n:5,q:"Why are unions concerned?",o:["Jobs for new workers may disappear.","Workers must supervise too many machines.","Salaries will go down.","Stores will close."],why:"'Replacing cashier jobs, which are often first jobs for students and newcomers'."},
+    {n:6,q:"What does the speaker suggest?",o:["Offering both machines and cashiers","Removing all machines","Using only machines","Training customers to use machines"],why:"'The best approach is a mix… keep at least two staffed lanes open'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende el tema, pero confunde ventajas y desventajas.",miss:[[2,2,"El robo es un problema, no una ventaja."],[4,1,"Pensó en máquinas dañadas sin escuchar 'theft'."],[6,1,"Escuchó 'removed them' y lo tomó como recomendación."]],x:"🔁 Separa en tus notas quién dice qué: stores · customers · unions · speaker."},
+   c78:{s:"5/6",d:"Sigue los grupos, pero confunde la experiencia de otras tiendas con la opinión del hablante.",miss:[[6,1,"Que algunas tiendas quitaran las máquinas es un hecho, no la recomendación del hablante."]],x:"🎯 La opinión del hablante empieza con 'In my opinion': solo esa cuenta para la pregunta final."},
+   c1012:{s:"6/6",d:"Organiza los puntos de vista por grupo y separa los hechos de la opinión.",g:["Stores: shorter waits.","Customers: older/disabled confused.","Problem: theft · unions: first jobs.","Opinión: mix + 2 staffed lanes."]}}},
+ {intro:"Listen to a report about smartphones in schools.",scene:["📱","Talk: phones in the classroom","Speaker: Principal Rachel Dubois"],sp:{R:["Rachel Dubois","f"]},
+  secs:[{lines:[["R","[[1|Last year, several Canadian provinces introduced rules limiting cellphones in classrooms. As a high school principal, I'd like to share what I've seen since then.]]"],["R","[[2|The main reason for the ban was distraction. Teachers told us students were checking social media during lessons, and it was affecting their concentration.]]"],["R","[[3|Since the rule started, our teachers report that students participate more in class discussions, and fewer students arrive late after lunch.]]"],["R","[[4|However, some parents were unhappy. They want to be able to reach their children in an emergency.]] We solved this by letting students keep their phones in their bags, switched off, and parents can always call the school office."],["R","[[5|Not all teachers agree, either. Some use phones for learning activities, like quick online quizzes or taking photos in science class.]] So we allow phones when a teacher gives permission."],["R","[[6|My conclusion? The rule is working, but it's not the whole answer. Students also need lessons on using technology responsibly, because they'll have phones in their hands as soon as they leave school.]]"]],
+   qs:[{n:1,q:"Why is the speaker giving this talk?",o:["To share results of a phone rule at her school","To ask the government to ban phones","To sell an education app","To explain how to use social media"],why:"'I'd like to share what I've seen since then'."},
+    {n:2,q:"What was the main reason for the rule?",o:["Phones were distracting students.","Phones were being stolen.","Students were bullying each other.","Parents asked for it."],why:"'The main reason for the ban was distraction'."},
+    {n:3,q:"What change have teachers noticed?",o:["Students take part more in class.","Students get higher marks.","Students use phones at lunch.","Students arrive earlier in the morning."],why:"'Students participate more in class discussions'. Lo de llegar tarde es después del almuerzo."},
+    {n:4,q:"Why were some parents unhappy?",o:["They wanted to contact their children in emergencies.","They paid for the phones.","Their children were punished.","They were not informed."],why:"'They want to be able to reach their children in an emergency'."},
+    {n:5,q:"How does the school respond to teachers who use phones in class?",o:["Phones are allowed with a teacher's permission.","Phones are banned in all classes.","Teachers must use school tablets.","Phones are only allowed in science."],why:"'We allow phones when a teacher gives permission'."},
+    {n:6,q:"What does the speaker believe?",o:["Students also need to learn responsible technology use.","The rule should be cancelled.","Phones should be allowed everywhere.","The rule solves all problems."],why:"'Students also need lessons on using technology responsibly'."}]}],
+  levels:{c45:{s:"3/6",d:"Entiende la idea de la prohibición, pero no los detalles ni la conclusión.",miss:[[3,3,"Escuchó 'late' y 'lunch' y armó otra idea."],[5,3,"Escuchó 'science' y pensó que solo ahí se permitían."],[6,3,"No escuchó 'it's not the whole answer'."]],x:"🔁 'Not the whole answer' = no es suficiente. Las conclusiones suelen tener ese matiz."},
+   c78:{s:"5/6",d:"Sigue el informe, pero cae en la trampa de un ejemplo específico.",miss:[[5,3,"Science era solo un ejemplo; la regla es 'with teacher's permission'."]],x:"🎯 Cuando escuches 'like…' o 'for example', lo que sigue es un ejemplo, no la regla."},
+   c1012:{s:"6/6",d:"Separa razón, resultados, objeciones y respuestas, y escucha el matiz final.",g:["Razón: distraction.","Resultados: participation ↑ · less late after lunch.","Padres → office · docentes → permiso.","Conclusión: rule works + teach responsible use."]}}}
+ ]});
+
+
+
+/* ---------- Score conversion (Paragon approximate, Listening) ---------- */
+const CONV=[["35–38","10–12"],["33–35","9"],["30–33","8"],["27–31","7"],["22–28","6"],["17–23","5"],["11–18","4"],["7–12","3"],["0–7","M"]];
+function convRow(x){x=Math.round(x);return x>=35?0:x>=33?1:x>=30?2:x>=27?3:x>=22?4:x>=17?5:x>=11?6:x>=7?7:8;}
+const clbFor38=x=>CONV[convRow(x)][1];
+
+/* ---------- Audio engine (browser speech voices) ---------- */
+const SY=("speechSynthesis" in window)?window.speechSynthesis:null;
+let VOX=[],CAST={},token=0,speed=1,capOn=false;
+const BAD=/bubbles|bells|boing|zarvox|whisper|trinoids|cellos|bad news|good news|jester|organ|superstar|wobble|bahh|hysterical|junior|kathy|princess|ralph|albert|fred|grandma|grandpa/i;
+function loadVox(){if(!SY)return;try{VOX=SY.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang)&&!BAD.test(v.name))}catch(e){VOX=[]}}
+if(SY){loadVox();try{SY.addEventListener("voiceschanged",loadVox)}catch(e){SY.onvoiceschanged=loadVox}}
+function gOf(v){const n=v.name;
+  if(/\bfemale\b|samantha|karen|moira|tessa|victoria|zira|susan|serena|fiona|veena|allison|\bava\b|kate|catherine|libby|sonia|jenny|aria|natasha|clara|emma|olivia|nicky|joanna|salli|kimberly|\bivy\b|kendra|\bamy\b|google us english|hazel|linda|heather|michelle|shelley|sandy|\bflo\b|isha|nora|martha|evie|zoe|ana\b|sara|ellie|maisie|elsa|molly|libby|jane/i.test(n))return "f";
+  if(/\bmale\b|daniel|\balex\b|david|mark|rishi|aaron|arthur|oliver|thomas|george|\bguy\b|ryan|eric|brian|matthew|joey|justin|liam|gordon|\btom\b|\blee\b|james|richard|sean|william|christopher|andrew|eddy|reed|rocko|nathan|jamie|evan|steffan|roger|ethan|noah|ryan/i.test(n))return "m";
+  return "?";}
+function vscore(v){let s=0;const l=v.lang.replace("_","-");
+  if(/en-CA/i.test(l))s+=3;else if(/en-US/i.test(l))s+=2;else if(/en-GB|en-AU|en-IE|en-NZ/i.test(l))s+=1;
+  if(/natural|neural|enhanced|premium|online/i.test(v.name))s+=5;else if(/google/i.test(v.name))s+=3;return s;}
+function cast(sp){
+  loadVox();const pool=[...VOX].sort((a,b)=>vscore(b)-vscore(a));const out={},useCount=new Map();
+  Object.keys(sp).forEach(k=>{const g=sp[k][1];let list=pool.filter(v=>gOf(v)===g),match=true;
+    if(!list.length){list=pool.filter(v=>gOf(v)==="?");match=false}if(!list.length){list=pool;match=false}
+    const v=list.find(x=>!useCount.has(x))||list[0]||null;const used=v?(useCount.get(v)||0):Object.keys(out).length;if(v)useCount.set(v,used+1);
+    let p=match?1:(g==="f"?1.3:0.72);if(used)p*=used%2?1.18:0.85;out[k]={v,pitch:Math.min(2,Math.max(.1,p)),rate:1};});
+  const nv=pool.find(x=>!useCount.has(x))||pool[0]||null;out.N={v:nv,pitch:1,rate:.97};return out;}
+function sentences(t){t=t.replace(/\b(Mr|Mrs|Ms|Dr|St)\.\s/g,"$1§ ").replace(/\b([ap])\.m\./g,"$1§m§");return (t.match(/[^.!?]+[.!?]+["'’)\]]*\s*|[^.!?]+$/g)||[t]).map(s=>s.trim().replace(/§/g,".")).filter(Boolean);}
+const clean=t=>String(t).replace(/\[\[[\w,]+\|([\s\S]+?)\]\]/g,"$1").replace(/<[^>]+>/g,"");
+function stopAudio(){token++;if(SY)try{SY.cancel()}catch(e){}try{AUD.pause()}catch(e){}}
+/* Recorded audio files (a/<key>.mp3) with line start times; browser voice is only a fallback */
+const TIM={"0-0-c0":[0.0,2.97,10.59,13.81,21.7],"0-0-q1":[0.0],"0-1-c0":[0.0,3.18,6.85,11.29,14.83,19.74],"0-1-q1":[0.0],"0-2-c0":[0.0,2.73,6.7,15.39,17.18,24.95],"0-2-q1":[0.0],"0-3-c0":[0.0,3.01,5.72,9.93,12.53,18.29],"0-3-q1":[0.0],"0-4-c0":[0.0,3.27,7.53,11.1,15.79],"0-4-q1":[0.0],"1-0-c0":[0.0,4.23,8.26,19.97,23.15,32.01,42.98],"1-0-q1":[0.0],"1-0-q2":[0.0],"1-0-q3":[0.0],"1-0-c1":[0.0,8.56,12.7,18.65,23.33,33.72],"1-0-q4":[0.0],"1-0-q5":[0.0],"1-0-q6":[0.0],"1-0-c2":[0.0,7.81,11.29,18.97,20.68,27.83],"1-0-q7":[0.0],"1-0-q8":[0.0],"1-1-c0":[0.0,3.78,9.16,13.72,19.02,24.93],"1-1-q1":[0.0],"1-1-q2":[0.0],"1-1-q3":[0.0],"1-1-c1":[0.0,8.86,10.37,18.25,20.27],"1-1-q4":[0.0],"1-1-q5":[0.0],"1-1-q6":[0.0],"1-1-c2":[0.0,2.88,10.48,11.55,18.21],"1-1-q7":[0.0],"1-1-q8":[0.0],"1-2-c0":[0.0,4.16,13.1,17.95,26.72,31.69],"1-2-q1":[0.0],"1-2-q2":[0.0],"1-2-q3":[0.0],"1-2-c1":[0.0,2.07,8.3,13.83,21.43,27.49],"1-2-q4":[0.0],"1-2-q5":[0.0],"1-2-q6":[0.0],"1-2-c2":[0.0,7.53,12.65,24.86],"1-2-q7":[0.0],"1-2-q8":[0.0],"1-3-c0":[0.0,4.31,6.7,15.71,18.85,24.44],"1-3-q1":[0.0],"1-3-q2":[0.0],"1-3-q3":[0.0],"1-3-c1":[0.0,6.59,9.73,15.34,19.63],"1-3-q4":[0.0],"1-3-q5":[0.0],"1-3-q6":[0.0],"1-3-c2":[0.0,7.06,10.93,14.19],"1-3-q7":[0.0],"1-3-q8":[0.0],"1-4-c0":[0.0,2.92,10.22,12.72,18.12],"1-4-q1":[0.0],"1-4-q2":[0.0],"1-4-q3":[0.0],"1-4-c1":[0.0,2.69,9.28,12.29,16.48,21.26],"1-4-q4":[0.0],"1-4-q5":[0.0],"1-4-q6":[0.0],"1-4-c2":[0.0,7.49,10.97,18.12],"1-4-q7":[0.0],"1-4-q8":[0.0],"2-0-c0":[0.0,4.4,7.36,9.61,19.49,26.29,32.03,35.85,42.51,46.87,52.12],"2-0-q1":[0.0],"2-0-q2":[0.0],"2-0-q3":[0.0],"2-0-q4":[0.0],"2-0-q5":[0.0],"2-1-c0":[0.0,4.23,6.47,12.76,21.11,23.69,31.54,35.56,44.03,48.49],"2-1-q1":[0.0],"2-1-q2":[0.0],"2-1-q3":[0.0],"2-1-q4":[0.0],"2-1-q5":[0.0],"2-2-c0":[0.0,2.97,6.13,20.14,23.01,33.06,37.28,44.05,46.5,56.87,60.27],"2-2-q1":[0.0],"2-2-q2":[0.0],"2-2-q3":[0.0],"2-2-q4":[0.0],"2-2-q5":[0.0],"2-3-c0":[0.0,4.18,7.04,15.11,20.89,23.63,31.63,34.55,39.8,42.41],"2-3-q1":[0.0],"2-3-q2":[0.0],"2-3-q3":[0.0],"2-3-q4":[0.0],"2-3-q5":[0.0],"2-4-c0":[0.0,3.95,7.68,12.12,14.69,19.94,23.73,26.94,31.7,37.63],"2-4-q1":[0.0],"2-4-q2":[0.0],"2-4-q3":[0.0],"2-4-q4":[0.0],"2-4-q5":[0.0],"3-0-c0":[0.0,5.27,9.95,11.5,17.54,20.28,27.57,29.8,36.03,38.35,46.44,48.73,56.22,62.04],"3-0-q1":[0.0],"3-0-q2":[0.0],"3-0-q3":[0.0],"3-0-q4":[0.0],"3-0-q5":[0.0],"3-0-q6":[0.0],"3-1-c0":[0.0,4.44,8.71,13.47,16.52,20.6,23.2,28.43,29.8,35.5,39.57,45.97,49.28],"3-1-q1":[0.0],"3-1-q2":[0.0],"3-1-q3":[0.0],"3-1-q4":[0.0],"3-1-q5":[0.0],"3-1-q6":[0.0],"3-2-c0":[0.0,3.8,11.01,12.38,21.21,23.26,32.01,33.81,44.97,47.14,56.53,58.2,70.21,72.94],"3-2-q1":[0.0],"3-2-q2":[0.0],"3-2-q3":[0.0],"3-2-q4":[0.0],"3-2-q5":[0.0],"3-2-q6":[0.0],"3-3-c0":[0.0,4.82,8.0,12.85,18.25,20.55,27.89,29.88,35.17,37.44,42.39,45.59,51.76,54.77,60.32,63.94],"3-3-q1":[0.0],"3-3-q2":[0.0],"3-3-q3":[0.0],"3-3-q4":[0.0],"3-3-q5":[0.0],"3-3-q6":[0.0],"3-4-c0":[0.0,5.04,9.69,11.08,17.18,18.91,25.16,27.94,34.41,36.8,42.56,44.1,52.18,54.58],"3-4-q1":[0.0],"3-4-q2":[0.0],"3-4-q3":[0.0],"3-4-q4":[0.0],"3-4-q5":[0.0],"3-4-q6":[0.0],"4-0-c0":[0.0,1.88,8.15,13.36,24.95,30.54,37.9,48.55],"4-1-c0":[0.0,1.88,9.2,15.11,21.19,25.8,35.34,38.5],"4-2-c0":[0.0,1.88,13.83,18.12,34.57,46.99,52.04,68.09],"4-3-c0":[0.0,1.88,9.09,14.45,18.12,24.76,33.42],"4-4-c0":[0.0,1.88,10.27,15.58,23.35,29.62,38.39],"5-0-c0":[0.0,3.91,10.33,14.58,20.13,24.48,30.52,34.57,40.02,48.79,55.55,59.24],"5-1-c0":[0.0,3.71,8.77,14.28,22.73,27.87,37.9,39.72,44.2,50.22,56.64,60.03],"5-2-c0":[0.0,4.33,10.01,14.68,19.51,22.13,31.31,37.58,46.29,56.36,62.48],"5-3-c0":[0.0,3.86,7.92,13.47,18.01,23.41,27.13,35.32,38.95,41.47,46.46,50.18],"5-4-c0":[0.0,4.23,11.57,18.61,24.93,26.12,31.31,37.09,42.19,46.57,51.22,55.0,56.49],"6-0-c0":[0.0,3.03,12.55,24.35,35.53,48.22,56.46,67.77],"6-1-c0":[0.0,2.97,11.63,21.17,29.09,38.05,50.7],"6-2-c0":[0.0,3.29,19.18,29.34,46.9,64.12,86.13],"6-3-c0":[0.0,3.03,12.93,23.13,32.35,42.42,49.87],"6-4-c0":[0.0,3.05,13.25,23.07,31.67,44.7,56.35],"soundcheck":[0.0,1.69,3.82]};
+const AUD=new Audio();AUD.preload="auto";
+function playClip(key,items,cb={}){stopAudio();const my=token,st=TIM[key];
+  if(!st)return play(items,cb);
+  let last=-1;
+  const fire=()=>{if(my!==token)return;const t=AUD.currentTime;let li=0;for(let i=0;i<st.length;i++)if(t>=st[i]-0.05)li=i;
+    if(li!==last){last=li;const it=items[li]||items[items.length-1];cb.line&&cb.line(li,it.who,clean(it.text))}};
+  AUD.ontimeupdate=fire;AUD.onplaying=fire;
+  AUD.onended=()=>{if(my!==token)return;cb.end&&cb.end()};
+  AUD.onerror=()=>{if(my!==token)return;play(items,cb)};
+  AUD.defaultPlaybackRate=speed;AUD.src=`a/${key}.mp3`;AUD.playbackRate=speed;
+  AUD.onloadedmetadata=()=>{AUD.playbackRate=speed};
+  const p=AUD.play();if(p&&p.catch)p.catch(e=>{if(my!==token)return;if(e&&e.name==="NotAllowedError"&&cb.blocked)cb.blocked(()=>AUD.play());else if(e&&e.name!=="AbortError")play(items,cb)});
+  return my;}
+function play(items,cb={}){stopAudio();const my=token,q=[];
+  items.forEach((it,li)=>sentences(clean(it.text)).forEach(s=>q.push({who:it.who,text:s,li})));let i=0;
+  const next=()=>{if(my!==token)return;if(i>=q.length){cb.end&&cb.end();return;}
+    const it=q[i++];cb.line&&cb.line(it.li,it.who,it.text);
+    say(it,()=>{if(my!==token)return;setTimeout(next,(i<q.length&&q[i].li!==it.li)?420:110)});};
+  next();return my;}
+function say(it,done){const c=CAST[it.who]||CAST.N||{v:null,pitch:1,rate:1};let fired=false;
+  const words=it.text.split(/\s+/).length;
+  const fin=()=>{if(fired)return;fired=true;clearTimeout(wd);done()};
+  const wd=setTimeout(fin,(words*0.6/speed+(SY?4:0.6))*1000);
+  if(!SY){return;}
+  try{const u=new SpeechSynthesisUtterance(it.text);if(c.v){u.voice=c.v;u.lang=c.v.lang}else u.lang="en-CA";
+    u.pitch=c.pitch;u.rate=Math.max(.5,speed*(c.rate||1));u.onend=fin;u.onerror=fin;SY.speak(u);}catch(e){}}
+
+/* ---------- App ---------- */
+let ti=0,si=0,lvl="c78",tick=null,submitted=false,armed=false,ans={},steps=[],stp=0,tleft=0,startedAt=0;
+const res={},done={};
+const $=id=>document.getElementById(id);
+const T=()=>TASKS[ti];
+const S=()=>T().sets[si];
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const ev=h=>h.replace(/\[\[([\w,]+)\|([\s\S]+?)\]\]/g,(m,n,t)=>`<span class="ev" data-l="${n.split(",").join(" · ")}">${t}</span>`);
+TASKS.forEach(t=>t.sets.forEach(s=>{s.allq=s.secs.flatMap(x=>x.qs)}));
+const allQs=()=>S().allq;
+const A=q=>q.a||0;
+const heard=()=>T().mode==="heard";
+function seedRand(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
+function order(q){const idx=[...Array(q.o.length).keys()];const r=seedRand(`L${ti}-${si}-${q.n}-bl`);for(let i=idx.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}return idx;}
+const nameOf=w=>w==="N"?"Narrator":(S().sp[w]?S().sp[w][0]:w);
+
+function buildNav(){
+  $("tasknav").innerHTML=TASKS.map((t,i)=>`<button class="chip" aria-pressed="${i===ti}" data-t="${i}">${t.short}${res[i]?'<span class="ck">✓</span>':''}</button>`).join("");
+  $("tasknav").querySelectorAll("button").forEach(b=>b.onclick=()=>{ti=+b.dataset.t;si=0;reset(true)});
+  $("tname").textContent=`${T().short} · ${T().name}`;
+  $("qpick").innerHTML=T().sets.map((_,i)=>`<button class="chip" aria-pressed="${i===si}" aria-label="Práctica ${i+1}" data-q="${i}">${i+1}${done[ti+"-"+i]?'<span class="ck">✓</span>':''}</button>`).join("");
+  $("qpick").querySelectorAll("button").forEach(b=>b.onclick=()=>{si=+b.dataset.q;reset(false)});
+}
+function soundHTML(){return `<div class="sound"><b style="font-family:var(--display)">🎧 Audio</b>
+  <button class="chip" id="spd1" aria-pressed="${speed===1}">Normal (examen)</button><button class="chip" id="spd2" aria-pressed="${speed!==1}">Lenta (práctica)</button>
+  <button class="chip" id="btn-test">🔊 Prueba de sonido</button><span id="snd-msg"></span></div>`;}
+function wireSound(){
+  $("spd1").onclick=()=>{speed=1;renderGuide()};$("spd2").onclick=()=>{speed=.85;renderGuide()};
+  $("btn-test").onclick=()=>{CAST=cast({F:["Anna","f"],M:["Ben","m"]});
+    $("snd-msg").textContent="Sonando… sube el volumen si no escuchas.";
+    playClip("soundcheck",[{who:"N",text:"This is a sound check."},{who:"F",text:"Hi, can you hear me clearly?"},{who:"M",text:"And this is a second voice."}],{blocked:go=>go(),end:()=>{$("snd-msg").textContent="✅ Si escuchaste las tres voces, ya puedes empezar."}});};
+}
+function renderGuide(){const t=T(),g=t.guide;
+  $("s-intro").innerHTML=`<div class="label">Antes de empezar · Guía de ${t.short}</div>
+  <h2 style="font-size:1.35rem">🐨 ${esc(t.name)}: cómo funciona</h2>
+  <p class="lead">${g.what}</p>
+  <div class="facts">${g.facts.map(f=>`<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+  ${CRIT}<div class="callout">${g.callout}</div>
+  <h2>✅ Qué hacer y ❌ qué no hacer</h2>
+  <div class="dd"><div class="yes"><h3>✅ Haz esto</h3><ul>${g.doo.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <div class="no"><h3>❌ Evita esto</h3><ul>${g.dont.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+  <h2>⚠️ Errores comunes de estrategia</h2>
+  <ul class="fixes">${g.errors.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")}</ul>
+  <h2>🚀 Tips para boost your score</h2>
+  <div class="flow ${g.flow.length===3?'f3':''}">${g.flow.map(f=>`<div class="step"><small>${f[0]}</small><b>${esc(f[1])}</b><em>${esc(f[2])}</em></div>`).join("")}</div>
+  <div><p style="font-family:var(--display);font-weight:600;margin:0 0 8px">Palabras señal que debes reconocer al escuchar:</p><div class="phr">${g.phrases.map(p=>`<span>${esc(p)}</span>`).join("")}</div></div>
+  <ol class="tips">${g.tips.map(x=>`<li>${x}</li>`).join("")}</ol>
+  ${soundHTML()}
+  <p class="note">Usa audífonos. Como en el examen real, el audio suena <b>una sola vez</b> y no se puede pausar. Al terminar podrás escucharlo de nuevo con la transcripción.</p>
+  <button class="main" id="btn-begin">Empezar ${t.short} · Práctica ${si+1} →</button>`;
+  $("btn-begin").onclick=startTest;wireSound();
+}
+function speakersHTML(){const sp=S().sp,ks=Object.keys(sp);
+  if(T().video)return `<div class="video">${ks.map(k=>`<div class="vp" id="vp-${k}"><span class="av">${sp[k][2]||"🙂"}</span><b>${esc(sp[k][0])}</b><small>${esc(sp[k][3]||"")}</small></div>`).join("")}</div>`;
+  return `<div class="spk">${ks.map(k=>`<span id="vp-${k}">${sp[k][1]==="f"?"👩":"👨"} ${esc(sp[k][0])}</span>`).join("")}</div>`;}
+function sceneHTML(label){const s=S();return `<div class="scene"><span class="big">${s.scene[0]}</span><div><div class="label">${label}</div><b>${esc(s.scene[1])}</b>${s.scene[2]?`<p>${esc(s.scene[2])}</p>`:""}</div></div>`;}
+function header(){const t=T();$("ex-title").textContent=`Listening ${t.short}: ${t.name} · Práctica ${si+1}`;}
+function startTest(){
+  stopAudio();clearInterval(tick);submitted=false;armed=false;ans={};document.body.classList.remove("wide");
+  $("s-test").classList.remove("reviewing");$("split").hidden=true;$("ex-live").hidden=false;$("notesbox").hidden=false;$("notes").value="";
+  header();$("ex-instr").textContent=T().instr;$("ex-warn").hidden=true;
+  CAST=cast(S().sp);
+  steps=[];S().secs.forEach((sec,j)=>{steps.push({k:"clip",j});if(heard())sec.qs.forEach(q=>steps.push({k:"q",q}))});if(!heard())steps.push({k:"qs"});
+  stp=-1;startedAt=Date.now();
+  $("btn-submit").hidden=true;$("pt-count").textContent=`${allQs().length} preguntas`;$("ex-timer").textContent="🎧 Audio: 1 vez";$("ex-timer").classList.remove("low");
+  $("ex-live").innerHTML=`${sceneHTML("Prepárate")}${speakersHTML()}
+   <div class="ready"><p class="lead" style="margin:0">Cuando toques el botón, el audio empieza y ya no se detiene. ${heard()?"Después de cada audio vas a <b>escuchar</b> cada pregunta (no aparece escrita) y verás 4 opciones. Tienes 30 segundos por pregunta.":"Las preguntas aparecen en pantalla <b>después</b> del audio."}</p>
+   <button class="main" id="btn-play">▶ Empezar el audio</button></div>`;
+  $("btn-play").onclick=()=>{nextStep()};
+  show(["s-test"]);window.scrollTo(0,0);
+}
+function nextStep(){clearInterval(tick);stopAudio();stp++;if(stp>=steps.length){finish(false);return}const st=steps[stp];
+  if(st.k==="clip")renderClip(st.j);else if(st.k==="q")renderQ(st.q);else renderScreenQs();}
+function blockedBtn(go){const box=$("ex-live");if(!box||$("btn-unblock"))return;const b=document.createElement("button");b.className="main";b.id="btn-unblock";b.textContent="▶ Toca aquí para escuchar";b.onclick=()=>{b.remove();go()};box.prepend(b);}
+function renderClip(j){const s=S(),sec=s.secs[j],multi=s.secs.length>1;
+  $("btn-submit").hidden=true;
+  $("ex-live").innerHTML=`${sceneHTML(multi?`Sección ${j+1} de ${s.secs.length}`:(T().video?"Video":"Audio"))}${speakersHTML()}
+   <div class="status"><span class="wave" id="wave"><i></i><i></i><i></i><i></i></span><span id="pl-st">Escuchando… (se reproduce una sola vez)</span></div>
+   <div class="bar" role="progressbar" aria-label="Audio progress"><div class="fill" id="pl-fill"></div></div>
+   <p class="cap" id="cap" ${capOn?"":"hidden"}></p>
+   ${!capOn?`<button class="linkbtn" id="capbtn">¿No escuchas nada? Sube el volumen o activa los subtítulos</button>`:""}`;
+  if($("capbtn"))$("capbtn").onclick=()=>{capOn=true;$("cap").hidden=false;$("capbtn").remove()};
+  const items=(j===0&&s.intro?[{who:"N",text:s.intro}]:[]).concat(sec.lines.map(l=>({who:l[0],text:l[1]})));
+  const tot=items.length;$("pt-count").textContent=heard()?`Audio ${j+1}/${s.secs.length}`:"Audio";
+  playClip(`${ti}-${si}-c${j}`,items,{blocked:blockedBtn,line:(li,who,txt)=>{const f=$("pl-fill");if(f)f.style.transform=`scaleX(${(li+1)/tot})`;
+      document.querySelectorAll(".vp.on,.spk span.on").forEach(e=>e.classList.remove("on"));const v=$("vp-"+who);if(v&&T().video)v.classList.add("on");
+      const c=$("cap");if(c)c.innerHTML=`<b>${esc(nameOf(who))}:</b> ${esc(txt)}`;},
+    end:()=>{const w=$("wave");if(w)w.classList.add("off");const st=$("pl-st");if(st)st.textContent=heard()?"Fin del audio. Ahora escucha las preguntas…":"Fin del audio. Ahora responde las preguntas.";
+      document.querySelectorAll(".vp.on").forEach(e=>e.classList.remove("on"));setTimeout(()=>{if(steps[stp]&&steps[stp].k==="clip")nextStep()},1200)}});
+}
+function renderQ(q){const n=allQs().length;
+  $("pt-count").textContent=`Pregunta ${q.n}/${allQs()[n-1].n}`;
+  $("btn-submit").hidden=false;$("btn-submit").textContent="Next →";
+  $("ex-live").innerHTML=`<div class="qhead"><span class="ic" aria-hidden="true">🔊</span><div><div class="label">Question ${q.n}</div><b id="qst">Escucha la pregunta…</b></div></div>
+   <p class="cap" id="cap" ${capOn?"":"hidden"}></p>
+   <div class="ropts" role="radiogroup" aria-label="Question ${q.n}">${order(q).map(i=>`<button class="ropt" role="radio" aria-checked="${ans[q.n]===i}" data-i="${i}">${esc(q.o[i])}</button>`).join("")}</div>`;
+  $("ex-live").querySelectorAll(".ropt").forEach(b=>b.onclick=()=>{ans[q.n]=+b.dataset.i;$("ex-live").querySelectorAll(".ropt").forEach(x=>x.setAttribute("aria-checked",x===b))});
+  tleft=30;const tm=$("ex-timer");tm.textContent="⏱ 0:30";tm.classList.remove("low");
+  playClip(`${ti}-${si}-q${q.n}`,[{who:"N",text:q.q}],{blocked:blockedBtn,line:(li,w,txt)=>{const c=$("cap");if(c)c.innerHTML=`<b>Question:</b> ${esc(txt)}`},
+    end:()=>{const b=$("qst");if(b)b.textContent="Elige la mejor respuesta";clearInterval(tick);
+      const upd=()=>{tm.textContent="⏱ "+fmt(tleft);tm.classList.toggle("low",tleft<=10)};upd();
+      tick=setInterval(()=>{tleft--;upd();if(tleft<=0){clearInterval(tick);nextStep()}},1000)}});
+}
+function selHTML(q){return `<select class="dd-sel" id="sel-${ti}-${si}-${q.n}" data-n="${q.n}" aria-label="Question ${q.n}"><option value="">Select an answer</option>${order(q).map(i=>`<option value="${i}">${esc(q.o[i])}</option>`).join("")}</select>`;}
+function renderScreenQs(){const t=T();
+  $("ex-live").innerHTML=`<p class="bi" style="margin:0;color:var(--muted);font-style:italic">Choose the best answer to each question from the drop-down menu.</p>`+allQs().map(q=>`<div class="q" id="q-${q.n}"><p><b>${q.n}.</b> ${esc(q.q)}</p>${selHTML(q)}</div>`).join("");
+  $("ex-live").querySelectorAll("select").forEach(s=>s.onchange=()=>{s.setAttribute("value",s.value);if(s.value==="")delete ans[s.dataset.n];else ans[s.dataset.n]=+s.value;armed=false;$("ex-warn").hidden=true;count()});
+  count();$("btn-submit").hidden=false;$("btn-submit").textContent="Submit";
+  tleft=t.time;const tm=$("ex-timer");const upd=()=>{tm.textContent="⏱ Time remaining: "+fmt(tleft);tm.classList.toggle("low",tleft<=30)};upd();
+  tick=setInterval(()=>{tleft--;upd();if(tleft<=0){clearInterval(tick);finish(true)}},1000);
+}
+function count(){const n=allQs().length,a=allQs().filter(q=>ans[q.n]!==undefined).length;$("pt-count").textContent=`${a}/${n} respondidas`;return n-a;}
+$("btn-submit").onclick=()=>{
+  if(heard()){nextStep();return;}
+  const left=count();
+  if(left>0&&!armed){armed=true;$("ex-warn").hidden=false;$("ex-warn").textContent=`Te faltan ${left} respuesta${left>1?"s":""}. En el examen no se restan puntos por error: mejor elige algo. Toca Submit otra vez para entregar.`;return;}
+  finish(false);};
+const narrow=()=>matchMedia("(max-width:880px)").matches;
+(function(){const d=$("divider"),sp=$("split");let drag=false;
+  d.addEventListener("pointerdown",e=>{drag=true;d.setPointerCapture(e.pointerId);e.preventDefault()});
+  d.addEventListener("pointermove",e=>{if(!drag)return;const r=sp.getBoundingClientRect();const pct=Math.min(80,Math.max(20,(e.clientX-r.left)/r.width*100));sp.style.gridTemplateColumns=`minmax(0,${pct}fr) 16px minmax(0,${100-pct}fr)`});
+  const end=()=>{drag=false};d.addEventListener("pointerup",end);d.addEventListener("pointercancel",end);})();
+function transcriptHTML(){const s=S();let h=`<div class="replay"><button id="btn-replay">🔊 Escuchar de nuevo</button><span class="note">Ahora sí: escucha leyendo la transcripción.</span></div>`;let k=0;
+  s.secs.forEach((sec,j)=>{if(s.secs.length>1)h+=`<div class="sech">Sección ${j+1}</div>`;
+    if(j===0&&s.intro)h+=`<p class="tl nar" id="tl-${k++}">${esc(s.intro)}</p>`;
+    sec.lines.forEach(l=>{h+=`<p class="tl" id="tl-${k++}"><b>${esc(nameOf(l[0]))}:</b> ${ev(l[1])}</p>`});});
+  return h;}
+let replaying=false;
+function wireReplay(){const b=$("btn-replay");b.onclick=()=>{
+  if(replaying){stopAudio();replaying=false;b.textContent="🔊 Escuchar de nuevo";document.querySelectorAll(".tl.now").forEach(e=>e.classList.remove("now"));return;}
+  const s=S(),items=[];s.secs.forEach((sec,j)=>{if(j===0&&s.intro)items.push({who:"N",text:s.intro});sec.lines.forEach(l=>items.push({who:l[0],text:l[1]}))});
+  replaying=true;b.textContent="⏹ Detener";
+  const keys=s.secs.map((_,j)=>`${ti}-${si}-c${j}`),offs=[];let o=0;s.secs.forEach((sec,j)=>{offs.push(o);o+=sec.lines.length+(j===0&&s.intro?1:0)});
+  if(keys.every(k=>TIM[k])){const run=j=>{const sec=s.secs[j],its=(j===0&&s.intro?[{who:"N",text:s.intro}]:[]).concat(sec.lines.map(l=>({who:l[0],text:l[1]})));
+      playClip(keys[j],its,{blocked:go=>go(),line:li=>{document.querySelectorAll(".tl.now").forEach(e=>e.classList.remove("now"));const e=$("tl-"+(offs[j]+li));if(e){e.classList.add("now");const p=$("ex-left");if(p&&!narrow())p.scrollTop=e.offsetTop-p.offsetTop-60}},
+        end:()=>{if(j+1<keys.length)run(j+1);else{replaying=false;b.textContent="🔊 Escuchar de nuevo";document.querySelectorAll(".tl.now").forEach(e=>e.classList.remove("now"))}}})};run(0);return;}
+  play(items,{line:li=>{document.querySelectorAll(".tl.now").forEach(e=>e.classList.remove("now"));const e=$("tl-"+li);if(e){e.classList.add("now");const p=$("ex-left");if(p&&!narrow())p.scrollTop=e.offsetTop-p.offsetTop-60}},
+    end:()=>{replaying=false;b.textContent="🔊 Escuchar de nuevo";document.querySelectorAll(".tl.now").forEach(e=>e.classList.remove("now"))}});};}
+function finish(timeout){
+  clearInterval(tick);stopAudio();submitted=true;replaying=false;
+  let c=0;let h="";
+  allQs().forEach(q=>{const pick=ans[q.n],ok=pick!==undefined&&pick===A(q);if(ok)c++;
+    h+=`<div class="q ${ok?"ok":"bad"}" id="q-${q.n}"><p><b>${q.n}.</b> ${esc(q.q)} ${heard()?'<span class="note">(pregunta escuchada)</span>':""}</p><ul class="ro">${order(q).map(i=>`<li class="${i===A(q)?"right":i===pick?"wrong":""}">${i===A(q)?"✅ ":i===pick?"❌ ":""}${esc(q.o[i])}</li>`).join("")}</ul>
+    <div class="why"><span class="res ${ok?'ok':'bad'}">${ok?"✅ Correcta":"❌ "+(pick===undefined?"Sin respuesta":"Incorrecta")}</span><br>${esc(q.why)}</div></div>`});
+  const n=allQs().length;res[ti]={c,n};done[ti+"-"+si]=1;
+  if(ti>0&&window.BL){const wrong=allQs().filter(q=>ans[q.n]!==A(q)).map(q=>q.n);BL.submitObjective({skill:"Listening",task:`${T().short} · ${T().name}`,practice:si+1,correct:c,total:n,clb:clbFor38(c/n*38),detail:(heard()?"30 s por pregunta":`Tiempo: ${fmt(T().time-Math.max(0,tleft))} de ${fmt(T().time)}`)+(timeout?" (tiempo agotado)":"")+(wrong.length?` · Falló: ${wrong.join(", ")}`:"")});}
+  $("ex-live").hidden=true;$("split").hidden=false;$("split").style.gridTemplateColumns="";
+  $("ex-left").innerHTML=transcriptHTML();$("ex-right").innerHTML=h;$("ex-left").scrollTop=0;$("ex-right").scrollTop=0;wireReplay();
+  $("s-test").classList.add("reviewing");document.body.classList.add("wide");$("btn-submit").hidden=true;$("ex-warn").hidden=true;
+  $("ex-timer").classList.remove("low");$("ex-timer").textContent=heard()?"⏱ 30 s por pregunta":`⏱ Usaste ${fmt(T().time-Math.max(0,tleft))} de ${fmt(T().time)}`;
+  $("pt-count").textContent=`${c}/${n} correctas`;$("notesbox").open=!!$("notes").value.trim();
+  renderResult(c,n,timeout);buildNav();renderLevel();buildChecklist();renderConv(c,n);
+  show(["s-result","s-test","s-done","s-check"]);window.scrollTo(0,0);
+}
+function renderResult(c,n,timeout){
+  $("r-score").textContent=`${c}/${n}`;const p=c/n;let msg;
+  if(ti===0)msg="La tarea de práctica no cuenta en el examen real, pero te dice si tu método funciona.";
+  else msg=`Si mantuvieras este ritmo en las 38 preguntas del Listening, estarías cerca de <b>CLB ${clbFor38(p*38)}</b> (orientativo).`;
+  $("r-text").innerHTML=(timeout?"⏰ Se acabó el tiempo y tus respuestas se entregaron solas. ":"")+msg+(p===1?" ¡Perfecto! 🎉":"");
+  const parts=[1,2,3,4,5,6],dn=parts.filter(i=>res[i]);
+  let m=parts.map(i=>`<span class="${res[i]?'done':''}">${TASKS[i].short}: ${res[i]?res[i].c+"/"+res[i].n:"–"}</span>`).join("");
+  if(dn.length===6){const tot=dn.reduce((a,i)=>a+res[i].c,0);m+=`<span class="done"><b>Mock completo: ${tot}/38 → CLB ${clbFor38(tot)}</b></span>`;}
+  else m+=`<span>Haz las 6 partes para ver tu nivel total del mock</span>`;
+  $("r-mock").innerHTML=m;}
+function renderConv(c,n){const you=ti===0?-1:convRow(c/n*38);
+  $("conv").innerHTML=`<tr><th>Correctas (de 38)</th><th>Nivel CELPIP</th></tr>`+CONV.map((r,i)=>`<tr class="${i===you?'you':''}"><td>${r[0]}</td><td>${r[1]}${i===you?" ← tu ritmo":""}</td></tr>`).join("");}
+function renderLevel(){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.l===lvl));
+  const d=S().levels[lvl],L={c45:["CLB 4–5","Básico: entiende palabras sueltas y cae en trampas","var(--c45)"],c78:["CLB 7–8","Bueno: entiende la idea, falla en matices y cambios de opinión","var(--c78)"],c1012:["CLB 10–12","Excelente: anticipa, toma notas útiles y detecta la paráfrasis","var(--c1012)"]}[lvl];
+  const box=$("lvl");box.style.setProperty("--lvl",L[2]);const qmap=Object.fromEntries(allQs().map(q=>[q.n,q]));
+  let h=`<div class="lvlhead"><span class="badge">${L[0]} · ${d.s}</span><span>${L[1]}</span></div><p class="how">${esc(d.d)}</p>`;
+  if(d.miss){if(d.miss.length){h+=`<h2 style="font-size:1rem">❌ Dónde falló y por qué</h2><ul class="fixes">`+d.miss.map(([n,pick,y])=>{const q=qmap[n];return `<li><b>${n}.</b> Eligió <span class="w">${esc(q.o[pick])}</span> → <span class="r">${esc(q.o[A(q)])}</span><span class="why">${esc(y)}</span></li>`}).join("")+`</ul>`;}
+    h+=`<p class="extra">${esc(d.x)}</p>`;}
+  else h+=`<h2 style="font-size:1rem">⭐ Cómo lo logra</h2><ul class="fixes">`+d.g.map(g=>`<li>${esc(g)}</li>`).join("")+`</ul>`;
+  box.innerHTML=h;}
+function buildChecklist(){let h="",k=0;
+  T().check.forEach(([g,items])=>{h+=`<div class="group"><h3>${g}</h3>`;items.forEach(it=>{h+=`<label class="chk"><input type="checkbox" id="c${ti}-${k}"><span>${esc(it)}</span></label>`;k++});h+=`</div>`});
+  $("checklist").innerHTML=h;$("checklist").querySelectorAll("input").forEach(i=>i.onchange=updateScore);updateScore();}
+function updateScore(){const all=$("checklist").querySelectorAll("input").length,n=$("checklist").querySelectorAll("input:checked").length,r=n/all;
+  $("score").textContent=n+"/"+all;
+  $("verdict").textContent=r<=.45?"Estrategia en construcción. Antes de hacer más audios, practica el método: predice, toma notas cortas y escucha la idea completa antes de elegir.":r<=.78?"Buen método. En tu siguiente práctica, elige 1–2 puntos sin marcar y concéntrate solo en ellos.":"¡Método sólido! Si tu puntaje aún no lo refleja, el siguiente paso es escuchar más inglés canadiense real: podcasts, noticias y conversaciones.";}
+function show(ids){["s-intro","s-result","s-test","s-done","s-check"].forEach(s=>$(s).hidden=!ids.includes(s))}
+function reset(intro){
+  stopAudio();clearInterval(tick);replaying=false;document.body.classList.remove("wide");buildNav();renderGuide();
+  $("compare").hidden=true;$("btn-compare").setAttribute("aria-expanded","false");lvl="c78";
+  $("btn-next").textContent=si<T().sets.length-1?`Siguiente: Práctica ${si+2} →`:ti<TASKS.length-1?`Siguiente: ${TASKS[ti+1].short} →`:"Volver a la Practice Task →";
+  if(intro){show(["s-intro"]);window.scrollTo(0,0);}else startTest();
+}
+$("btn-guide").onclick=()=>reset(true);
+$("btn-again").onclick=()=>reset(false);
+$("btn-next").onclick=()=>{if(si<T().sets.length-1){si++;reset(false)}else{ti=(ti+1)%TASKS.length;si=0;reset(true)}};
+$("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
+reset(true);
+</script>
 </body>
 </html>

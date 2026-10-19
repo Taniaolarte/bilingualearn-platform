@@ -8,7 +8,7 @@ Student practice platform for Bilingualearn's CELPIP coaching.
 | `guia-celpip.html` | Todo sobre el CELPIP |
 | `onboarding.html` | CELPIP Onboarding (gap calculator, habits, session timer) |
 | `notebook.html` | Study Notebook (saved on the student's device, JSON export/import) |
-| `listening.html` | **Placeholder.** The Listening practice still has to be imported (see below) |
+| `listening.html` | Listening Practice Task + Parts 1–6 with recorded audio (`docs/a/*.mp3`). **Auto-graded.** The score goes to the coach's gradebook |
 | `reading.html` | Reading Practice Task + Parts 1–4. **Auto-graded.** The score goes to the coach's gradebook |
 | `writing.html` | Writing Tasks 1–2. Students tap **Enviar a mi coach**, and the answer is saved as a **Google Doc** |
 | `speaking.html` | Speaking Tasks 1–8. Students record in the browser, and the **audio** is saved to **Google Drive** |
@@ -79,7 +79,5 @@ Any other static host works too, as long as it uses **HTTPS**; browsers block th
 
 ## Still to do
 
-- **Listening**: the Listening artifact couldn't be opened from this account (not shared, or deleted), so `listening.html` is a placeholder. Once it's imported, its submit step needs one call, like Reading's:
-  `BL.submitObjective({skill:"Listening", task, practice, correct, total, clb, detail})`.
 - **Privacy**: the platform now collects student names, emails, writing and voice recordings, all stored in the coach's Google account. Mention this in the privacy policy you give students.
 - Practice content (tasks, answers, sample responses) lives in each page's `TASKS` array. Edit it there.

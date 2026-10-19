@@ -144,7 +144,7 @@
     const cur = nav.querySelector('[aria-current="page"]');
     if (cur) cur.scrollIntoView({ block: "nearest", inline: "center" });
   }
-  if (["reading", "writing", "speaking"].includes(page)) document.body.classList.add("blp-pad");
+  if (["listening", "reading", "writing", "speaking"].includes(page)) document.body.classList.add("blp-pad");
   bar();
 
   /* ---------- auto-graded results (Reading / Listening) ----------

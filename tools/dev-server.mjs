@@ -15,7 +15,7 @@ const SITE = path.join(ROOT, "docs");
 const DATA = path.join(ROOT, ".dev-data");
 const MOCK = process.argv.includes("--mock");
 const PORT = Number(process.env.PORT) || 5180;
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png", ".json": "application/json" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png", ".json": "application/json", ".mp3": "audio/mpeg", ".webm": "audio/webm", ".m4a": "audio/mp4" };
 
 let db = { students: [], subs: [] };
 const dbFile = path.join(DATA, "db.json");
