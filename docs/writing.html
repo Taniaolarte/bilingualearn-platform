@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CELPIP Writing Practice · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: task nav on top; one exam card at a time — guide → writing (timer + word count) → review + samples → checklist */
+:root{
+  --bg:#F3F1FB; --card:#FFFFFF; --ink:#17153B; --muted:#5B5878; --line:#E2DEF3;
+  --lav:#C4B5FD; --lav-soft:#EEE9FF; --navy:#17153B; --on-navy:#FFFFFF;
+  --rec:#E5484D; --rec-soft:#FDECEC; --ok:#2E8B6E; --ok-soft:#E3F5EE; --warn:#B7791F; --warn-soft:#FDF3E1;
+  --paper:#FFFFFF;
+  --c45:#F59E0B; --c78:#3B82F6; --c1012:#2E8B6E;
+  --display:"Fredoka",system-ui,sans-serif; --body:"Comfortaa",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33; --warn:#FBBF24; --warn-soft:#3A3018;
+  --paper:#14122F;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33; --warn:#FBBF24; --warn-soft:#3A3018;
+  --paper:#14122F;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:740px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.topbar{background:var(--navy);color:var(--on-navy);border-radius:18px;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.topbar h1{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0}
+.topbar .sub{font-size:.78rem;opacity:.8}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font-family:var(--display);font-weight:500;border:1.5px solid rgba(196,181,253,.5);background:transparent;color:var(--on-navy);border-radius:999px;min-width:40px;height:34px;padding:0 10px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}
+.subbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid rgba(196,181,253,.25);padding-top:10px}
+.subbar b{font-family:var(--display);font-weight:600;color:var(--lav)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.label{font-family:var(--display);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.prompt{font-size:1.05rem;line-height:1.75;margin:0;text-wrap:pretty}
+.to{font-family:var(--display);font-weight:600;margin:0}
+.pts{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px;font-size:1rem}
+.wordreq{font-size:.9rem;color:var(--muted);margin:0}
+.timerrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--lav-soft);border-radius:14px;padding:12px 16px}
+.timerrow .what{font-family:var(--display);font-weight:500}
+.clock{font-family:var(--display);font-weight:600;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.clock.warn{color:var(--rec)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button.main,button.ghost,button.cta{font-family:var(--display);font-weight:600;font-size:1rem;border-radius:999px;padding:12px 22px;cursor:pointer;border:2px solid var(--navy)}
+button.main{background:var(--navy);color:var(--on-navy)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.cta{background:var(--lav);color:#17153B;border-color:var(--lav);width:100%;padding:14px 18px;text-wrap:balance}
+:root[data-theme="dark"] button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--card);color:var(--ink)}
+.opt .ic{font-size:2rem;line-height:1}
+.opt b{font-family:var(--display);font-weight:600;font-size:1.02rem}
+.opt span{font-size:.92rem}
+.opt .tag{font-family:var(--display);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+/* writing area */
+.editor{border:2px solid var(--line);border-radius:16px;background:var(--paper);overflow:hidden}
+.editor:focus-within{border-color:var(--lav)}
+textarea{display:block;width:100%;min-height:340px;resize:vertical;border:0;background:transparent;color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.8;padding:16px}
+textarea:focus{outline:none}
+textarea:disabled{opacity:.55}
+.wc{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding:10px 16px;font-size:.88rem}
+.wcnum{font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;border-radius:999px;padding:3px 12px;background:var(--rec-soft);color:var(--rec)}
+.wcnum.ok{background:var(--ok-soft);color:var(--ok)}
+.wcnum.over{background:var(--warn-soft);color:var(--warn)}
+.mini{font-size:.9rem;color:var(--muted);border-left:3px solid var(--lav);padding-left:12px;margin:0}
+.done{color:var(--ok);font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
+.note{font-size:.82rem;color:var(--muted);text-align:center;margin:0}
+.mytext{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;white-space:pre-wrap;line-height:1.8;margin:0;overflow-wrap:anywhere}
+.mytext.empty{color:var(--muted);font-style:italic}
+.myhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.copy{font-family:var(--display);font-weight:600;font-size:.88rem;background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+h2{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:0;text-wrap:balance}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tabs button{font-family:var(--display);font-weight:600;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 6px;cursor:pointer;line-height:1.2}
+.tabs button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);margin-top:2px}
+.tabs button[aria-selected="true"]{border-color:var(--lvl);background:var(--lav-soft)}
+.lvl{border:2px solid var(--lvl);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lvlhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--lvl);color:#17153B;font-family:var(--display);font-weight:600;border-radius:999px;padding:3px 12px;font-size:.85rem}
+.lvlhead span:last-child{font-size:.85rem;color:var(--muted)}
+.cnt{font-family:var(--display);font-weight:500;font-size:.8rem;border:1.5px solid var(--line);border-radius:999px;padding:2px 10px;font-variant-numeric:tabular-nums}
+.answer{margin:0;line-height:1.85;font-size:1rem;white-space:pre-line}
+.answer .err{text-decoration:underline wavy var(--rec);text-underline-offset:4px;text-decoration-thickness:1.5px}
+.answer mark{background:var(--ok-soft);color:var(--ink);border-radius:4px;padding:0 3px}
+.fixes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.fixes li{background:var(--lav-soft);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.fixes .w{color:var(--rec);text-decoration:line-through;font-weight:700}
+.fixes .r{color:var(--ok);font-weight:700}
+.fixes .why{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.extra{font-size:.88rem;background:var(--rec-soft);border-radius:12px;padding:10px 12px;margin:0}
+.group{display:flex;flex-direction:column;gap:6px}
+.group h3{font-family:var(--display);font-weight:600;font-size:.95rem;margin:4px 0 2px;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+.chk:hover{background:var(--lav-soft)}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok);flex:none}
+.result{border-radius:14px;padding:14px 16px;background:var(--navy);color:var(--on-navy);display:flex;gap:14px;align-items:center}
+.score{font-family:var(--display);font-weight:600;font-size:1.8rem;font-variant-numeric:tabular-nums;color:var(--lav);flex:none}
+.result p{margin:0;font-size:.9rem}
+.intro p{margin:0}
+.lead{font-size:1rem;line-height:1.75}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:var(--lav-soft);border-radius:14px;padding:12px;text-align:center}
+.fact b{display:block;font-family:var(--display);font-weight:600;font-size:1.4rem}
+.fact span{font-size:.8rem;color:var(--muted)}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crit div{border:1px solid var(--line);border-radius:14px;padding:12px}
+.crit b{font-family:var(--display);font-weight:600;display:block}
+.crit span{font-size:.86rem;color:var(--muted)}
+.callout{background:var(--navy);color:var(--on-navy);border-radius:16px;padding:14px 16px;font-size:.92rem}
+.callout strong{color:var(--lav);font-family:var(--display);font-weight:600}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd > div{border-radius:16px;padding:14px;min-width:0}
+.dd .yes{background:var(--ok-soft)} .dd .no{background:var(--rec-soft)}
+.dd h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0 0 6px}
+.dd ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:.88rem}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.flow.f5{grid-template-columns:repeat(5,1fr)}
+.step{border:2px solid var(--lav);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.step b{font-family:var(--display);font-weight:600}
+.step small{color:var(--muted);font-size:.78rem}
+.step em{font-size:.82rem;font-style:normal}
+.phr{display:flex;flex-wrap:wrap;gap:6px}
+.phr span{background:var(--lav-soft);border-radius:999px;padding:5px 12px;font-size:.86rem}
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table.reg{border-collapse:collapse;width:100%;min-width:520px;font-size:.86rem}
+table.reg th,table.reg td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.reg tr:last-child td{border-bottom:0}
+table.reg th{font-family:var(--display);font-weight:600;background:var(--lav-soft)}
+table.reg td:first-child{font-family:var(--display);font-weight:600;color:var(--muted)}
+.topbtn{font-family:var(--display);font-weight:500;background:transparent;color:var(--on-navy);border:1.5px solid rgba(196,181,253,.5);border-radius:999px;padding:5px 12px;cursor:pointer}
+footer{text-align:center;font-family:var(--display);font-weight:500;color:var(--muted);font-size:.85rem}
+@media (max-width:560px){.crit,.dd,.opts{grid-template-columns:1fr}.flow,.flow.f5{grid-template-columns:1fr 1fr}.tabs button{font-size:.9rem}.card{padding:18px}}
+</style>
+</head>
+<body data-page="writing">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <h1>CELPIP Writing Practice</h1>
+      <div class="sub">Tasks 1–2 · 5 prácticas por tarea · Original practice by Bilingualearn</div>
+    </div>
+    <div class="row" id="tasknav" role="group" aria-label="Choose a task"></div>
+    <div class="subbar">
+      <span><b id="tname"></b></span>
+      <div class="row"><button class="topbtn" id="btn-guide">📘 Guía</button><span class="row" id="qpick" role="group" aria-label="Choose a question"></span></div>
+    </div>
+  </header>
+
+  <section class="card intro" id="s-intro"></section>
+
+  <section class="card" id="s-write" hidden>
+    <div class="label" id="w-label"></div>
+    <p class="prompt" id="w-prompt"></p>
+    <div id="w-ctx"></div>
+    <p class="wordreq">✏️ Write about 150–200 words.</p>
+    <div class="timerrow"><span class="what" id="w-what"></span><span class="clock" id="w-clock"></span></div>
+    <div class="editor">
+      <textarea id="draft" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="sentences" aria-label="Your response" placeholder="Presiona Start para empezar a escribir…" disabled></textarea>
+      <div class="wc"><span>Word count</span><span class="wcnum" id="wc">0</span></div>
+    </div>
+    <div class="btns">
+      <button class="main" id="btn-start">Start</button>
+      <button class="main" id="btn-finish" hidden>Terminé ✓</button>
+      <button class="ghost" id="btn-clear">Borrar texto</button>
+    </div>
+    <p class="note">Sin corrector ortográfico, igual que en el examen real. Tu borrador se guarda en este dispositivo hasta que lo envíes a tu coach.</p>
+  </section>
+
+  <section class="card" id="s-done" hidden>
+    <p class="done" id="done-msg">✅ Time's up!</p>
+    <p class="mini" id="done-prompt"></p>
+    <div class="myhead"><h2>📝 Tu respuesta <span class="cnt" id="my-cnt"></span></h2><button class="copy" id="btn-copy">Copiar texto</button></div>
+    <p class="mytext" id="mytext"></p>
+    <div id="bl-send"></div>
+    <button class="cta" id="btn-compare" aria-expanded="false">📊 Compara tu texto con el del score que quieres lograr</button>
+    <div id="compare" hidden>
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-l="c45" style="--lvl:var(--c45)">CLB 4–5<small>Básico</small></button>
+        <button role="tab" data-l="c78" style="--lvl:var(--c78)">CLB 7–8<small>Bueno</small></button>
+        <button role="tab" data-l="c1012" style="--lvl:var(--c1012)">CLB 10–12<small>Excelente</small></button>
+      </div>
+      <div class="lvl" id="lvl"></div>
+    </div>
+  </section>
+
+  <section class="card" id="s-check" hidden>
+    <div>
+      <h2>✍️ Checklist de autoevaluación</h2>
+      <p class="note" style="text-align:left;margin-top:4px">Lee tu texto con calma y marca lo que sí hiciste.</p>
+    </div>
+    <div id="checklist"></div>
+    <div class="result"><span class="score" id="score"></span><p id="verdict"></p></div>
+    <div class="btns">
+      <button class="main" id="btn-next">Next question</button>
+      <button class="ghost" id="btn-again">Try this one again</button>
+    </div>
+  </section>
+
+  <footer>@bilingualearn.au</footer>
+</div>
+
+<script>
+const CRIT=`<h2>🎯 ¿Qué valoran los examinadores?</h2>
+<div class="crit">
+<div><b>Content / Coherence</b><span>Ideas claras, ordenadas en párrafos, con detalles y ejemplos.</span></div>
+<div><b>Vocabulary</b><span>Palabras precisas y variadas, bien combinadas (colocaciones).</span></div>
+<div><b>Readability</b><span>Gramática, ortografía, puntuación y conectores que hacen fácil la lectura.</span></div>
+<div><b>Task Fulfillment</b><span>Cubrir todo lo que se pide, con el tono correcto y entre 150 y 200 palabras.</span></div></div>`;
+
+const REG=`<h2>🎩 Elige el tono antes de escribir</h2>
+<div class="tblwrap"><table class="reg">
+<tr><th></th><th>Formal</th><th>Semi-formal</th><th>Informal</th></tr>
+<tr><td>¿A quién?</td><td>Empresa, jefe, autoridad, alguien que no conoces</td><td>Vecino, administrador del edificio, profesor, colega</td><td>Amigo, familiar</td></tr>
+<tr><td>Saludo</td><td>Dear Sir or Madam, · Dear Ms. Lee,</td><td>Dear Mr. Harris, · Hello Ms. Ortiz,</td><td>Hi Camila, · Hey Tomás,</td></tr>
+<tr><td>Apertura</td><td>I am writing to…</td><td>I'm writing about… · Thank you for…</td><td>How are you? · Guess what!</td></tr>
+<tr><td>Cierre</td><td>I look forward to hearing from you.</td><td>Thanks again for your help.</td><td>Can't wait to see you!</td></tr>
+<tr><td>Despedida</td><td>Yours sincerely, · Kind regards,</td><td>Regards, · Best wishes,</td><td>Cheers, · Lots of love,</td></tr>
+</table></div>`;
+
+const TASKS=[
+/* ===== TASK 1 ===== */
+{name:"Writing an Email",time:27,
+ guide:{what:"Vas a leer una situación y escribir un <strong>email de 150–200 palabras</strong>. La tarea siempre trae <strong>3 puntos</strong> que debes cubrir. Puede ser formal (a una empresa o a tu jefe), semi-formal (al administrador del edificio, a un vecino) o informal (a un amigo).",
+  facts:[["27 min","para escribir"],["150–200","palabras"],["3 puntos","obligatorios"]],
+  callout:"<strong>💡 La clave: los 3 puntos + el tono correcto.</strong> Si olvidas un punto, tu puntaje baja aunque tu inglés sea muy bueno. Antes de escribir, piensa a quién le escribes: eso decide el saludo, el cierre y el vocabulario.",
+  extra:REG,
+  doo:["Lee la tarea dos veces y subraya los 3 puntos.","Escribe un párrafo por punto, con detalles concretos (fechas, números, nombres).","Di para qué escribes en la primera oración: I'm writing to…","Mantén el mismo tono de principio a fin.","Une ideas con conectores: However, As a result, In addition.","Deja 4–5 minutos para revisar: no hay corrector."],
+  dont:["Saltarte uno de los 3 puntos.","Escribir menos de 150 palabras o pasarte mucho de 200.","Usar jerga en un email formal (wanna, gonna, u).","Sonar grosero o amenazante en una queja.","Copiar frases completas de la tarea.","Escribir un solo bloque de texto sin párrafos."],
+  errors:[["I'm writing you","I'm writing to you","Write to someone."],["I am agree","I agree","Agree es un verbo: no lleva 'am'."],["since 3 years","for 3 years","For + duración; since + un punto en el tiempo."],["informations · advices","information · advice","Son incontables: nunca llevan -s."],["Is broken","It is broken","En inglés la oración siempre necesita sujeto."],["Dear Mr. John,","Dear Mr. Smith,","Mr. / Ms. van con el apellido, no con el nombre."],["Waiting for your answer.","I look forward to hearing from you.","El cierre formal natural en inglés."]],
+  flow:[["≈25 palabras","Apertura","Saludo + para qué escribes"],["≈45 palabras","Punto 1","First of all,…"],["≈45 palabras","Punto 2","In addition,…"],["≈45 palabras","Punto 3","I would therefore like…"],["≈15 palabras","Cierre","Despedida + tu nombre"]],
+  phrases:["I'm writing to…","I would appreciate it if…","Could you please let me know…?","Unfortunately,…","I was wondering if…","I look forward to hearing from you."],
+  tips:["Plan de tiempo: 3–4 min para planear (2 ideas por punto), 18–20 min para escribir y 4–5 min para revisar.","Los detalles concretos suben tu puntaje: <em>on May 3rd, order #55210, $799, two weeks late</em> en vez de 'some time ago' o 'a lot of money'.","Combina oraciones cortas y largas con <em>which, although, because, so that</em>.","Revisa siempre: sujeto en cada oración, -s en tercera persona, verbos en pasado y preposiciones (on Monday, in June, at 5 p.m.).","Después, compara tu texto con los ejemplos CLB y usa el checklist del final."]},
+ check:[["Contenido y coherencia",["Expliqué para qué escribo en el primer párrafo","Cubrí los 3 puntos de la tarea","Cada punto tiene detalles concretos (fechas, números, nombres)","Usé un párrafo por punto","Usé conectores (However, As a result, In addition)","Cerré diciendo qué espero que pase"]],
+  ["Vocabulario",["Usé palabras precisas, no solo good / bad / things","Casi no repetí las mismas palabras","Usé colocaciones correctas (make a decision, pay attention)"]],
+  ["Legibilidad (Readability)",["Todas las oraciones tienen sujeto y verbo","Usé bien los tiempos verbales (pasado, futuro, condicional)","Revisé preposiciones (on Monday, in June, at 5 p.m.)","Revisé ortografía, mayúsculas y puntuación"]],
+  ["Cumplimiento de la tarea",["Usé el tono correcto (formal, semi-formal o informal)","El saludo y la despedida van con ese tono","Escribí entre 150 y 200 palabras","Terminé dentro de los 27 minutos"]]],
+ qs:[
+{p:"You recently bought a new washing machine from an online store called BrightHome. It arrived two weeks late, and after it was installed, you noticed that the door does not close properly.",
+ to:"Write an email to the customer service manager. In your email:",
+ pts:["describe what you bought and when","explain the problems you have had","say what you would like the company to do"],
+ c45:{t:`Hello,
+{{I write you}} because I have a problem. I {{buy}} a washing machine in your store {{the last month}}. {{Is}} a white machine.
+The machine {{arrive}} two weeks late. Also the door {{no close good}} and the water {{go out}}. {{Is very bad}}.
+I want {{that you change}} the machine or {{return me the money}}. Please answer me fast.
+Thank you
+Carlos`,
+  f:[["I write you","I'm writing to you","Write to someone, y en presente continuo."],["buy","bought","La compra ya pasó: pasado."],["the last month","last month","Sin 'the'."],["Is · Is very bad","It is · This is unacceptable","Falta el sujeto; y 'very bad' es poco preciso."],["arrive · go out","arrived · leaks out","Pasado; y 'leak' = gotear o salirse el agua."],["no close good","doesn't close properly","Negativo con does not; good es adjetivo, properly es adverbio."],["that you change","you to replace","Want + persona + to + verbo."],["return me the money","give me a refund","Refund = reembolso."]],
+  x:"📝 Muy corto (mínimo 150 palabras). Faltan detalles (fecha exacta, número de pedido, precio) y 'answer me fast' suena brusco en un email formal."},
+ c78:{t:`Dear Customer Service Manager,
+I am writing to complain about a washing machine that I bought from your website. I ordered a BrightHome 8 kg front-loader on May 3rd, and the order number is #55210. The delivery date was May 10th, but it arrived on May 24th, two weeks {{after}}.
+When the technician installed it, I noticed that the door does not close properly. Every time I use the machine, water {{comes out in the floor}}, so I have to clean the laundry room after every wash. I called your company {{two times}}, but nobody gave me a solution. {{I am very angry because}} I paid $799 for a machine that I cannot use properly.
+For this reason, I would like you to send a technician to repair the door as soon as possible, or replace the machine with a new one. I would also appreciate {{a discount for}} the delay.
+{{I wait for your answer.}}
+Sincerely,
+Carlos Ramírez`,
+  f:[["two weeks after","two weeks late","Late = tarde, con retraso."],["comes out in the floor","leaks onto the floor","Leak + onto para indicar hacia dónde va el agua."],["two times","twice","Más natural y preciso."],["I am very angry because","I am very disappointed, as","En un email formal, 'disappointed' mantiene el tono profesional."],["a discount for","some compensation for","Compensation es la palabra formal para este caso."],["I wait for your answer.","I look forward to hearing from you.","Calco del español 'Espero su respuesta'."]],
+  x:"✅ Cubre los 3 puntos con detalles concretos. Los errores son de colocación y de tono, no de estructura."},
+ c1012:{t:`((Dear Customer Service Manager,))
+((I am writing to express my disappointment with)) a washing machine I recently purchased from your online store. On May 3rd, I ordered a BrightHome 8 kg front-loading model (order #55210) for $799, and I was promised delivery by May 10th.
+((Unfortunately, the machine did not arrive until)) May 24th, two weeks later than scheduled, so I had to take my laundry to a laundromat several times. ((To make matters worse,)) once it was installed, I discovered that the door does not seal properly. ((As a result,)) water leaks onto the floor during every wash cycle. I have contacted your support line twice, ((but the issue remains unresolved.))
+((I would therefore appreciate it if)) you could send a technician to repair the door within the next week. If this is not possible, I would like the machine to be replaced with a new unit. ((Given the inconvenience caused by the delay,)) I would also expect partial compensation, such as a refund of the delivery fee.
+((I look forward to your prompt response.))
+Yours sincerely,
+Carlos Ramírez`,
+  g:["El propósito queda claro desde la primera línea.","Detalles concretos: fechas, número de pedido y precio.","Conectores avanzados: To make matters worse, As a result, therefore.","Peticiones firmes pero educadas, con una alternativa (If this is not possible…).","Tono formal constante de principio a fin."]}},
+
+{p:"Your friend Camila is coming to visit your city for one week next month. It will be her first time there.",
+ to:"Write an email to Camila. In your email:",
+ pts:["recommend some places she should visit","explain the best way to get around the city","offer to help her with something during her stay"],
+ c45:{t:`Hi Camila!
+How are you? I am very happy {{for}} your visit. My city is very beautiful.
+You can visit the beach, {{is very nice}}, and the museum. Also the market {{in the Saturday}}, {{there is many}} food.
+For {{move}} in the city you {{can to take}} the bus or the train. The taxi is expensive.
+{{If you want I can help you.}}
+See you soon,
+Andrés`,
+  f:[["happy for","happy about","Happy about something."],["is very nice","it's really nice","Falta el sujeto."],["in the Saturday","on Saturdays","Días: on, sin 'the'."],["there is many","there's lots of","Food es incontable: lots of."],["For move","To get around","Get around = moverse por la ciudad."],["can to take","can take","Después de can, verbo sin 'to'."],["If you want I can help you.","I can pick you up from the airport.","Demasiado vago: la tarea pide ofrecer ayuda con algo concreto."]],
+  x:"📝 Muy corto y vago: los 3 puntos aparecen, pero sin detalles ni razones."},
+ c78:{t:`Hi Camila,
+I'm so excited that you're finally coming to Melbourne next month! I'm sure you'll love it.
+There are many places that you have to visit. First, you should go to the Queen Victoria Market, where you can find fresh food and souvenirs. {{Also you must to visit}} the Royal Botanic Gardens, {{that are}} beautiful and free. If you like the beach, St Kilda is perfect for a sunset walk, and there are many nice cafés there.
+About transport, the best way to {{move around}} is the tram. In the city centre it's free, and outside you need a myki card, {{that you can buy}} at any 7-Eleven. I don't recommend {{to rent}} a car because parking is very expensive.
+Finally, I can pick you up at the airport when you arrive. I can also {{borrow you}} my myki card so you don't have to buy one.
+Can't wait to see you!
+Hugs,
+Andrés`,
+  f:[["Also you must to visit","You also have to visit","Must sin 'to'; y also va antes del verbo."],["that are · that you can buy",", which are · , which you can buy","Después de una coma se usa which, no that."],["move around","get around","Colocación natural para la ciudad."],["recommend to rent","recommend renting","Recommend + -ing."],["borrow you","lend you","Lend = prestar (dar); borrow = pedir prestado."]],
+  x:"✅ Cubre los 3 puntos con ejemplos reales. Errores típicos: lend/borrow y 'that' después de coma."},
+ c1012:{t:`((Hi Camila,))
+((I can't believe you're finally coming to Melbourne!)) A whole week is perfect to get a real feel for the city.
+((There are a few places you simply can't miss.)) Start with the Queen Victoria Market, ideally on a Saturday morning when it's buzzing with stalls selling fresh produce and souvenirs. ((If the weather is nice,)) the Royal Botanic Gardens are great for a picnic, and St Kilda beach is ((stunning at sunset.))
+((Getting around is easy.)) Trams are by far the best option: they're free within the city centre, and for longer trips you'll just need a myki card, which you can top up at any 7-Eleven. ((I'd avoid renting a car,)) since parking in the CBD costs a fortune.
+((As for me,)) I'd love to pick you up from the airport, so just send me your flight details. I'm also happy to lend you my spare myki card ((to save you the hassle.))
+((Counting down the days!))
+Lots of love,
+Andrés`,
+  g:["Tono informal natural: contracciones, exclamaciones, 'costs a fortune'.","Cada recomendación dice cuándo ir y por qué.","Transiciones claras entre los 3 puntos (Getting around is easy / As for me).","Oferta de ayuda concreta: recogerla en el aeropuerto y prestarle la tarjeta.","Cierre cálido, apropiado para una amiga."]}},
+
+{p:"The manager of your apartment building, Mr. Harris, has announced that the underground car park will be closed for repairs for three weeks.",
+ to:"Write an email to Mr. Harris. In your email:",
+ pts:["explain how this closure will affect you","ask for information about the repairs","suggest a solution for residents during the closure"],
+ c45:{t:`Dear {{Harris}},
+I live in {{the apartment 12}}. I read about the car park. {{Is a big problem for me}} because I work {{in the night}} and {{I arrive at my house}} at 2 am.
+{{When finish the repairs?}} {{Why is three weeks?}}
+I think {{is a good idea use}} {{the parking of the supermarket}}.
+Thanks,
+Diana`,
+  f:[["Dear Harris","Dear Mr. Harris","Con el apellido siempre va Mr. / Ms."],["the apartment 12","Apartment 12","Número de apartamento sin 'the' y con mayúscula."],["Is a big problem for me","It's a big problem for me","Falta el sujeto."],["in the night","at night","Expresión fija."],["I arrive at my house","I get home","Get home = llegar a casa."],["When finish the repairs?","When will the repairs finish?","Las preguntas necesitan auxiliar (will, do, does)."],["Why is three weeks?","Why will it take three weeks?","Take = tardar."],["is a good idea use","it would be a good idea to use","Sujeto + to antes del verbo."],["the parking of the supermarket","the supermarket car park","En inglés el sustantivo que describe va primero."]],
+  x:"📝 Muy corto. Las preguntas están mal formadas y la solución no explica cómo funcionaría."},
+ c78:{t:`Dear Mr. Harris,
+I am writing {{about the notice for}} the car park closure. I live in Apartment 12 and I park my car there every day.
+This closure will be a big problem for me because I work night shifts at a hospital and I finish at 2 a.m. Parking on the street at that time is not safe, and {{normally}} there are no free spaces near the building after 8 p.m.
+I would like some more information about the repairs. {{When exactly they will start}}, and is there a chance that they will take more than three weeks? Also, will we receive {{a discount in}} our building fees during this time?
+I have a suggestion. {{Maybe the building can}} make an agreement with the supermarket next door so residents can use their car park at night. {{It is empty in the nights.}}
+Thank you for your help.
+Regards,
+Diana Torres`,
+  f:[["notice for","notice about","A notice about something."],["normally","usually","Para hábitos, usually suena más natural."],["When exactly they will start","When exactly will they start","En preguntas directas, el auxiliar va antes del sujeto."],["a discount in","a discount on","Discount on something."],["Maybe the building can","Perhaps building management could","Could es más cortés para sugerir."],["It is empty in the nights.","It is usually empty at night.","At night, siempre en singular."]],
+  x:"✅ Buena organización y tono adecuado. Errores en el orden de las preguntas y en preposiciones."},
+ c1012:{t:`((Dear Mr. Harris,))
+((Thank you for letting us know about)) the upcoming closure of the underground car park. ((I'm writing to explain how it will affect me)) and to share a possible solution.
+As a nurse working night shifts, I usually get home around 2 a.m. ((At that hour,)) finding a parking spot on our street is almost impossible, and ((I don't feel comfortable)) walking several blocks alone in the dark. Three weeks without a safe place to park will be quite stressful.
+((Could you please let me know)) the exact dates of the repairs and what work is being carried out? ((I'd also like to know whether)) residents will receive a reduction in building fees, since we'll be paying for a service we can't use.
+((One option might be to)) arrange a temporary agreement with the supermarket next door. Their car park is ((practically empty)) overnight, so residents could use it between 6 p.m. and 8 a.m. ((I'd be happy to help)) contact the store manager if that would be useful.
+((Kind regards,))
+Diana Torres
+Apartment 12`,
+  g:["Tono semi-formal: amable pero claro (Could you please…, I'd also like to know whether…).","Preguntas indirectas bien construidas.","Solución realista y detallada (horario 6 p.m.–8 a.m.).","Se ofrece a ayudar: muestra actitud colaborativa.","Vocabulario preciso: night shifts, carried out, overnight."]}},
+
+{p:"You would like to take a two-week professional course that will help you in your job. However, the course takes place during your normal working hours.",
+ to:"Write an email to your manager, Ms. Lee. In your email:",
+ pts:["describe the course","explain how it will benefit the company","suggest how your work can be covered while you are away"],
+ c45:{t:`{{Hi Ms. Lee}},
+I want {{make a course of Excel}}. {{Is}} two weeks, {{in the June}}. The course is in the morning.
+This course is good for the company because I {{will can}} do the reports {{more fast}}.
+My {{partner}} Tom can do my work. {{He know}} my work.
+{{Please say me if is ok.}}
+Thank you,
+Felipe`,
+  f:[["Hi Ms. Lee","Dear Ms. Lee","Para pedir algo a tu jefa, mejor un saludo formal."],["make a course of Excel","take an Excel course","Take a course; Excel va antes de course."],["Is","It is","Falta el sujeto."],["in the June","in June","Meses sin 'the'."],["will can","will be able to","Can no tiene futuro con will."],["more fast","faster","Adjetivos cortos: -er."],["partner","colleague","Partner = pareja o socio."],["He know","He knows","Tercera persona: -s."],["Please say me if is ok.","Please let me know if this is OK.","Let me know = avísame."]],
+  x:"📝 Muy corto. No explica bien el curso ni cómo ayuda a la empresa, y el plan para cubrir el trabajo es una sola frase."},
+ c78:{t:`Dear Ms. Lee,
+I am writing to ask {{for permission for take}} a two-week course in advanced Excel and data analysis. It will be from June 9th to June 20th, from 9 a.m. to 1 p.m., at the Business Training Centre {{in the downtown}}.
+I think this course will be very useful for the company. {{Actually}}, I spend many hours every week preparing the sales reports manually. After the course, I will be able to automate many of these reports, so I will have more time for other tasks. I can also teach my colleagues what I learn, so the whole team will benefit from the course.
+About my work, I talked with Tom and he {{is agree}} to cover my morning tasks during these two weeks. I will work in the afternoons {{like always}}, so I can answer emails and finish {{the urgent things}}.
+I hope you can approve my request.
+Best regards,
+Felipe Gómez`,
+  f:[["for permission for take","for permission to take","Permission + to + verbo."],["in the downtown","downtown","Downtown funciona como adverbio: sin 'in the'."],["Actually","At the moment","Falso amigo: actually = en realidad."],["is agree","has agreed","Agree es verbo."],["like always","as usual","Expresión fija."],["the urgent things","any urgent tasks","Tasks es más preciso que things."]],
+  x:"✅ Bien organizado y detallado. Errores de falsos amigos (actually) y calcos del español."},
+ c1012:{t:`((Dear Ms. Lee,))
+((I would like to request your approval to attend)) a two-week course in advanced Excel and data analysis, which will run from June 9th to 20th at the Business Training Centre downtown. Classes take place from 9 a.m. to 1 p.m., ((so I would only be away in the mornings.))
+((I am confident that this training would benefit the whole team.)) At present, I spend around six hours a week building our sales reports by hand. The course covers automation tools and dashboards, ((which would allow me to)) produce the same reports in a fraction of the time and with fewer errors. ((I would also be happy to)) run a short workshop afterwards to share what I have learned with my colleagues.
+((Regarding my responsibilities,)) Tom has kindly agreed to handle client calls in the mornings, and I will be back at my desk every afternoon to deal with any urgent matters. I will also prepare a detailed handover document before the course starts.
+((Thank you for considering my request.))
+Kind regards,
+Felipe Gómez`,
+  g:["La petición formal aparece desde la primera oración.","Beneficios medibles (six hours a week, fewer errors).","Plan concreto para cubrir el trabajo: anticipa las dudas de la jefa.","Vocabulario profesional: handover document, deal with, at present.","Oraciones con which / so que hacen la lectura fluida."]}},
+
+{p:"Last Saturday, you promised to help your friend Tomás move to his new apartment, but you were not able to go.",
+ to:"Write an email to Tomás. In your email:",
+ pts:["apologize and explain why you could not go","describe how you feel about missing it","offer to do something to make up for it"],
+ c45:{t:`Hi Tomás,
+{{Sorry, sorry.}} I {{no could}} go to help you {{the Saturday}}. My son was sick and I {{stayed in my house}} with him.
+I feel very bad. You are my friend and I {{no help}} you.
+I {{invite you to eat pizza}} {{the next week}}. Also I can help you {{to put}} the furniture.
+Your friend,
+Mario`,
+  f:[["Sorry, sorry.","I'm so sorry.","Disculpa completa y natural."],["no could · no help","couldn't · didn't help","Negativo en pasado con could not / did not."],["the Saturday","on Saturday","Días con on, sin 'the'."],["stayed in my house","stayed home","Expresión natural."],["invite you to eat pizza","I'd like to treat you to pizza","Treat someone = invitar (pagar)."],["the next week","next week","Sin 'the'."],["to put","put together","Put together furniture = armar muebles."]],
+  x:"📝 Explica el motivo, pero cada punto tiene una sola idea. Muy corto."},
+ c78:{t:`Hi Tomás,
+I'm really sorry {{that I didn't go}} to help you with the move last Saturday. On Friday night my son {{got fever}}, and in the morning {{he was worst}}, so I had to take him to the doctor. Fortunately it was only a virus and he is fine now.
+I feel terrible because I promised to help you, and I know that moving is very tiring. I imagine that you had to carry all the heavy things with fewer people. I hope you are not angry with me, because our friendship is very important to me.
+To make it up to you, I would like to help you organize your new apartment this weekend. I can bring my drill and hang your shelves and pictures. After that, {{I invite you}} to dinner at that Peruvian restaurant you like.
+Let me know what day {{is better}} for you.
+Cheers,
+Mario`,
+  f:[["that I didn't go","that I couldn't make it","Make it = poder ir / llegar."],["got fever","came down with a fever","Colocación natural; fever lleva 'a'."],["he was worst","he was worse","Worse = peor (comparativo); worst = el peor."],["I invite you","dinner's on me","'I invite you' no se usa para pagar algo."],["is better","works better","Para fechas: does Saturday work for you?"]],
+  x:"✅ Cubre los 3 puntos con detalles. Errores de colocación (got fever) y comparativos."},
+ c1012:{t:`((Hi Tomás,))
+((I owe you a huge apology)) for not showing up on Saturday. ((I know you were counting on me.)) On Friday night my son came down with a high fever, and by Saturday morning he was so unwell that I had to take him to an after-hours clinic. ((Thankfully,)) it turned out to be just a virus, and he's already back to his usual self.
+((Still, I feel awful about letting you down.)) Moving is exhausting at the best of times, and I can only imagine how much harder it was with one less pair of hands. ((I should have called you straight away)) instead of just sending a text.
+((Let me make it up to you.)) How about I come over this Saturday and help you finish settling in? I'll bring my drill so we can put up your shelves and hang your pictures. ((Once we're done, dinner is on me)) at that Peruvian place you love.
+((Just let me know if Saturday works for you.))
+Cheers,
+Mario`,
+  g:["Disculpa sincera con una explicación clara.","Reconoce el impacto en su amigo y asume responsabilidad (I should have…).","Oferta concreta y generosa para compensar.","Expresiones naturales: let you down, at the best of times, dinner is on me.","Tono informal pero cuidado."]}}
+]},
+
+/* ===== TASK 2 ===== */
+{name:"Responding to Survey Questions",time:26,
+ guide:{what:"Vas a leer una situación con una encuesta y <strong>dos opciones (A y B)</strong>. Debes elegir una y explicar por qué la prefieres en <strong>150–200 palabras</strong>. No hay respuesta correcta: se evalúa qué tan bien defiendes tu elección.",
+  facts:[["26 min","para escribir"],["150–200","palabras"],["1 opción","bien defendida"]],
+  callout:"<strong>💡 La clave: elige la opción que puedas defender mejor, no la que 'suena más correcta'.</strong> Si tienes más razones y ejemplos para la B, elige la B. Deja clara tu elección desde la primera oración y no cambies de opinión.",
+  doo:["Di tu elección en la primera oración.","Da 2 razones, cada una en su propio párrafo, con un ejemplo.","Usa ejemplos personales o de tu comunidad: son válidos y suenan reales.","Menciona brevemente la otra opción y explica por qué es menos conveniente.","Cierra repitiendo tu elección con otras palabras.","Usa vocabulario del tema (residents, budget, commuters, facilities)."],
+  dont:["Elegir las dos opciones o quedarte en el medio ('both are good').","Cambiar de opinión a mitad del texto.","Escribir solo sobre lo malo de la otra opción.","Dar razones generales sin ejemplos ('it's better for everyone').","Escribirlo como email (Dear… / firma).","Olvidar la conclusión."],
+  errors:[["I prefer the option A","I prefer Option A","Sin 'the' antes de Option A."],["In my opinion, I think…","In my opinion, … · I think…","Redundante: usa solo uno."],["People is","People are","People es plural."],["more cheap · more easy","cheaper · easier","Adjetivos cortos: -er."],["depend of","depend on","Preposición correcta."],["discuss about","discuss","Discuss no lleva 'about'."],["the people need · the life","people need · life","Para hablar en general, sin 'the'."]],
+  flow:[["≈30 palabras","Elección","I strongly prefer Option A…"],["≈65 palabras","Razón 1 + ejemplo","First of all,… For instance,…"],["≈65 palabras","Razón 2 + ejemplo","Moreover,… In my case,…"],["≈30 palabras","Concesión + cierre","Admittedly,… However,… For these reasons,…"]],
+  phrases:["I strongly prefer Option…","The main reason is that…","Not only… but also…","Admittedly,…; however,…","This would allow residents to…","For these reasons, I believe…"],
+  tips:["Plan de tiempo: 3 min para decidir (anota 2 razones rápidas para cada opción y elige la que tenga mejores ejemplos), 18 min para escribir y 5 min para revisar.","Una concesión sube tu nivel: <em>Admittedly, a sports centre would also be useful; however, …</em>","Usa condicionales para mostrar consecuencias: <em>If the city built a library, students would…</em>","Cambia 'good' e 'important' por <em>beneficial, valuable, essential, worthwhile</em>.","Compara tu texto con los ejemplos CLB y usa el checklist del final."]},
+ check:[["Contenido y coherencia",["Dije mi elección clara al principio","Di al menos 2 razones diferentes","Cada razón tiene un ejemplo o detalle concreto","Usé un párrafo por idea","Usé conectores (First of all, Moreover, However, For these reasons)","Terminé con una conclusión"]],
+  ["Vocabulario",["Usé vocabulario del tema, no solo good / bad / things","No repetí 'important' o 'good' muchas veces","Usé al menos una frase avanzada (Admittedly…, Not only… but also…)"]],
+  ["Legibilidad (Readability)",["Todas las oraciones tienen sujeto y verbo","Revisé concordancia (people are, he needs)","Usé bien los comparativos (cheaper, more useful)","Revisé ortografía, mayúsculas y puntuación"]],
+  ["Cumplimiento de la tarea",["Elegí UNA opción y no cambié de opinión","Escribí entre 150 y 200 palabras","No lo escribí como email (sin Dear… ni firma)","Terminé dentro de los 26 minutos"]]],
+ qs:[
+{p:"Your city has received extra money and is deciding how to spend it. Residents are being asked which project they prefer.",
+ opts:[{ic:"📚",t:"A new public library",d:"With study rooms and free computer classes."},{ic:"🏊",t:"A new sports centre",d:"With an indoor pool and a gym."}],
+ c45:{pick:"B",t:`I prefer {{the option B}}, the sports centre.
+{{In my opinion I think}} sport is very important {{for the health}}. {{The people}} in my city don't do exercise because the gyms {{is}} very expensive. With a sports centre {{the people}} can swim and {{make exercise}}.
+Also the children can {{learn swim}}. {{Is}} good for the families.
+The library is good but {{now all the people use internet}}.
+{{For this}}, I prefer {{the option B}}.`,
+  f:[["the option B","Option B","Sin 'the'."],["In my opinion I think","In my opinion","Redundante."],["for the health · The people","for your health · People","Sin 'the' cuando hablas en general."],["the gyms is","gyms are","Plural: are."],["make exercise","exercise","Exercise ya es verbo (o do exercise)."],["learn swim","learn to swim","Learn + to + verbo."],["Is","It's","Falta el sujeto."],["now all the people use internet","nowadays everyone uses the internet","Everyone es singular; y 'the internet'."],["For this","For these reasons","Conector de conclusión correcto."]],
+  x:"📝 Elección clara, pero las razones son generales, sin ejemplos, y el texto es muy corto."},
+ c78:{pick:"A",t:`I prefer Option A, {{build}} a new public library, for two main reasons.
+First, a library helps people of all ages. Students need {{quite}} places to study, especially during exams, and many families don't have a good space at home. {{For example my}} neighbour's son studies in a fast food restaurant because his apartment is too small. With free study rooms, students like him could concentrate better and have better results at school.
+Second, free computer classes are very useful for seniors and newcomers. Nowadays everything is online, like banking, government forms and job applications. {{A lot of people doesn't know}} how to use a computer, so these classes would help them {{to be}} more independent.
+It's true that a sports centre is also good for health, but there are already two gyms in my area. In conclusion, I think a library is more useful for the whole community, especially for young people.`,
+  f:[["build","building","Después de coma, para explicar la opción: -ing."],["quite","quiet","Ortografía: quiet = tranquilo; quite = bastante."],["For example my","For example, my","Coma después de For example."],["A lot of people doesn't know","A lot of people don't know","People es plural."],["help them to be","help them become","Más natural con become."]],
+  x:"✅ Dos razones con ejemplos y una concesión. Para subir de nivel: vocabulario más preciso y una conclusión más desarrollada."},
+ c1012:{pick:"A",t:`((I would strongly support Option A,)) the new public library, ((as I believe it would benefit a much wider range of residents.))
+((First and foremost,)) our city lacks quiet places to study. Many students live in small, crowded apartments, and during exam periods they end up revising in cafés or fast-food restaurants. My neighbour's son, for instance, does his homework at a burger chain every evening. Free study rooms would give young people like him ((a calm, safe environment)) to focus.
+((Equally important are the free computer classes.)) These days, almost everything, from banking to renewing a driver's licence, is done online. Seniors and newcomers who lack digital skills are often left behind, so these classes ((would help them become more independent)) and confident.
+((Admittedly,)) a sports centre with a pool would promote healthy habits. ((However,)) our area already has two private gyms and a community pool, whereas the nearest library is a 40-minute bus ride away.
+((For these reasons,)) a library would be the most valuable long-term investment for our community.`,
+  g:["Elección clara en la primera oración.","Cada razón tiene un ejemplo concreto y personal.","Concesión (Admittedly… However…) que muestra pensamiento crítico.","Vocabulario variado: lacks, revising, left behind, long-term investment.","Conclusión que resume sin repetir palabra por palabra."]}},
+
+{p:"Your company is considering a change to its work schedule. Employees have been asked which schedule they prefer.",
+ opts:[{ic:"🗓️",t:"Four-day work week",d:"Four days a week, ten hours a day."},{ic:"⏰",t:"Five-day work week",d:"Keep the current schedule: five days, eight hours a day."}],
+ c45:{pick:"A",t:`I {{am agree}} with {{the option A}}. Four days of work is better.
+I {{have three days for rest}}. I can {{pass}} more time with my family and {{do my things}}.
+Also I {{use less gas}} because I {{go to the work}} only four days. {{Is more cheap}}.
+Ten hours is a lot but {{no problem}}.
+For this I prefer {{the option A}}.`,
+  f:[["am agree","agree","Agree es verbo."],["the option A","Option A","Sin 'the'."],["have three days for rest","would have three days off","Day off = día libre; y condicional porque es hipotético."],["pass","spend","Spend time = pasar tiempo."],["do my things","run errands","Run errands = hacer diligencias."],["use less gas","would spend less on gas","Spend money on something."],["go to the work","drive to work","Work sin 'the'."],["Is more cheap","It's cheaper","Sujeto + comparativo -er."],["no problem","that's not a problem for me","Oración completa."]],
+  x:"📝 Razones correctas pero muy básicas, sin desarrollar. No reconoce las desventajas de trabajar 10 horas."},
+ c78:{pick:"B",t:`I prefer Option B, the current five-day week with eight-hour days.
+The main reason is {{the tiredness}}. I think ten hours {{is too much time}} to stay concentrated. In my job I work with numbers, and after eight hours I am already tired, so I {{would do more mistakes}} at the end of a long day. This can be bad for the company, because mistakes with numbers cost time and money.
+Another reason is my family. I have two children, and their school finishes at 3:30. With the current schedule I {{arrive to home}} at 5:30 and we have dinner together. If I worked ten hours, I would arrive at 7:30 and {{I wouldn't see them almost}}.
+I understand that a three-day weekend sounds very attractive, and some of my colleagues really want it, but for me the daily routine is more important. For these reasons, I prefer to keep the current schedule.`,
+  f:[["the tiredness","fatigue","Fatigue es la palabra precisa."],["is too much time","is too long","Más natural."],["would do more mistakes","would make more mistakes","Make a mistake."],["arrive to home","get home","Home no lleva preposición."],["I wouldn't see them almost","I would hardly see them","Hardly = casi no."]],
+  x:"✅ Razones personales bien desarrolladas. Errores de colocación (do mistakes) y de orden de palabras."},
+ c1012:{pick:"B",t:`((I would prefer to keep the current schedule, Option B,)) even though a three-day weekend is certainly tempting.
+((My main concern is productivity.)) My role involves checking financial data, which requires constant concentration. By the end of an eight-hour day, I already notice that I work more slowly and need to double-check my figures. ((Stretching that to ten hours would almost certainly lead to)) more errors, which could end up costing the company time and money.
+((Family life is another key factor.)) My children finish school at 3:30, and under the current schedule I'm home by 5:30 to have dinner with them and help with homework. ((With ten-hour shifts,)) I wouldn't get home until 7:30, and four evenings a week with barely any time together ((would be a high price to pay)) for one extra day off.
+((That said,)) I understand why some colleagues would welcome the change, and perhaps it could be offered as an optional arrangement. ((Personally, though,)) a shorter, more balanced day suits both my work and my family far better.`,
+  g:["Reconoce el atractivo de la otra opción sin cambiar de postura.","Razones con detalles concretos (horarios, tipo de trabajo).","Propone una idea extra (opcional) que muestra madurez.","Vocabulario preciso: tempting, double-check, a high price to pay.","Conclusión que resume las dos razones."]}},
+
+{p:"The local council is deciding what to do with an empty lot in your neighbourhood. Residents have been asked to choose one project.",
+ opts:[{ic:"🥕",t:"A community garden",d:"Residents can grow vegetables and flowers."},{ic:"🐕",t:"A fenced dog park",d:"Dogs can run and play off-leash."}],
+ c45:{pick:"B",t:`I prefer {{the option B}}, the dog park.
+In my {{neighbour}} {{there is many}} dogs. {{The people}} walk {{the dogs in the street}} and {{is}} dangerous.
+I have a dog, Max. He {{need run}}. In the dog park he can play with other dogs and {{is happy}}.
+The garden is nice but {{need much work}}.
+{{For this}} I choose the dog park.`,
+  f:[["the option B","Option B","Sin 'the'."],["neighbour","neighbourhood","Neighbour = vecino; neighbourhood = barrio."],["there is many","there are many","Plural: are."],["The people · the dogs in the street","People · their dogs on the street","Sin 'the' en general; on the street."],["is · is happy · need much work","it is · he's happy · it needs a lot of work","Siempre con sujeto."],["need run","needs to run","Tercera persona -s y need + to."],["For this","For these reasons","Conector de conclusión correcto."]],
+  x:"📝 El ejemplo personal (Max) está bien usado, pero las ideas son muy cortas y repetitivas."},
+ c78:{pick:"A",t:`In my opinion, Option A, a community garden, is the best choice for our neighbourhood.
+Firstly, a garden would bring people together. Nowadays many neighbours don't know each other, especially in apartment buildings like mine. Working in a garden is a natural way to meet people, practise English and share experiences. For example, when I lived in Bogotá, my mother {{participated in a garden}} in her {{barrio}} and she made many friends.
+Secondly, it would help families to eat healthier. Fresh vegetables are expensive in the supermarket, so growing tomatoes, lettuce and herbs would save money. It is also a good activity for children to learn where food comes from and to spend time outside.
+On the other hand, a dog park {{would only be used for}} dog owners, and it could be noisy for the houses around it. For these reasons, I think a garden is more beneficial for everyone.`,
+  f:[["participated in a garden","joined a community garden","Join = unirse a un grupo."],["barrio","neighbourhood","No mezcles palabras en español."],["used for dog owners","used by dog owners","Pasiva: used by + persona."]],
+  x:"✅ Buenas razones, ejemplo personal y concesión. Cuidado con mezclar palabras en español."},
+ c1012:{pick:"A",t:`((I would much rather see the empty lot turned into a community garden.))
+((Above all,)) a garden would help build a stronger sense of community. In our area, most people live in apartment buildings and rarely speak to their neighbours. ((Working side by side)) on a shared vegetable patch is a relaxed, natural way to start conversations. When I lived in Bogotá, my mother joined a community garden and, within a few months, ((had a whole network of friends)) she could count on.
+((On a practical level,)) the garden would also ease the pressure on household budgets. Fresh produce has become increasingly expensive, so being able to grow tomatoes, lettuce and herbs would make a real difference to many families. ((It would also give children a hands-on lesson in)) where their food comes from.
+((I appreciate that)) dog owners need space too. However, a dog park would serve a much smaller group of residents and could create noise problems for nearby homes. ((All things considered,)) a garden would benefit far more people, ((both socially and financially.))`,
+  g:["Elección clara con una estructura avanzada (would much rather see… turned into).","Razones de dos tipos: social y económica.","Ejemplo personal desarrollado (Bogotá).","Vocabulario preciso: ease the pressure, fresh produce, hands-on.","Conclusión que resume las dos razones."]}},
+
+{p:"Your local school board is reviewing its rules about mobile phones in high schools. Parents and community members have been asked for their opinion.",
+ opts:[{ic:"🚫",t:"Ban phones completely",d:"No mobile phones during the school day."},{ic:"📱",t:"Allow phones for learning",d:"Phones allowed only for learning activities in class."}],
+ c45:{pick:"A",t:`I prefer {{the option A}}.
+{{The students}} use the phone all the time {{for see}} videos and social media. They don't {{put attention in}} class.
+Also {{there is problems of bullying}} with the phones.
+My nephew {{have 15 years}} and he {{is all day with the phone}}.
+For this, {{is better no phones in the school}}.`,
+  f:[["the option A","Option A","Sin 'the'."],["The students","Students","En general, sin 'the'."],["for see","to watch","To + verbo para dar propósito; videos se 'watch'."],["put attention in","pay attention in","Pay attention."],["there is problems of bullying","there are problems with cyberbullying","Plural: are; problems with."],["have 15 years","is 15","La edad va con be."],["is all day with the phone","is on his phone all day","Be on your phone."],["is better no phones in the school","it's better to have no phones at school","Sujeto + estructura completa; at school."]],
+  x:"📝 Opinión clara, pero las ideas no se desarrollan y hay traducción directa del español (have 15 years)."},
+ c78:{pick:"B",t:`I prefer Option B, allowing phones only for learning activities.
+First, phones can be a very useful tool for students. They can {{search information}}, use dictionary apps or {{make quizzes}} online. If the school bans phones completely, students lose these opportunities, and many public schools don't have enough computers or laptops for everybody.
+Second, I think teenagers need to learn to use technology in a responsible way. When they finish school, they will have phones at university and at work, and nobody will take them away. {{Is better}} that teachers show them how to use phones for good things, like research and projects.
+However, I agree that phones can be a distraction, especially social media, so there should be clear rules for everyone. For example, phones should stay in the backpack unless the teacher says to use them.
+In conclusion, Option B is more balanced and prepares students for {{the real life}}.`,
+  f:[["search information","search for information","Search for something."],["make quizzes","take quizzes","Take a quiz / a test."],["Is better","It's better","Falta el sujeto."],["the real life","real life","Sin 'the'."]],
+  x:"✅ Bien estructurado, con concesión y ejemplo de regla. Errores de preposiciones y colocación (make quizzes)."},
+ c1012:{pick:"B",t:`((I would support Option B,)) which allows phones in class strictly for learning purposes.
+((Banning phones altogether would mean losing a valuable learning tool.)) Students can use them to look up information, check pronunciation in dictionary apps, or take quick quizzes that give teachers instant feedback. ((This is especially important)) in schools that don't have enough laptops for every student.
+((More importantly,)) teenagers need to learn how to use technology responsibly. Once they leave school, no one will take their phones away at university or at work. ((Rather than simply removing the temptation,)) schools have a unique opportunity to teach self-control and healthy digital habits while students still have guidance.
+((That said,)) I fully understand parents' concerns about distraction and cyberbullying. ((This is why)) clear rules are essential: phones should stay in bags unless the teacher asks students to use them.
+((Overall,)) Option B ((strikes a sensible balance)) between protecting students and preparing them for the real world.`,
+  g:["Elección clara con una explicación en la misma oración.","Dos razones distintas: académica y de formación personal.","Concesión que reconoce las preocupaciones de los padres.","Vocabulario preciso: altogether, guidance, strikes a sensible balance.","Estructuras avanzadas: Rather than…, This is why…"]}},
+
+{p:"Your city's public transport company wants to improve its service and has asked passengers to vote for one change.",
+ opts:[{ic:"🌙",t:"24-hour weekend service",d:"Buses and trains run all night on Fridays and Saturdays."},{ic:"🚆",t:"More rush-hour services",d:"More frequent buses and trains during weekday rush hours."}],
+ c45:{pick:"B",t:`I prefer {{the option B}}.
+I take the train {{all the days}} {{for go}} to work. In the morning the train is {{very full}} and sometimes I wait 20 minutes. {{I arrive late to work}} and my boss is angry.
+More trains {{is}} good for {{the workers}}.
+{{The weekend}} I {{stay in house}}, I don't need {{transport in the night}}.
+For this I choose B.`,
+  f:[["the option B","Option B","Sin 'the'."],["all the days","every day","Calco de 'todos los días'."],["for go","to go","Propósito: to + verbo."],["very full","packed","Packed = lleno a reventar."],["I arrive late to work","I'm late for work","Be late for something."],["is","are","Trains es plural."],["the workers","commuters","Commuters = personas que viajan al trabajo."],["The weekend · stay in house","On weekends · stay home","Preposición y expresión fija."],["transport in the night","transport at night","At night."]],
+  x:"📝 Ejemplo personal claro, pero solo piensa en sí mismo: no explica los beneficios para la ciudad."},
+ c78:{pick:"B",t:`I would choose Option B, more frequent buses and trains during weekday rush hours.
+The main reason is that {{most part of}} people use public transport to go to work or school. Every morning I take the 7:45 train and sometimes it is so full that I can't get on. Then I have to wait fifteen minutes for the next one, and {{many times}} I arrive late. If there were more trains, people would arrive on time {{and less stressed}}.
+Also, if public transport {{was}} faster and more comfortable, more people would leave their cars at home. This would reduce traffic and pollution in the city.
+I know that 24-hour service on weekends would help people who go out at night or work late shifts. However, this benefits a small group, while rush hour affects thousands of people every day. For these reasons, I believe Option B is the best choice.`,
+  f:[["most part of","most","Calco de 'la mayor parte de'."],["many times","often","Calco de 'muchas veces'."],["and less stressed","and feel less stressed","Necesita un verbo."],["was","were","En condicionales formales: if it were."]],
+  x:"✅ Argumento lógico con concesión. Errores de calcos del español ('most part of', 'many times')."},
+ c1012:{pick:"B",t:`((My vote would go to Option B:)) more frequent services during weekday rush hours.
+((The simple reason is that)) this is when the network is under the most pressure. On weekday mornings, my 7:45 train is often so crowded that I can't even squeeze on, and the next one doesn't come for another fifteen minutes. ((This happens to thousands of commuters,)) many of whom end up arriving late and stressed before the day has even started.
+((Beyond individual convenience,)) better rush-hour service could also change people's habits. If trains and buses were faster and more reliable at peak times, ((far more drivers would be willing to)) leave their cars at home, which would ease congestion and cut pollution across the city.
+((Admittedly,)) a 24-hour weekend service would make life easier for hospitality workers and people enjoying a night out. ((Nevertheless,)) these passengers represent a fraction of those who rely on public transport every weekday. ((Investing where demand is highest)) seems the most sensible use of limited resources.`,
+  g:["Pasa de lo personal (mi tren) a lo general (miles de pasajeros).","Segunda razón con efecto en cadena: menos autos, menos tráfico y contaminación.","Concesión equilibrada con Admittedly… Nevertheless…","Vocabulario preciso: squeeze on, peak times, ease congestion.","Cierre convincente basado en la demanda."]}}
+]}
+];
+
+/* ---------- App ---------- */
+let ti=0, qi=0, timer=null, endAt=0, lock=null, lvl="c78", running=false;
+const $=id=>document.getElementById(id);
+const T=()=>TASKS[ti], Qn=()=>T().qs[qi];
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const mark=s=>esc(s).replace(/\{\{(.+?)\}\}/g,'<span class="err">$1</span>').replace(/\(\((.+?)\)\)/g,'<mark>$1</mark>');
+const words=s=>(s.replace(/\{\{|\}\}|\(\(|\)\)/g,"").match(/[A-Za-zÀ-ÿ0-9$#'’.:-]+/g)||[]).filter(w=>/[A-Za-zÀ-ÿ0-9]/.test(w)).length;
+const KEY=()=>`bl-celpip-w-${ti}-${qi}`;
+const load=()=>{try{return localStorage.getItem(KEY())||""}catch(e){return ""}};
+const save=v=>{try{localStorage.setItem(KEY(),v)}catch(e){}};
+
+function ctxHTML(){const q=Qn();
+  if(q.pts)return `<p class="to">${esc(q.to)}</p><ul class="pts">${q.pts.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+  return `<p class="to">Choose the option that you prefer. Explain the reasons for your choice.</p><div class="opts">${q.opts.map((o,i)=>`<div class="opt"><span class="tag">Option ${"AB"[i]}</span><span class="ic">${o.ic}</span><b>${esc(o.t)}</b><span>${esc(o.d)}</span></div>`).join("")}</div>`;}
+
+function buildNav(){
+  $("tasknav").innerHTML=TASKS.map((t,i)=>`<button class="chip" aria-pressed="${i===ti}" aria-label="Task ${i+1}: ${t.name}" data-t="${i}">Task ${i+1}</button>`).join("");
+  $("tasknav").querySelectorAll("button").forEach(b=>b.onclick=()=>{ti=+b.dataset.t;qi=0;reset(true)});
+  $("tname").textContent=`Task ${ti+1} · ${T().name}`;
+  $("qpick").innerHTML=T().qs.map((_,i)=>`<button class="chip" aria-pressed="${i===qi}" aria-label="Question ${i+1}" data-q="${i}">${i+1}</button>`).join("");
+  $("qpick").querySelectorAll("button").forEach(b=>b.onclick=()=>{qi=+b.dataset.q;reset(false)});
+}
+function renderGuide(){const t=T(),g=t.guide;
+  $("s-intro").innerHTML=`<div class="label">Antes de empezar · Guía de Task ${ti+1}</div>
+  <h2 style="font-size:1.35rem">🐨 ${esc(t.name)}: cómo funciona</h2>
+  <p class="lead">${g.what}</p>
+  <div class="facts">${g.facts.map(f=>`<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+  ${CRIT}<div class="callout">${g.callout}</div>
+  ${g.extra||""}
+  <h2>✅ Qué hacer y ❌ qué no hacer</h2>
+  <div class="dd"><div class="yes"><h3>✅ Haz esto</h3><ul>${g.doo.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <div class="no"><h3>❌ Evita esto</h3><ul>${g.dont.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+  <h2>⚠️ Errores comunes de hispanohablantes</h2>
+  <ul class="fixes">${g.errors.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")}</ul>
+  <h2>🧱 Estructura que funciona</h2>
+  <div class="flow ${g.flow.length===5?'f5':''}">${g.flow.map(f=>`<div class="step"><small>${f[0]}</small><b>${esc(f[1])}</b><em>${esc(f[2])}</em></div>`).join("")}</div>
+  <h2>🚀 Tips para boost your score</h2>
+  <div><p style="font-family:var(--display);font-weight:600;margin:0 0 8px">Frases útiles:</p><div class="phr">${g.phrases.map(p=>`<span>${esc(p)}</span>`).join("")}</div></div>
+  <ol class="tips">${g.tips.map(x=>`<li>${x}</li>`).join("")}</ol>
+  <button class="main" id="btn-begin">Empezar la práctica →</button>`;
+  $("btn-begin").onclick=()=>reset(false);
+}
+function show(ids){["s-intro","s-write","s-done","s-check"].forEach(s=>$(s).hidden=!ids.includes(s))}
+function stopTimer(){if(timer)clearInterval(timer);timer=null;running=false}
+
+function updateWC(){const n=words($("draft").value),el=$("wc");
+  el.textContent=n+(n===1?" word":" words");el.className="wcnum"+(n>=150&&n<=200?" ok":n>200?" over":"");}
+
+function renderLevel(){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.l===lvl));
+  const q=Qn(),d=q[lvl],L={c45:["CLB 4–5","Básico: oraciones simples y errores frecuentes","var(--c45)"],c78:["CLB 7–8","Bueno: estructura clara con algunos errores","var(--c78)"],c1012:["CLB 10–12","Excelente: natural, preciso y variado","var(--c1012)"]}[lvl];
+  const box=$("lvl");box.style.setProperty("--lvl",L[2]);
+  let h=`<div class="lvlhead"><span class="badge">${L[0]}</span><span class="cnt">${words(d.t)} words</span>${d.pick?`<span class="cnt">Elige Option ${d.pick}</span>`:""}<span>${L[1]}</span></div><p class="answer">${mark(d.t)}</p>`;
+  if(d.f){h+=`<h2 style="font-size:1rem">❌ Errores típicos y cómo corregirlos</h2><ul class="fixes">`+d.f.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")+`</ul><p class="extra">${esc(d.x)}</p>`;}
+  else h+=`<h2 style="font-size:1rem">⭐ Por qué es CLB 10–12</h2><ul class="fixes">`+d.g.map(g=>`<li>${esc(g)}</li>`).join("")+`</ul>`;
+  box.innerHTML=h;
+}
+function buildChecklist(){let h="",k=0;
+  T().check.forEach(([g,items])=>{h+=`<div class="group"><h3>${g}</h3>`;items.forEach(it=>{h+=`<label class="chk"><input type="checkbox" id="c${ti}-${k}"><span>${esc(it)}</span></label>`;k++});h+=`</div>`});
+  $("checklist").innerHTML=h;$("checklist").querySelectorAll("input").forEach(i=>i.onchange=updateScore);updateScore();}
+function updateScore(){const all=$("checklist").querySelectorAll("input").length,n=$("checklist").querySelectorAll("input:checked").length,r=n/all;
+  $("score").textContent=n+"/"+all;
+  $("verdict").textContent=r<=.45?"Zona CLB 4–5 (orientativo). Enfócate en cubrir todo lo que pide la tarea y en llegar a 150 palabras.":r<=.78?"Zona CLB 6–8 (orientativo). Vas bien. Ahora trabaja vocabulario preciso y conectores variados.":"Zona CLB 9+ (orientativo). ¡Excelente! Pule precisión y naturalidad para llegar a 10–12.";}
+
+function reset(intro){
+  stopTimer();buildNav();renderGuide();const t=T(),q=Qn();
+  $("w-label").textContent=`Task ${ti+1} · ${t.name}`;
+  $("w-prompt").textContent=q.p;$("done-prompt").textContent=q.p;
+  $("w-ctx").innerHTML=ctxHTML();
+  $("w-what").textContent=`Writing Time: ${t.time} minutes`;$("w-clock").textContent=fmt(t.time*60);$("w-clock").classList.remove("warn");
+  const d=$("draft");d.value=load();d.disabled=true;d.readOnly=false;d.placeholder="Presiona Start para empezar a escribir…";updateWC();
+  $("btn-start").hidden=false;$("btn-start").textContent=d.value?"Continue":"Start";$("btn-finish").hidden=true;$("btn-clear").hidden=!d.value;
+  $("compare").hidden=true;$("btn-compare").setAttribute("aria-expanded","false");
+  lvl="c78";renderLevel();buildChecklist();
+  show([intro?"s-intro":"s-write"]);
+  window.scrollTo(0,0);
+}
+let actx=null;
+function beep(freq=880,dur=.25){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=freq;o.connect(g);g.connect(actx.destination);
+  g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+dur);o.start();o.stop(actx.currentTime+dur)}catch(e){}}
+async function wake(){try{lock=await navigator.wakeLock?.request("screen")}catch(e){}}
+
+function startWriting(){wake();beep(660,.15);running=true;
+  const d=$("draft");d.disabled=false;d.placeholder="Start writing here…";d.focus();
+  $("btn-start").hidden=true;$("btn-finish").hidden=false;$("btn-clear").hidden=true;$("w-what").textContent="Time remaining";
+  endAt=Date.now()+T().time*60000;let warned=false;
+  const tick=()=>{const left=(endAt-Date.now())/1000;$("w-clock").textContent=fmt(left);
+    if(left<=300&&!warned){warned=true;$("w-clock").classList.add("warn");beep(740,.2);}
+    if(left<=0)finish(true);};
+  tick();timer=setInterval(tick,500);}
+function finish(timeUp){const used=Math.round(T().time*60-Math.max(0,(endAt-Date.now())/1000));stopTimer();beep(520,.4);try{lock?.release()}catch(e){}
+  const v=$("draft").value.trim();save($("draft").value);$("draft").disabled=true;
+  $("done-msg").textContent=timeUp?"✅ Time's up! Your response has ended.":"✅ ¡Listo! Terminaste antes del tiempo.";
+  const n=words(v),c=$("my-cnt");c.textContent=n+" words";
+  c.style.color=n>=150&&n<=200?"var(--ok)":n>200?"var(--warn)":"var(--rec)";
+  const m=$("mytext");m.textContent=v||"No escribiste nada esta vez. Vuelve a intentarlo con 'Try this one again'.";m.classList.toggle("empty",!v);
+  if(window.BL){const t=T(),q=Qn();BL.mountSend($("bl-send"),{empty:!v,what:"texto",build:()=>({kind:"writing",skill:"Writing",task:`Task ${ti+1} · ${t.name}`,practice:qi+1,prompt:q.p,context:q.pts?[q.to,...q.pts]:["Choose the option that you prefer. Explain the reasons for your choice.",...q.opts.map((o,i)=>`Option ${"AB"[i]}: ${o.t} — ${o.d}`)],text:v,words:n,timeUsed:fmt(used),timeLimit:fmt(t.time*60),timeUp:!!timeUp,selfCheck:$("score").textContent})});}
+  show(["s-done","s-check"]);window.scrollTo(0,0);}
+
+$("draft").addEventListener("input",()=>{updateWC();save($("draft").value)});
+$("btn-start").onclick=startWriting;
+$("btn-finish").onclick=()=>finish(false);
+$("btn-clear").onclick=()=>{$("draft").value="";save("");updateWC();$("btn-clear").hidden=true;$("btn-start").textContent="Start"};
+$("btn-again").onclick=()=>{save("");reset(false)};
+$("btn-next").onclick=()=>{if(qi<T().qs.length-1)qi++;else{ti=(ti+1)%TASKS.length;qi=0;reset(true);return}reset(false)};
+$("btn-guide").onclick=()=>reset(true);
+$("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
+$("btn-copy").onclick=()=>{const txt=$("draft").value.trim(),b=$("btn-copy");
+  const ok=()=>{b.textContent="Copiado ✓";setTimeout(()=>b.textContent="Copiar texto",1600)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents($("mytext"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Texto seleccionado";};
+  try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(e){fallback()}};
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
+reset(true);
+</script>
+</body>
+</html>

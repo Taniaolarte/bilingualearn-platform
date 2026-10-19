@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CELPIP Onboarding · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: navy frame with BILINGUALEARN watermark bands top & bottom; white rounded "pages" stacked inside, one per step. Single deliberate look (brand). */
+:root{
+  --navy:#17153B; --navy-2:#24215A; --lav:#C4B5FD; --lav-soft:#EEE9FF;
+  --page:#FFFFFF; --ink:#1E1B4B; --muted:#5B5785;
+  --mint:#D7F5EA; --mint-ink:#0F6B4E; --peach:#FFE6D5; --peach-ink:#9A3D0B;
+  --sky:#DCEBFF; --sky-ink:#1E4FA0; --rose:#FFE0EC; --rose-ink:#9D1D52;
+  --display:"Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Comfortaa", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{background:var(--navy);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;margin:0}
+.band{overflow:hidden;white-space:nowrap;color:rgba(196,181,253,.16);font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.35em;padding-block:10px;user-select:none}
+.band span{display:inline-block;animation:slide 60s linear infinite}
+@keyframes slide{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.band span{animation:none}}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 24px;display:flex;flex-direction:column;gap:22px}
+
+/* hero */
+.hero{color:#fff;text-align:left;display:flex;flex-direction:column;gap:10px;padding-block:18px 6px}
+.chip{align-self:flex-start;background:var(--lav);color:var(--navy);font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;padding:4px 12px;border-radius:999px}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.1;margin:0;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--lav)}
+.hero p{margin:0;color:#DCD6FF;max-width:62ch}
+
+/* step nav */
+.steps{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--navy);padding-block:10px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.steps a{display:flex;flex-direction:column;gap:2px;text-decoration:none;color:#fff;background:var(--navy-2);border:1.5px solid transparent;border-radius:14px;padding:8px 12px;font-size:12px;min-width:0}
+.steps a b{font-family:var(--display);font-weight:600;font-size:15px;color:var(--lav)}
+.steps a:hover,.steps a:focus-visible{border-color:var(--lav);outline:none}
+
+/* pages */
+.page{background:var(--page);border-radius:28px;padding:clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:20px;scroll-margin-top:84px}
+.page-head{display:flex;gap:14px;align-items:flex-start}
+.num{flex:none;width:52px;height:52px;border-radius:16px;background:var(--navy);color:var(--lav);font-family:var(--display);font-weight:700;font-size:24px;display:grid;place-items:center}
+.page-head h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,4vw,30px);line-height:1.2;margin:0;text-wrap:balance}
+.page-head p{margin:4px 0 0;color:var(--muted)}
+h3{font-family:var(--display);font-weight:600;font-size:19px;margin:0}
+p{margin:0}
+ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+
+/* scenario cards */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.c-mint{background:var(--mint)} .c-mint h3{color:var(--mint-ink)}
+.c-peach{background:var(--peach)} .c-peach h3{color:var(--peach-ink)}
+.c-sky{background:var(--sky)} .c-sky h3{color:var(--sky-ink)}
+.c-rose{background:var(--rose)} .c-rose h3{color:var(--rose-ink)}
+.c-lav{background:var(--lav-soft)} .c-lav h3{color:var(--navy)}
+
+/* gap tool */
+.tool{background:var(--lav-soft);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.tool-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{font-family:var(--display);font-weight:500;font-size:14px;display:flex;flex-direction:column;gap:6px}
+select{font-family:var(--body);font-size:15px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--lav);background:#fff;color:var(--ink)}
+select:focus-visible,button:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.result{border-radius:16px;padding:14px 16px;background:#fff;border:2px dashed var(--lav);display:flex;flex-direction:column;gap:6px}
+.result h4{font-family:var(--display);font-weight:600;font-size:17px;margin:0}
+
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tablebox{overflow-x:auto;border-radius:16px;border:1.5px solid var(--lav-soft)}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--lav-soft)}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:500}
+tr.hit td{background:var(--lav-soft);font-weight:700}
+
+/* tip boxes */
+.tip{background:var(--navy);color:#fff;border-radius:20px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.tip .ico{font-size:22px;line-height:1.2}
+.tip b{color:var(--lav);font-family:var(--display);font-weight:600}
+.tip a{color:var(--lav)}
+
+/* smart */
+.smart{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.smart div{background:var(--lav-soft);border-radius:16px;padding:12px 10px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.smart b{font-family:var(--display);font-size:26px;color:var(--navy);line-height:1}
+.smart small{font-size:12px;color:var(--muted);line-height:1.4}
+@media (max-width:640px){.smart{grid-template-columns:repeat(2,1fr)}.smart div:last-child{grid-column:span 2}}
+.vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.bad,.good{border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.bad{background:#F4F3F8;color:#6B6890}
+.bad s{text-decoration-color:#C0392B}
+.good{background:var(--mint);color:var(--mint-ink)}
+.lbl{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+
+.habits{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.habit{border:2px solid var(--lav-soft);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.habit .e{font-size:28px}
+.chain{display:flex;gap:4px;flex-wrap:wrap}
+.chain i{width:18px;height:18px;border-radius:6px;background:var(--mint-ink)}
+.chain i.miss{background:#E5E2F0}
+
+/* 3 blocks */
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.block{border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.block .t{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.timer{background:var(--navy);border-radius:22px;padding:18px;color:#fff;display:flex;flex-direction:column;gap:12px}
+.timer-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.clock{font-family:var(--display);font-weight:700;font-size:44px;font-variant-numeric:tabular-nums;line-height:1}
+.phase{color:var(--lav);font-family:var(--display);font-weight:500}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font-family:var(--display);font-weight:600;font-size:15px;border:none;border-radius:999px;padding:10px 18px;cursor:pointer;background:var(--lav);color:var(--navy)}
+button.ghost{background:transparent;color:#fff;border:1.5px solid var(--lav)}
+.bar{height:10px;border-radius:999px;background:var(--navy-2);overflow:hidden;display:flex}
+.bar span{display:block;height:100%}
+
+.notebook{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.log{overflow-x:auto;border-radius:16px;border:1.5px solid var(--lav-soft)}
+.topics{display:flex;flex-wrap:wrap;gap:6px}
+.topics span{background:#fff;border-radius:999px;padding:3px 10px;font-size:13px}
+
+/* checklist */
+.check{display:flex;flex-direction:column;gap:8px}
+.check label{flex-direction:row;align-items:flex-start;gap:12px;font-family:var(--body);font-weight:400;font-size:15px;background:var(--lav-soft);border-radius:14px;padding:12px 14px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--navy);flex:none;margin-top:2px}
+.check input:checked + span{text-decoration:line-through;color:var(--muted)}
+.prog{font-family:var(--display);font-weight:600;color:var(--navy)}
+
+.cta{background:var(--lav);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:8px;color:var(--navy)}
+.cta h3{font-size:22px}
+footer{color:#DCD6FF;text-align:center;font-size:13px;display:flex;flex-direction:column;gap:2px;padding-block:6px}
+footer b{color:var(--lav);font-family:var(--display);font-size:16px}
+</style>
+</head>
+<body data-page="onboarding">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="band" aria-hidden="true"><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · </span></div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="chip">🇨🇦 CELPIP · Guía de inicio rápido</span>
+    <h1>Bienvenido a tu camino hacia el <em>CLB que necesitas</em></h1>
+    <p>Esta guía te muestra cómo arranca tu programa: primero medimos dónde estás, luego construimos tus hábitos y, con tu primer simulacro, diseñamos tu plan de estudio personalizado. Son 3 pasos. Tómate 15 minutos para leerla con calma.</p>
+  </header>
+
+  <nav class="steps" aria-label="Pasos de la guía">
+    <a href="#paso1"><b>Paso 1</b>Diagnóstico y brecha</a>
+    <a href="#paso2"><b>Paso 2</b>Metas y hábitos</a>
+    <a href="#paso3"><b>Paso 3</b>Tu plan de estudio</a>
+  </nav>
+
+  <!-- PASO 1 -->
+  <section class="page" id="paso1">
+    <div class="page-head">
+      <div class="num">1</div>
+      <div>
+        <h2>🔍 Diagnóstico de nivel y tu brecha (Gap Analysis)</h2>
+        <p>Antes de estudiar, necesitamos saber cuánta distancia hay entre tu inglés de hoy y el puntaje que debes certificar.</p>
+      </div>
+    </div>
+
+    <p>En CELPIP cada nivel equivale directamente a un nivel <b>CLB</b> (Canadian Language Benchmarks): un CELPIP 7 es un CLB 7. Tu meta migratoria o profesional te dice qué CLB necesitas. Ahora compara ese CLB con tu nivel actual en el marco europeo <b>CEFR</b> (A1 a C2).</p>
+
+    <div class="tool">
+      <h3>🧮 Calcula tu brecha</h3>
+      <div class="tool-row">
+        <label for="target">CLB que necesitas certificar
+          <select id="target">
+            <option value="4">CLB 4</option>
+            <option value="5">CLB 5</option>
+            <option value="6">CLB 6</option>
+            <option value="7" selected>CLB 7</option>
+            <option value="8">CLB 8</option>
+            <option value="9">CLB 9</option>
+            <option value="10">CLB 10</option>
+          </select>
+        </label>
+        <label for="current">Tu nivel actual (CEFR)
+          <select id="current">
+            <option value="1">A1 · Principiante</option>
+            <option value="2">A2 · Básico</option>
+            <option value="3" selected>B1 · Intermedio</option>
+            <option value="4">B2 · Intermedio alto</option>
+            <option value="5">C1 · Avanzado</option>
+            <option value="6">C2 · Maestría</option>
+            <option value="0">Aún no lo sé</option>
+          </select>
+        </label>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>CELPIP / CLB</th><th>CEFR aproximado</th><th>Cómo se ve en la práctica</th></tr></thead>
+        <tbody id="eqTable">
+          <tr data-cefr="2"><td>CLB 4</td><td>A2</td><td>Te comunicas en situaciones simples y conocidas.</td></tr>
+          <tr data-cefr="3"><td>CLB 5 – 6</td><td>B1</td><td>Manejas la vida diaria; te cuesta con temas abstractos.</td></tr>
+          <tr data-cefr="4"><td>CLB 7 – 8</td><td>B2</td><td>Argumentas, opinas y entiendes la mayoría del contenido.</td></tr>
+          <tr data-cefr="5"><td>CLB 9 – 10</td><td>C1</td><td>Te expresas con fluidez y precisión en casi cualquier tema.</td></tr>
+          <tr data-cefr="6"><td>CLB 11 – 12</td><td>C2</td><td>Dominio cercano al de un hablante nativo culto.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--muted)">Equivalencias orientativas. Tu simulacro de CELPIP (Paso 3) nos dará el dato real por habilidad.</p>
+
+    <div class="two">
+      <div class="card c-mint">
+        <h3>🎉 Tu nivel ya alcanza o supera la meta</h3>
+        <p>¡Maravilloso! Tu enfoque principal será dominar la estructura, el formato del examen, los límites de tiempo y las técnicas específicas de CELPIP.</p>
+      </div>
+      <div class="card c-peach">
+        <h3>🧗 Tu nivel está por debajo de la meta</h3>
+        <p>Debes trabajar paralelamente en dos frentes: elevar tu nivel general de inglés y entrenar las técnicas y el formato del examen.</p>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="ico">✅</span>
+      <p><b>Acción de esta semana:</b> haz el test gratuito <b>EF SET</b> en <a href="https://www.efset.org/" target="_blank" rel="noopener">efset.org</a>. Te da tu nivel CEFR (A1–C2) con un certificado. Hazlo en un lugar tranquilo, con audífonos y sin diccionario, y guarda tu resultado para tu primera sesión.</p>
+    </div>
+  </section>
+
+  <!-- PASO 2 -->
+  <section class="page" id="paso2">
+    <div class="page-head">
+      <div class="num">2</div>
+      <div>
+        <h2>🎯 Define tus objetivos y construye hábitos</h2>
+        <p>La constancia le gana al talento. Estos son los 5 pilares con los que organizarás tu preparación.</p>
+      </div>
+    </div>
+
+    <h3>① Objetivos SMART</h3>
+    <div class="smart">
+      <div><b>S</b><small>Específico: qué tarea exacta vas a practicar</small></div>
+      <div><b>M</b><small>Medible: cuántas veces, cuántos minutos</small></div>
+      <div><b>A</b><small>Alcanzable: posible con tu tiempo real</small></div>
+      <div><b>R</b><small>Realista: conectado con tu CLB meta</small></div>
+      <div><b>T</b><small>Tiempo: con fecha o plazo claro</small></div>
+    </div>
+    <div class="vs">
+      <div class="bad"><span class="lbl">❌ Meta vaga</span><s>“Esta semana voy a estudiar inglés.”</s></div>
+      <div class="good"><span class="lbl">✅ Meta SMART</span>“De lunes a viernes practico 2 respuestas de CELPIP Speaking Task 1, cronometrando los 90 segundos, y las grabo.”</div>
+      <div class="bad"><span class="lbl">❌ Meta vaga</span><s>“Quiero mejorar mi Writing.”</s></div>
+      <div class="good"><span class="lbl">✅ Meta SMART</span>“Antes del domingo escribo 2 emails de Writing Task 1 en 27 minutos cada uno, de 150 a 200 palabras.”</div>
+    </div>
+
+    <div class="habits">
+      <div class="habit">
+        <span class="e">💊</span>
+        <h3>② Hábitos en pequeñas dosis</h3>
+        <p>20 a 40 minutos diarios rinden más que un atracón de 3 horas una vez por semana. Tu cerebro retiene mejor lo que repite seguido.</p>
+      </div>
+      <div class="habit">
+        <span class="e">🧱</span>
+        <h3>③ Apilamiento de hábitos</h3>
+        <p>Engancha el inglés a algo que ya haces: “Mientras desayuno, escucho un podcast en inglés”. “En el bus, leo una noticia de Canadá”.</p>
+      </div>
+      <div class="habit">
+        <span class="e">🔗</span>
+        <h3>④ Never Miss Twice</h3>
+        <p>Fallar un día es humano. Fallar dos seguidos es empezar un hábito nuevo. Si un día no puedes, al día siguiente haz aunque sea 10 minutos.</p>
+        <div class="chain" aria-label="Ejemplo de cadena: 13 días cumplidos y 1 día fallado">
+          <i></i><i></i><i></i><i></i><i class="miss"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="habit">
+        <span class="e">🏡</span>
+        <h3>⑤ Diseña tu entorno</h3>
+        <p>Deja tu libreta y audífonos a la vista. Programa una alarma diaria llamada <b>“English Time”</b> a la misma hora. Que estudiar sea lo más fácil de tu día.</p>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="ico">💡</span>
+      <p><b>Tip de coach:</b> escribe tu meta SMART de la semana en un post-it y pégalo donde estudias. Lo que ves todos los días, lo cumples.</p>
+    </div>
+  </section>
+
+  <!-- PASO 3 -->
+  <section class="page" id="paso3">
+    <div class="page-head">
+      <div class="num">3</div>
+      <div>
+        <h2>🗺️ Tu punto de partida y tu plan de estudio</h2>
+        <p>Aquí pasamos de la intención a la acción, con datos reales y un método diario.</p>
+      </div>
+    </div>
+
+    <div class="card c-sky">
+      <h3>📝 Simulacro inicial diagnóstico</h3>
+      <p>Vas a presentar un simulacro completo de CELPIP (Listening, Reading, Writing y Speaking). Tus coaches lo analizamos habilidad por habilidad para establecer tu punto de partida real y diseñar tu <b>Plan de Estudio Personalizado</b>: qué tareas priorizar, qué ya dominas y cuánto te falta para tu CLB meta.</p>
+    </div>
+
+    <h3>⏱️ La sesión de estudio de 3 bloques</h3>
+    <div class="blocks">
+      <div class="block c-lav"><span class="t">Bloque 1 · Input</span><h3>📚 Aprender</h3><p>Vocabulario nuevo, una estructura gramatical o una técnica de examen.</p></div>
+      <div class="block c-mint"><span class="t">Bloque 2 · Práctica real</span><h3>🎧 Hacer</h3><p>Un ejercicio con el formato exacto de CELPIP, siempre cronometrado.</p></div>
+      <div class="block c-rose"><span class="t">Bloque 3 · Review</span><h3>🔎 Analizar</h3><p>Revisa errores, registra correcciones y anota expresiones nuevas.</p></div>
+    </div>
+
+    <div class="timer">
+      <div class="timer-top">
+        <div>
+          <div class="phase" id="phase">Elige la duración de tu sesión</div>
+          <div class="clock" id="clock">00:00</div>
+        </div>
+        <div class="btns">
+          <button type="button" class="ghost" data-len="20">20 min</button>
+          <button type="button" class="ghost" data-len="30">30 min</button>
+          <button type="button" class="ghost" data-len="40">40 min</button>
+        </div>
+      </div>
+      <div class="bar" aria-hidden="true">
+        <span style="width:30%;background:var(--lav)"></span>
+        <span style="width:40%;background:#7FD8B6"></span>
+        <span style="width:30%;background:#F7A8C6"></span>
+      </div>
+      <div class="btns">
+        <button type="button" id="go">▶ Iniciar</button>
+        <button type="button" class="ghost" id="reset">Reiniciar</button>
+      </div>
+      <p style="font-size:13px;color:#DCD6FF">Reparto sugerido: 30% aprender, 40% práctica, 30% revisión.</p>
+    </div>
+
+    <h3>📒 Tu Study Notebook</h3>
+    <p>Tu Study Notebook es tu base de datos personal: ahí registras cada sesión, tus errores, tu vocabulario, tus frases clave, tus simulacros y tus metas. Tiene 3 secciones esenciales:</p>
+    <div class="notebook">
+      <div class="card c-lav">
+        <h3>🗂️ Vocabulario por temas</h3>
+        <div class="topics"><span>Comunidad</span><span>Trabajo</span><span>Vivienda</span><span>Tecnología</span><span>Problemas cotidianos</span></div>
+        <p>Por cada palabra nueva, escribe 2 ejemplos sobre <b>tu propia vida</b>.</p>
+      </div>
+      <div class="card c-sky">
+        <h3>🔗 Conectores y frases clave</h3>
+        <p>Para Writing y Speaking: <i>On top of that…</i>, <i>The main reason is…</i>, <i>For instance, last year I…</i></p>
+      </div>
+      <div class="card c-rose">
+        <h3>🚩 Registro de errores</h3>
+        <p>Cada error es información. Anótalo, corrígelo y revisa la lista antes de cada simulacro.</p>
+      </div>
+    </div>
+
+    <div class="log">
+      <table>
+        <thead><tr><th>Fecha</th><th>Tarea CELPIP</th><th>Mi error</th><th>Corrección</th><th>Ejemplo personal</th></tr></thead>
+        <tbody>
+          <tr><td>Lun</td><td>Speaking T1</td><td>Me quedé en blanco a los 40 s</td><td>Usar estructura: consejo → razón → ejemplo</td><td>“When I moved to a new city, I…”</td></tr>
+          <tr><td>Mié</td><td>Writing T2</td><td>“I am agree”</td><td>“I agree”</td><td>“I agree that parks need more lighting.”</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip">
+      <span class="ico">📲</span>
+      <p><b>Abre tu Study Notebook digital:</b> <a href="notebook.html">entra aquí</a> y úsalo todos los días al terminar tu Bloque 3. Si prefieres papel, crea las mismas secciones en un cuaderno.</p>
+    </div>
+
+    <div class="tip">
+      <span class="ico">🌱</span>
+      <p><b>Regla de oro:</b> escucha y lee algo en inglés todos los días, y produce (habla o escribe) usando siempre <b>ejemplos personales</b> con el vocabulario nuevo. Lo que conectas con tu vida, lo recuerdas en el examen. Y recuerda: las plantillas memorizadas se detectan y se penalizan. Usa estructuras, nunca textos aprendidos de memoria.</p>
+    </div>
+
+    <h3>✅ Tu checklist de arranque</h3>
+    <div class="check" id="check">
+      <label><input type="checkbox" id="c1"><span>Identifiqué el CLB que necesito certificar.</span></label>
+      <label><input type="checkbox" id="c2"><span>Hice el EF SET y guardé mi nivel CEFR.</span></label>
+      <label><input type="checkbox" id="c3"><span>Escribí mi primera meta SMART semanal.</span></label>
+      <label><input type="checkbox" id="c4"><span>Programé mi alarma diaria “English Time”.</span></label>
+      <label><input type="checkbox" id="c5"><span>Abrí mi Study Notebook y registré mi primera sesión.</span></label>
+      <label><input type="checkbox" id="c6"><span>Agendé mi simulacro diagnóstico con mi coach.</span></label>
+    </div>
+    <p class="prog" id="prog"></p>
+
+    <div class="cta">
+      <h3>🚀 Tu próximo paso</h3>
+      <p>Completa tu checklist y envíanos tu resultado del EF SET. Con tu simulacro diagnóstico construimos juntos tu plan personalizado. ¡Vamos por ese CLB!</p>
+    </div>
+  </section>
+
+  <footer>
+    <b>@bilingualearn.au</b>
+    <span>Bilingualearn · Coaching de inglés y preparación CELPIP, PTE e IELTS</span>
+  </footer>
+</div>
+
+<div class="band" aria-hidden="true"><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · </span></div>
+
+<script>
+(function(){
+  // Gap calculator
+  const clbToCefr = {4:2,5:3,6:3,7:4,8:4,9:5,10:5};
+  const names = {1:"A1",2:"A2",3:"B1",4:"B2",5:"C1",6:"C2"};
+  const t = document.getElementById("target"), c = document.getElementById("current"), r = document.getElementById("result");
+  function calc(){
+    const need = clbToCefr[+t.value], have = +c.value;
+    document.querySelectorAll("#eqTable tr").forEach(tr => tr.classList.toggle("hit", +tr.dataset.cefr === need));
+    if(!have){
+      r.innerHTML = `<h4>📍 Tu meta equivale a un nivel ${names[need]} aproximadamente</h4><p>Haz el EF SET para saber tu nivel actual y vuelve a esta calculadora.</p>`;
+      return;
+    }
+    const gap = need - have;
+    if(gap <= 0){
+      r.innerHTML = `<h4>🎉 ¡Maravilloso! Ya estás en ${names[have]} y tu meta pide cerca de ${names[need]}.</h4><p>Tu enfoque principal será dominar la estructura, el formato del examen, los límites de tiempo y las técnicas específicas de CELPIP.</p>`;
+    } else {
+      r.innerHTML = `<h4>🧗 Tu brecha: ${gap} ${gap===1?"nivel":"niveles"} CEFR (de ${names[have]} a ${names[need]})</h4><p>Debes trabajar paralelamente en dos frentes: elevar tu nivel general de inglés y entrenar las técnicas y el formato del examen.${gap>=2?" Te recomendamos combinar tu mentoría con clases de inglés general para avanzar más rápido.":""}</p>`;
+    }
+  }
+  t.addEventListener("change", calc); c.addEventListener("change", calc); calc();
+
+  // 3-block timer
+  const clock = document.getElementById("clock"), phase = document.getElementById("phase"), go = document.getElementById("go");
+  let total = 30*60, left = total, tick = null;
+  const fmt = s => String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+  function label(){
+    const done = total - left, p = done/total;
+    if(left <= 0) return "🎉 ¡Sesión completa! Anota tus errores.";
+    if(p < .3) return "Bloque 1 · 📚 Aprender";
+    if(p < .7) return "Bloque 2 · 🎧 Práctica cronometrada";
+    return "Bloque 3 · 🔎 Revisar y registrar";
+  }
+  function paint(){ clock.textContent = fmt(left); phase.textContent = tick || left<total ? label() : "Sesión de "+(total/60)+" min lista"; }
+  document.querySelectorAll("[data-len]").forEach(b => b.addEventListener("click", () => {
+    clearInterval(tick); tick = null; total = left = +b.dataset.len*60; go.textContent = "▶ Iniciar"; paint();
+  }));
+  go.addEventListener("click", () => {
+    if(tick){ clearInterval(tick); tick = null; go.textContent = "▶ Continuar"; return; }
+    if(left <= 0) left = total;
+    go.textContent = "⏸ Pausar";
+    tick = setInterval(() => { left--; paint(); if(left <= 0){ clearInterval(tick); tick = null; go.textContent = "▶ Repetir"; } }, 1000);
+    paint();
+  });
+  document.getElementById("reset").addEventListener("click", () => { clearInterval(tick); tick = null; left = total; go.textContent = "▶ Iniciar"; paint(); });
+  paint();
+
+  // Checklist (per-viewer convenience)
+  const boxes = [...document.querySelectorAll("#check input")], prog = document.getElementById("prog");
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem("bl-celpip-check") || "{}"); } catch(e) {}
+  boxes.forEach(b => { b.checked = !!saved[b.id]; b.addEventListener("change", update); });
+  function update(){
+    const n = boxes.filter(b => b.checked).length;
+    prog.textContent = n === boxes.length ? "🏆 ¡Listo para empezar! 6 de 6" : `Progreso: ${n} de ${boxes.length}`;
+    const s = {}; boxes.forEach(b => s[b.id] = b.checked);
+    try { localStorage.setItem("bl-celpip-check", JSON.stringify(s)); } catch(e) {}
+  }
+  update();
+})();
+</script>
+</body>
+</html>

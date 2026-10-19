@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mis resultados · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+</head>
+<body class="blp-page" data-page="results">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+
+<main class="blp-main">
+  <div class="blp-sec">
+    <span class="blp-eyebrow">Tu progreso</span>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.1rem)">📊 Mis resultados</h1>
+  </div>
+  <div id="out" class="blp-sec" aria-live="polite"></div>
+  <p class="blp-foot">@bilingualearn.au</p>
+</main>
+
+<script>
+(function(){
+  const out = document.getElementById("out"), esc = BL.esc;
+  const SK = { Listening: ["🎧", "var(--blp-L)"], Reading: ["📖", "var(--blp-R)"], Writing: ["✍️", "var(--blp-W)"], Speaking: ["🎙️", "var(--blp-S)"] };
+  let rows = [], filter = "all";
+
+  const date = s => { const d = new Date(s); return isNaN(d) ? "" : d.toLocaleDateString("es", { day: "numeric", month: "short", year: "numeric" }) + " · " + d.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" }); };
+  // Most recent level per skill: the coach's level wins; for Reading/Listening the auto estimate.
+  function latest(skill){
+    const r = rows.find(x => x.skill === skill && (x.coachLevel || x.autoClb));
+    return r ? (r.coachLevel || r.autoClb) : "–";
+  }
+
+  function render(){
+    const pend = rows.filter(r => r.status === "Pendiente").length;
+    const list = rows.filter(r => filter === "all" || r.skill === filter);
+    out.innerHTML = `
+      <div class="blp-stats">${Object.keys(SK).map(k => `<div class="blp-stat" style="--c:${SK[k][1]}"><span>${SK[k][0]} ${k} · último nivel</span><b>${esc(latest(k))}</b></div>`).join("")}</div>
+      ${pend ? `<p class="blp-notice">⏳ ${pend} entrega${pend > 1 ? "s" : ""} esperando corrección de tu coach.</p>` : ""}
+      ${BL.outboxCount() ? `<p class="blp-notice">📤 Tienes puntajes guardados en este dispositivo que aún no se enviaron. Se enviarán automáticamente.</p>` : ""}
+      <div class="blp-filters" role="group" aria-label="Filtrar por habilidad">
+        ${["all", ...Object.keys(SK)].map(k => `<button class="blp-chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${k === "all" ? "Todas" : SK[k][0] + " " + k}</button>`).join("")}
+      </div>
+      <div class="blp-list">${list.length ? list.map(item).join("") : `<div class="blp-empty">Todavía no hay entregas${filter === "all" ? "" : " de " + filter}. ¡Empieza a practicar! 💪</div>`}</div>`;
+    out.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { filter = b.dataset.f; render(); });
+  }
+
+  function item(r){
+    const [ic, c] = SK[r.skill] || ["📝", "var(--blp-lav)"];
+    let score;
+    if (r.coachLevel) score = `<b>CLB ${esc(r.coachLevel)}</b><span>nivel de tu coach</span>`;
+    else if (r.autoScore) score = `<b>${esc(r.autoScore)}</b><span>${r.autoClb ? "≈ CLB " + esc(r.autoClb) : ""}</span>`;
+    else score = `<span class="blp-tag ${r.status === "Pendiente" ? "coach" : ""}">${esc(r.status || "Enviado")}</span>`;
+    return `<article class="blp-item" style="--c:${c}">
+      <div><div class="k">${ic} ${esc(r.skill)}</div><h3>${esc(r.task)}${r.practice ? " · Práctica " + esc(r.practice) : ""}</h3></div>
+      <div class="score">${score}</div>
+      <div class="when">${esc(date(r.date))}</div>
+      ${r.feedback ? `<p class="fb"><b>💬 Tu coach:</b> ${esc(r.feedback)}</p>` : ""}
+      ${r.detail || r.fileUrl ? `<p class="det">${esc(r.detail || "")}${r.fileUrl ? ` ${r.detail ? "· " : ""}<a href="${esc(r.fileUrl)}" target="_blank" rel="noopener">${r.skill === "Speaking" ? "Escuchar mi audio" : "Abrir mi documento"}</a>` : ""}</p>` : ""}
+    </article>`;
+  }
+
+  async function load(){
+    if (!BL.connected()) { out.innerHTML = `<p class="blp-notice">La plataforma todavía no está conectada a Google Drive. Cuando tu coach la conecte, aquí verás tus resultados.</p>`; return; }
+    if (!BL.student) {
+      out.innerHTML = `<div class="blp-card blp-sec"><h2>Entra para ver tus resultados</h2><p style="margin:0;color:var(--blp-muted)">Necesitas el código de clase que te dio tu coach.</p><div><button class="blp-btn" type="button" data-in>Entrar</button></div></div>`;
+      out.querySelector("[data-in]").onclick = () => BL.signIn();
+      return;
+    }
+    out.innerHTML = `<div class="blp-empty">Cargando tus resultados…</div>`;
+    try {
+      const j = await BL.api("results", BL.auth());
+      rows = j.rows || [];
+      render();
+    } catch (e) {
+      out.innerHTML = `<p class="blp-notice">No pudimos cargar tus resultados. ${e.code === "UNKNOWN_STUDENT" || e.code === "BAD_KEY" ? "Cierra sesión y vuelve a entrar con tu código personal." : "Revisa tu conexión y recarga la página."}</p>`;
+    }
+  }
+  document.addEventListener("bl:student", load);
+  load();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My CELPIP Study Notebook · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: navy frame + BILINGUALEARN bands; white rounded notebook page with sticky tab strip; each tab = one notebook section. Single deliberate brand look. */
+:root{
+  --navy:#17153B; --navy-2:#24215A; --lav:#C4B5FD; --lav-soft:#EEE9FF; --lav-line:#DDD4FF;
+  --page:#FFFFFF; --ink:#1E1B4B; --muted:#5B5785;
+  --mint:#D7F5EA; --mint-ink:#0F6B4E; --peach:#FFE6D5; --peach-ink:#9A3D0B;
+  --sky:#DCEBFF; --sky-ink:#1E4FA0; --rose:#FFE0EC; --rose-ink:#9D1D52;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --body:"Comfortaa","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--navy);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.band{overflow:hidden;white-space:nowrap;color:rgba(196,181,253,.16);font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.35em;padding-block:10px;user-select:none}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:6px 20px;display:flex;flex-direction:column;gap:16px}
+
+.top{color:#fff;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between}
+.top h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0}
+.top h1 em{font-style:normal;color:var(--lav)}
+.top p{margin:4px 0 0;color:#DCD6FF;font-size:14px}
+.save{font-size:12px;color:#DCD6FF;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--lav)}
+.dot.cloud{background:#7FD8B6}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--navy);padding-block:8px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs div{display:flex;gap:6px;width:max-content}
+.tabs button{background:var(--navy-2);color:#fff;border:1.5px solid transparent;font-family:var(--display);font-weight:500;font-size:14px;border-radius:999px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--lav);color:var(--navy)}
+.tabs button:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+
+.page{background:var(--page);border-radius:28px;padding:clamp(18px,4vw,34px);display:flex;flex-direction:column;gap:18px;min-height:300px}
+.head{display:flex;flex-direction:column;gap:4px}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,4vw,28px);margin:0;line-height:1.2}
+h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0}
+.sub{color:var(--muted);margin:0;font-size:14px}
+p{margin:0}
+
+form,.panel{background:var(--lav-soft);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.grid.wide{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+label{font-family:var(--display);font-weight:500;font-size:13px;display:flex;flex-direction:column;gap:4px;min-width:0}
+input[type=text],input[type=date],input[type=number],select,textarea{font-family:var(--body);font-size:15px;padding:9px 11px;border-radius:12px;border:1.5px solid var(--lav-line);background:#fff;color:var(--ink);width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--navy);outline-offset:1px}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{flex-direction:row;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:8px 12px;font-family:var(--body);font-weight:600;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--navy)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button.pri{font-family:var(--display);font-weight:600;font-size:15px;border:none;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--navy);color:#fff}
+button.sec{font-family:var(--display);font-weight:600;font-size:14px;border:1.5px solid var(--navy);border-radius:999px;padding:8px 16px;cursor:pointer;background:#fff;color:var(--navy)}
+button.x{border:none;background:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px 8px;border-radius:8px}
+button.x:hover{background:var(--rose);color:var(--rose-ink)}
+
+.list{display:flex;flex-direction:column;gap:10px}
+.item{border:2px solid var(--lav-soft);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.item.ex{border-style:dashed;opacity:.75}
+.item-top{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.item-top > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.tag{font-family:var(--display);font-weight:500;font-size:12px;border-radius:999px;padding:2px 10px;background:var(--lav-soft);color:var(--navy)}
+.t-L{background:var(--sky);color:var(--sky-ink)} .t-R{background:var(--mint);color:var(--mint-ink)}
+.t-W{background:var(--peach);color:var(--peach-ink)} .t-S{background:var(--rose);color:var(--rose-ink)}
+.t-ok{background:var(--mint);color:var(--mint-ink)} .t-pend{background:var(--peach);color:var(--peach-ink)}
+.date{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.pair div{border-radius:12px;padding:8px 10px;min-width:0;overflow-wrap:anywhere}
+.wrong{background:#FFF1F1} .right{background:var(--mint)}
+.lbl{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block}
+.word{font-family:var(--display);font-weight:600;font-size:19px}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:6px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--display);font-weight:700;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px}
+.chain{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
+.chain i{aspect-ratio:1;border-radius:6px;background:#E5E2F0;max-width:100%;display:grid;place-items:center;font-style:normal;font-size:10px;color:var(--muted)}
+.chain i.on{background:var(--mint-ink);color:#fff}
+.chain i.today{outline:2px solid var(--navy);outline-offset:1px}
+.alert{background:var(--peach);color:var(--peach-ink);border-radius:16px;padding:12px 14px;font-weight:600}
+.tip{background:var(--navy);color:#fff;border-radius:18px;padding:14px 16px;font-size:14px}
+.tip b{color:var(--lav);font-family:var(--display)}
+
+.tablebox{overflow-x:auto;border-radius:16px;border:1.5px solid var(--lav-soft)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--lav-soft);white-space:nowrap}
+th{background:var(--navy);color:#fff;font-family:var(--display);font-weight:500}
+td:first-child,th:first-child{text-align:left}
+.sc{display:inline-flex;flex-direction:column;align-items:center;border-radius:10px;padding:2px 8px;min-width:44px}
+.sc small{font-size:11px}
+.ok{background:var(--mint);color:var(--mint-ink)} .low{background:var(--peach);color:var(--peach-ink)}
+
+.goal{display:flex;gap:10px;align-items:flex-start;background:var(--lav-soft);border-radius:14px;padding:10px 12px}
+.goal input{width:20px;height:20px;accent-color:var(--navy);flex:none;margin-top:2px}
+.goal span{flex:1;min-width:0;overflow-wrap:anywhere}
+.goal.done span{text-decoration:line-through;color:var(--muted)}
+.filter{display:flex;flex-wrap:wrap;gap:6px}
+.filter button{font-family:var(--display);font-size:13px;border:1.5px solid var(--lav-line);background:#fff;color:var(--navy);border-radius:999px;padding:4px 12px;cursor:pointer}
+.filter button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+footer{color:#DCD6FF;text-align:center;font-size:13px;display:flex;flex-direction:column;gap:2px}
+footer b{color:var(--lav);font-family:var(--display);font-size:16px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--lav);color:var(--navy);font-family:var(--display);font-weight:600;padding:10px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:20}
+</style>
+</head>
+<body data-page="notebook">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="band" aria-hidden="true">BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</div>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>📒 My CELPIP <em>Study Notebook</em></h1>
+      <p id="hello">Tu registro diario: errores, vocabulario, frases, simulacros y metas.</p>
+    </div>
+    <div class="save"><span class="dot" id="dot"></span><span id="saveTxt">Guardado en este dispositivo</span></div>
+  </header>
+
+  <nav class="tabs" aria-label="Secciones"><div role="tablist" id="tabs"></div></nav>
+
+  <main class="page" id="view" aria-live="polite"></main>
+
+  <footer>
+    <b>@bilingualearn.au</b>
+    <span>Bilingualearn · Coaching CELPIP, PTE e IELTS</span>
+  </footer>
+</div>
+
+<div class="band" aria-hidden="true">BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today = () => ymd(new Date());
+const nice = s => { if(!s) return ""; const [y,m,d] = s.split("-"); return d+"/"+m+"/"+y; };
+const uid = p => p+"-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const SK = {L:"Listening",R:"Reading",W:"Writing",S:"Speaking"};
+const TOPICS = ["Comunidad","Trabajo","Vivienda","Tecnología","Problemas cotidianos","Otro"];
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true,1800); }
+
+/* ---------- storage: private cloud (db) when available, else this browser ---------- */
+const LK = "bl-celpip-notebook-v1";
+let items = {};            // id -> object (has .type)
+let mode = "local", col = null;
+try { items = JSON.parse(localStorage.getItem(LK) || "{}") || {}; } catch(e){ items = {}; }
+function saveLocal(){ try { localStorage.setItem(LK, JSON.stringify(items)); } catch(e){} }
+function setMode(m){
+  mode = m;
+  $("#dot").classList.toggle("cloud", m==="cloud");
+  $("#saveTxt").textContent = m==="cloud" ? "Guardado en tu cuenta (privado)" : "Guardado en este dispositivo";
+}
+async function put(obj){
+  items[obj.id] = obj; saveLocal(); render();
+  if(mode==="cloud"){
+    try { await col.doc(obj.id).set(obj); }
+    catch(e){ fallback(); }
+  }
+}
+async function del(id){
+  delete items[id]; saveLocal(); render();
+  if(mode==="cloud"){ try { await col.doc(id).delete(); } catch(e){ fallback(); } }
+}
+function fallback(){ if(mode==="cloud"){ setMode("local"); toast("Sin conexión a tu cuenta: guardando en este dispositivo"); } }
+
+async function connect(){
+  if(!window.claude || !claude.use) return;
+  try {
+    const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if(!db || !user) return;
+    let canW = null; try { canW = await user.can("data.write"); } catch(e){}
+    if(canW === false) return;
+    const id = await user.id();
+    if(!id) return;
+    col = db.collection("data/users/"+id);
+    let first = true;
+    col.onSnapshot(snap => {
+      if(first){
+        first = false;
+        setMode("cloud");
+        if(snap.empty && Object.keys(items).length){   // move this device's notes into the account once
+          Object.values(items).forEach(o => col.doc(o.id).set(o).catch(fallback));
+          return;
+        }
+      }
+      if(mode!=="cloud") return;
+      const next = {};
+      snap.docs.forEach(d => { const v = d.data(); if(v) next[d.id] = Object.assign({}, v, {id:d.id}); });
+      items = next; saveLocal(); render();
+    }, () => fallback());
+  } catch(e){ /* stay local */ }
+}
+
+/* ---------- data accessors ---------- */
+const all = t => Object.values(items).filter(o => o.type===t);
+const byDate = (a,b) => (b.date||"").localeCompare(a.date||"") || (b.created||0)-(a.created||0);
+const profile = () => items["profile"] || {id:"profile",type:"profile",name:"",target:7,exam:""};
+
+/* ---------- tabs ---------- */
+const TABS = [
+  ["hoy","☀️ Hoy"],["errores","🚩 Mistakes Log"],["vocab","🗂️ Vocabulario"],
+  ["frases","🔗 Frases clave"],["mocks","📊 Simulacros"],["metas","🎯 Metas"],["perfil","⚙️ Mi perfil"]
+];
+let tab = "hoy";
+try { const h = location.hash.slice(1); if(TABS.some(t=>t[0]===h)) tab = h; else tab = localStorage.getItem(LK+"-tab") || "hoy"; } catch(e){}
+function drawTabs(){
+  $("#tabs").innerHTML = TABS.map(([k,l]) => `<button type="button" role="tab" aria-selected="${k===tab}" data-tab="${k}">${l}</button>`).join("");
+}
+$("#tabs").addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if(!b) return;
+  tab = b.dataset.tab; try{ localStorage.setItem(LK+"-tab",tab); }catch(e){}
+  render(); $("#view").scrollIntoView({block:"nearest"});
+});
+
+/* ---------- views ---------- */
+function streakInfo(){
+  const days = new Set(all("day").map(d=>d.date));
+  const cells = []; const now = new Date();
+  for(let i=13;i>=0;i--){ const d = new Date(now); d.setDate(now.getDate()-i); const k = ymd(d); cells.push({k, on:days.has(k), today:i===0, n:d.getDate()}); }
+  let streak = 0; const d = new Date(now);
+  if(!days.has(ymd(d))) d.setDate(d.getDate()-1);
+  while(days.has(ymd(d))){ streak++; d.setDate(d.getDate()-1); }
+  const y = new Date(now); y.setDate(now.getDate()-1);
+  const missedYesterday = !days.has(ymd(y)) && days.size>0, doneToday = days.has(today());
+  return {cells, streak, missedYesterday, doneToday, total:days.size};
+}
+
+function vHoy(){
+  const p = profile(), s = streakInfo(), t = items["day-"+today()] || {};
+  const mins = all("day").reduce((a,d)=>a+(+d.minutes||0),0);
+  const pend = all("error").filter(e=>!e.done).length;
+  let countdown = "";
+  if(p.exam){ const diff = Math.ceil((new Date(p.exam+"T00:00") - new Date(today()+"T00:00"))/864e5); if(diff>=0) countdown = `<div class="stat" style="background:var(--rose);color:var(--rose-ink)"><b>${diff}</b><span>días para tu examen</span></div>`; }
+  return `
+  <div class="head"><h2>☀️ Mi registro de hoy</h2><p class="sub">${nice(today())} · Registra tu sesión de 3 bloques. Pequeñas dosis, todos los días.</p></div>
+  <div class="stats">
+    <div class="stat" style="background:var(--mint);color:var(--mint-ink)"><b>${s.streak}</b><span>días seguidos 🔥</span></div>
+    <div class="stat" style="background:var(--sky);color:var(--sky-ink)"><b>${Math.round(mins/60*10)/10}</b><span>horas estudiadas</span></div>
+    <div class="stat" style="background:var(--peach);color:var(--peach-ink)"><b>${pend}</b><span>errores por dominar</span></div>
+    ${countdown}
+  </div>
+  <div class="panel">
+    <h3>🔗 Tu cadena · últimos 14 días</h3>
+    <div class="chain">${s.cells.map(c=>`<i class="${c.on?"on":""} ${c.today?"today":""}" title="${nice(c.k)}">${c.n}</i>`).join("")}</div>
+  </div>
+  ${s.missedYesterday && !s.doneToday ? `<div class="alert">⚠️ Ayer no registraste estudio. Regla <b>Never Miss Twice</b>: hoy haz aunque sea 10 minutos.</div>` : ""}
+  <form id="fDay">
+    <h3>${t.date ? "✏️ Editar la sesión de hoy" : "➕ Registrar mi sesión de hoy"}</h3>
+    <div class="grid">
+      <label for="d-min">Minutos estudiados<input type="number" id="d-min" min="0" max="600" value="${esc(t.minutes||"")}" placeholder="30"></label>
+      <label for="d-skill">Habilidad principal<select id="d-skill">${Object.entries(SK).map(([k,v])=>`<option value="${k}" ${t.skill===k?"selected":""}>${v}</option>`).join("")}</select></label>
+      <label for="d-mood">¿Cómo me sentí?<select id="d-mood">${["😀 Con energía","🙂 Bien","😐 Normal","😓 Cansado/a","🤯 Frustrado/a"].map(m=>`<option ${t.mood===m?"selected":""}>${m}</option>`).join("")}</select></label>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="d-b1" ${t.b1?"checked":""}>📚 Bloque 1 · Aprender</label>
+      <label><input type="checkbox" id="d-b2" ${t.b2?"checked":""}>🎧 Bloque 2 · Práctica cronometrada</label>
+      <label><input type="checkbox" id="d-b3" ${t.b3?"checked":""}>🔎 Bloque 3 · Review</label>
+    </div>
+    <div class="grid wide">
+      <label for="d-did">¿Qué practiqué?<textarea id="d-did" placeholder="Ej: 2 respuestas de Speaking Task 1 de 90 s">${esc(t.did||"")}</textarea></label>
+      <label for="d-learn">¿Qué aprendí o qué me costó?<textarea id="d-learn" placeholder="Ej: me quedé en blanco; usar consejo → razón → ejemplo">${esc(t.learn||"")}</textarea></label>
+    </div>
+    <div class="row"><button class="pri" type="submit">Guardar mi día</button></div>
+  </form>
+  <h3>📅 Sesiones anteriores</h3>
+  <div class="list">${listOr(all("day").filter(d=>d.date!==today()).sort(byDate).slice(0,10).map(d=>`
+    <div class="item"><div class="item-top"><div><span class="date">${nice(d.date)}</span><span class="tag t-${d.skill}">${SK[d.skill]||""}</span><span class="tag">${+d.minutes||0} min</span><span class="tag">${[d.b1,d.b2,d.b3].filter(Boolean).length}/3 bloques</span><span>${esc((d.mood||"").split(" ")[0])}</span></div><button class="x" data-del="${d.id}" aria-label="Borrar">✕</button></div>
+    ${d.did?`<p>${esc(d.did)}</p>`:""}${d.learn?`<p class="sub">💡 ${esc(d.learn)}</p>`:""}</div>`),
+    `<div class="item ex"><div class="item-top"><div><span class="date">Ejemplo</span><span class="tag t-S">Speaking</span><span class="tag">35 min</span><span class="tag">3/3 bloques</span></div></div><p>2 respuestas de Speaking Task 1 grabadas y cronometradas.</p><p class="sub">💡 Usar la estructura consejo → razón → ejemplo personal.</p></div>`)}</div>`;
+}
+
+function vErrores(){
+  const f = vErrores.f || "all";
+  let list = all("error").sort(byDate);
+  if(f==="pend") list = list.filter(e=>!e.done); else if(SK[f]) list = list.filter(e=>e.skill===f);
+  return `
+  <div class="head"><h2>🚩 Mistakes Log</h2><p class="sub">Cada error es información. Anótalo, corrígelo, crea un ejemplo personal y repásalo antes de cada simulacro.</p></div>
+  <form id="fErr">
+    <div class="grid">
+      <label for="e-date">Fecha<input type="date" id="e-date" value="${today()}"></label>
+      <label for="e-skill">Habilidad<select id="e-skill">${Object.entries(SK).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
+      <label for="e-task">Tarea CELPIP<input type="text" id="e-task" placeholder="Ej: Writing Task 2"></label>
+    </div>
+    <div class="grid wide">
+      <label for="e-wrong">Mi error<textarea id="e-wrong" required placeholder="Ej: I am agree with the proposal"></textarea></label>
+      <label for="e-right">Corrección<textarea id="e-right" required placeholder="Ej: I agree with the proposal"></textarea></label>
+    </div>
+    <div class="grid wide">
+      <label for="e-why">¿Por qué fallé?<select id="e-why">${["Palabra desconocida","Gramática","Pronunciación","Se me acabó el tiempo","No entendí la pregunta","Caí en un distractor","Me quedé en blanco","Otro"].map(o=>`<option>${o}</option>`).join("")}</select></label>
+      <label for="e-ex">Ejemplo personal con la corrección<input type="text" id="e-ex" placeholder="Ej: I agree that my city needs more bike lanes."></label>
+    </div>
+    <div class="row"><button class="pri" type="submit">Añadir error</button></div>
+  </form>
+  <div class="filter" id="errFilter">${[["all","Todos"],["pend","Por dominar"],...Object.entries(SK)].map(([k,l])=>`<button type="button" data-f="${k}" class="${f===k?"on":""}">${l}</button>`).join("")}</div>
+  <div class="list">${listOr(list.map(e=>`
+    <div class="item"><div class="item-top"><div><span class="date">${nice(e.date)}</span><span class="tag t-${e.skill}">${SK[e.skill]}</span>${e.task?`<span class="tag">${esc(e.task)}</span>`:""}<span class="tag">${esc(e.why)}</span>
+      <button type="button" class="tag ${e.done?"t-ok":"t-pend"}" data-toggle="${e.id}" style="border:none;cursor:pointer">${e.done?"✅ Dominado":"⏳ Por dominar"}</button></div><button class="x" data-del="${e.id}" aria-label="Borrar">✕</button></div>
+    <div class="pair"><div class="wrong"><span class="lbl">❌ Error</span>${esc(e.wrong)}</div><div class="right"><span class="lbl">✅ Corrección</span>${esc(e.right)}</div></div>
+    ${e.ex?`<p class="sub">🗣️ ${esc(e.ex)}</p>`:""}</div>`),
+    `<div class="item ex"><div class="item-top"><div><span class="date">Ejemplo</span><span class="tag t-W">Writing</span><span class="tag">Gramática</span><span class="tag t-pend">⏳ Por dominar</span></div></div><div class="pair"><div class="wrong"><span class="lbl">❌ Error</span>I am agree with the proposal</div><div class="right"><span class="lbl">✅ Corrección</span>I agree with the proposal</div></div><p class="sub">🗣️ I agree that my city needs more bike lanes.</p></div>`)}</div>`;
+}
+
+function vVocab(){
+  const f = vVocab.f || "all";
+  let list = all("vocab").sort(byDate); if(f!=="all") list = list.filter(v=>v.topic===f);
+  return `
+  <div class="head"><h2>🗂️ Vocabulario por temas</h2><p class="sub">Los temas que más aparecen en CELPIP. Por cada palabra, 2 ejemplos sobre <b>tu propia vida</b>.</p></div>
+  <form id="fVoc">
+    <div class="grid">
+      <label for="v-word">Palabra o expresión<input type="text" id="v-word" required placeholder="Ej: commute"></label>
+      <label for="v-topic">Tema<select id="v-topic">${TOPICS.map(t=>`<option>${t}</option>`).join("")}</select></label>
+      <label for="v-mean">Significado<input type="text" id="v-mean" placeholder="Ej: trayecto diario al trabajo"></label>
+    </div>
+    <div class="grid wide">
+      <label for="v-ex1">Ejemplo personal 1<input type="text" id="v-ex1" placeholder="Ej: My commute takes 40 minutes by train."></label>
+      <label for="v-ex2">Ejemplo personal 2<input type="text" id="v-ex2" placeholder="Ej: I listen to podcasts during my commute."></label>
+    </div>
+    <div class="row"><button class="pri" type="submit">Añadir palabra</button></div>
+  </form>
+  <div class="filter" id="vocFilter">${["all",...TOPICS].map(t=>`<button type="button" data-f="${t}" class="${f===t?"on":""}">${t==="all"?"Todos":t} <small>(${t==="all"?all("vocab").length:all("vocab").filter(v=>v.topic===t).length})</small></button>`).join("")}</div>
+  <div class="list">${listOr(list.map(v=>`
+    <div class="item"><div class="item-top"><div><span class="word">${esc(v.word)}</span><span class="tag">${esc(v.topic)}</span></div><button class="x" data-del="${v.id}" aria-label="Borrar">✕</button></div>
+    ${v.mean?`<p class="sub">${esc(v.mean)}</p>`:""}${v.ex1?`<p>🗣️ ${esc(v.ex1)}</p>`:""}${v.ex2?`<p>🗣️ ${esc(v.ex2)}</p>`:""}</div>`),
+    `<div class="item ex"><div class="item-top"><div><span class="word">commute</span><span class="tag">Trabajo</span><span class="date">Ejemplo</span></div></div><p class="sub">trayecto diario al trabajo</p><p>🗣️ My commute takes 40 minutes by train.</p><p>🗣️ I listen to podcasts during my commute.</p></div>`)}</div>`;
+}
+
+function vFrases(){
+  return `
+  <div class="head"><h2>🔗 Conectores y frases clave</h2><p class="sub">Tus herramientas para Writing y Speaking. Recuerda: estructuras sí, textos memorizados no.</p></div>
+  <form id="fPh">
+    <div class="grid">
+      <label for="p-txt">Frase o conector<input type="text" id="p-txt" required placeholder="Ej: On top of that,"></label>
+      <label for="p-use">Función<select id="p-use">${["Añadir una idea","Dar una razón","Dar un ejemplo","Contrastar","Dar mi opinión","Recomendar","Concluir","Otra"].map(o=>`<option>${o}</option>`).join("")}</select></label>
+      <label for="p-for">Para<select id="p-for"><option value="W">Writing</option><option value="S">Speaking</option><option value="WS">Ambos</option></select></label>
+    </div>
+    <label for="p-ex">Mi ejemplo<input type="text" id="p-ex" placeholder="Ej: On top of that, the new park would bring families together."></label>
+    <div class="row"><button class="pri" type="submit">Añadir frase</button></div>
+  </form>
+  <div class="list">${listOr(all("phrase").sort(byDate).map(p=>`
+    <div class="item"><div class="item-top"><div><span class="word">${esc(p.txt)}</span><span class="tag">${esc(p.use)}</span>${p.for.includes("W")?`<span class="tag t-W">Writing</span>`:""}${p.for.includes("S")?`<span class="tag t-S">Speaking</span>`:""}</div><button class="x" data-del="${p.id}" aria-label="Borrar">✕</button></div>
+    ${p.ex?`<p>🗣️ ${esc(p.ex)}</p>`:""}</div>`),
+    `<div class="item ex"><div class="item-top"><div><span class="word">On top of that,</span><span class="tag">Añadir una idea</span><span class="tag t-W">Writing</span><span class="tag t-S">Speaking</span><span class="date">Ejemplo</span></div></div><p>🗣️ On top of that, the new park would bring families together.</p></div>`)}</div>`;
+}
+
+function vMocks(){
+  const p = profile(), tg = +p.target || 7;
+  const list = all("mock").sort(byDate);
+  const cell = v => { if(v===""||v==null) return "–"; const n=+v, g=n-tg; return `<span class="sc ${g>=0?"ok":"low"}">${n}<small>${g>=0?"✓":g}</small></span>`; };
+  return `
+  <div class="head"><h2>📊 Mis simulacros</h2><p class="sub">Registra tu nivel CELPIP por habilidad (1–12). Tu meta actual: <b>CLB ${tg}</b>. Verde = meta alcanzada; naranja = cuánto falta.</p></div>
+  <form id="fMock">
+    <div class="grid">
+      <label for="m-date">Fecha<input type="date" id="m-date" value="${today()}"></label>
+      <label for="m-src">Plataforma / tipo<input type="text" id="m-src" placeholder="Ej: Simulacro diagnóstico"></label>
+    </div>
+    <div class="grid">${Object.entries(SK).map(([k,v])=>`<label for="m-${k}">${v}<input type="number" id="m-${k}" min="1" max="12" placeholder="1–12"></label>`).join("")}</div>
+    <label for="m-note">Análisis: ¿qué funcionó y qué debo trabajar?<textarea id="m-note" placeholder="Ej: Reading Part 3 sin tiempo; practicar skimming"></textarea></label>
+    <div class="row"><button class="pri" type="submit">Guardar simulacro</button></div>
+  </form>
+  ${list.length ? `<div class="tablebox"><table><thead><tr><th>Fecha</th><th>L</th><th>R</th><th>W</th><th>S</th><th></th></tr></thead><tbody>
+    ${list.map(m=>`<tr><td>${nice(m.date)}<br><small class="sub">${esc(m.src)}</small></td><td>${cell(m.L)}</td><td>${cell(m.R)}</td><td>${cell(m.W)}</td><td>${cell(m.S)}</td><td><button class="x" data-del="${m.id}" aria-label="Borrar">✕</button></td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="list">${list.filter(m=>m.note).map(m=>`<div class="item"><span class="date">${nice(m.date)} · ${esc(m.src)}</span><p>${esc(m.note)}</p></div>`).join("")}</div>`
+  : `<div class="tablebox" style="opacity:.75"><table><thead><tr><th>Ejemplo</th><th>L</th><th>R</th><th>W</th><th>S</th></tr></thead><tbody><tr><td>Simulacro diagnóstico</td><td>${cell(tg+1)}</td><td>${cell(tg)}</td><td>${cell(tg-2)}</td><td>${cell(tg-1)}</td></tr></tbody></table></div>`}
+  <div class="tip"><b>Tip de coach:</b> usa cada simulacro como material de estudio. Pasa cada error al Mistakes Log antes de hacer el siguiente.</div>`;
+}
+
+function vMetas(){
+  const list = all("goal").sort((a,b)=>(a.done-b.done)||(b.created-a.created));
+  const done = list.filter(g=>g.done).length;
+  return `
+  <div class="head"><h2>🎯 Metas SMART y checklist</h2><p class="sub">Específicas, medibles, alcanzables, realistas y con tiempo. ${list.length?`<b>${done} de ${list.length}</b> completadas.`:""}</p></div>
+  <form id="fGoal">
+    <label for="g-txt">Nueva meta o tarea<input type="text" id="g-txt" required placeholder="Ej: Lun a vie: 2 respuestas de Speaking Task 1 de 90 s, grabadas"></label>
+    <div class="grid">
+      <label for="g-due">Fecha límite<input type="date" id="g-due"></label>
+      <label for="g-kind">Tipo<select id="g-kind"><option>Meta semanal</option><option>Tarea de mi coach</option><option>Hábito</option></select></label>
+    </div>
+    <div class="row"><button class="pri" type="submit">Añadir</button></div>
+  </form>
+  <div class="list">${listOr(list.map(g=>`
+    <div class="goal ${g.done?"done":""}"><input type="checkbox" data-toggle="${g.id}" ${g.done?"checked":""} aria-label="Completada"><span>${esc(g.txt)}<br><small class="sub">${esc(g.kind)}${g.due?" · hasta "+nice(g.due):""}</small></span><button class="x" data-del="${g.id}" aria-label="Borrar">✕</button></div>`),
+    `<div class="goal" style="opacity:.75"><input type="checkbox" disabled aria-label="Ejemplo"><span>Ejemplo: escribir 2 emails de Writing Task 1 en 27 minutos cada uno<br><small class="sub">Meta semanal</small></span></div>`)}</div>`;
+}
+
+function vPerfil(){
+  const p = profile();
+  return `
+  <div class="head"><h2>⚙️ Mi perfil de estudio</h2><p class="sub">Tu meta y tu fecha de examen alimentan los contadores y las brechas.</p></div>
+  <form id="fProf">
+    <div class="grid">
+      <label for="pr-name">Mi nombre<input type="text" id="pr-name" value="${esc(p.name)}" placeholder="Tu nombre"></label>
+      <label for="pr-target">CLB que necesito<select id="pr-target">${[4,5,6,7,8,9,10,11,12].map(n=>`<option value="${n}" ${+p.target===n?"selected":""}>CLB ${n}</option>`).join("")}</select></label>
+      <label for="pr-cefr">Mi nivel EF SET (CEFR)<select id="pr-cefr">${["–","A1","A2","B1","B2","C1","C2"].map(n=>`<option ${p.cefr===n?"selected":""}>${n}</option>`).join("")}</select></label>
+      <label for="pr-exam">Fecha de mi examen<input type="date" id="pr-exam" value="${esc(p.exam)}"></label>
+    </div>
+    <label for="pr-why">¿Por qué hago este examen? (mi motivación)<input type="text" id="pr-why" value="${esc(p.why||"")}" placeholder="Ej: Residencia permanente para mi familia"></label>
+    <div class="row"><button class="pri" type="submit">Guardar perfil</button></div>
+  </form>
+  <div class="panel">
+    <h3>💾 Copia de seguridad</h3>
+    <p class="sub">${mode==="cloud"?"Tus notas se guardan en tu cuenta de forma privada: solo tú las ves.":"Tus notas se guardan solo en este navegador. Descarga una copia de vez en cuando para no perderlas."}</p>
+    <div class="row">
+      <button class="sec" type="button" id="exp">⬇️ Descargar copia</button>
+      <label class="sec" for="imp" style="cursor:pointer;flex-direction:row;font-size:14px">⬆️ Restaurar copia<input type="file" id="imp" accept="application/json,.json" hidden></label>
+    </div>
+  </div>`;
+}
+
+function listOr(arr, example){ return arr.length ? arr.join("") : `<p class="empty">Aún no hay registros. Así se verá:</p>${example}`; }
+
+const VIEWS = {hoy:vHoy,errores:vErrores,vocab:vVocab,frases:vFrases,mocks:vMocks,metas:vMetas,perfil:vPerfil};
+function render(){
+  const p = profile();
+  $("#hello").textContent = p.name ? `Hola, ${p.name} 👋 Meta: CLB ${p.target}${p.why?" · "+p.why:""}` : "Tu registro diario: errores, vocabulario, frases, simulacros y metas.";
+  drawTabs();
+  const v = $("#view");
+  v.innerHTML = VIEWS[tab]();
+}
+
+/* ---------- events ---------- */
+const val = id => ($("#"+id) ? $("#"+id).value.trim() : "");
+const chk = id => !!($("#"+id) && $("#"+id).checked);
+$("#view").addEventListener("submit", e => {
+  e.preventDefault(); const f = e.target.id, now = Date.now();
+  if(f==="fDay"){ const d=today(); put({id:"day-"+d,type:"day",date:d,minutes:+val("d-min")||0,skill:val("d-skill"),mood:val("d-mood"),b1:chk("d-b1"),b2:chk("d-b2"),b3:chk("d-b3"),did:val("d-did"),learn:val("d-learn"),created:now}); toast("Día guardado 🔥"); }
+  if(f==="fErr"){ put({id:uid("err"),type:"error",date:val("e-date")||today(),skill:val("e-skill"),task:val("e-task"),wrong:val("e-wrong"),right:val("e-right"),why:val("e-why"),ex:val("e-ex"),done:false,created:now}); toast("Error registrado"); }
+  if(f==="fVoc"){ put({id:uid("voc"),type:"vocab",date:today(),word:val("v-word"),topic:val("v-topic"),mean:val("v-mean"),ex1:val("v-ex1"),ex2:val("v-ex2"),created:now}); toast("Palabra añadida"); }
+  if(f==="fPh"){ put({id:uid("ph"),type:"phrase",date:today(),txt:val("p-txt"),use:val("p-use"),for:val("p-for"),ex:val("p-ex"),created:now}); toast("Frase añadida"); }
+  if(f==="fMock"){ const o={id:uid("mock"),type:"mock",date:val("m-date")||today(),src:val("m-src")||"Simulacro",note:val("m-note"),created:now}; Object.keys(SK).forEach(k=>o[k]=val("m-"+k)); put(o); toast("Simulacro guardado"); }
+  if(f==="fGoal"){ put({id:uid("goal"),type:"goal",txt:val("g-txt"),due:val("g-due"),kind:val("g-kind"),done:false,created:now}); toast("Meta añadida"); }
+  if(f==="fProf"){ put(Object.assign({}, profile(), {name:val("pr-name"),target:+val("pr-target"),cefr:val("pr-cefr"),exam:val("pr-exam"),why:val("pr-why")})); toast("Perfil guardado"); }
+});
+const pendingDel = {};
+$("#view").addEventListener("click", e => {
+  const d = e.target.closest("[data-del]");
+  if(d){ const id=d.dataset.del;
+    if(pendingDel[id]){ del(id); delete pendingDel[id]; toast("Borrado"); }
+    else { pendingDel[id]=1; d.textContent="¿Borrar?"; setTimeout(()=>{ delete pendingDel[id]; if(d.isConnected) d.textContent="✕"; },3000); }
+    return; }
+  const t = e.target.closest("[data-toggle]");
+  if(t){ const o = items[t.dataset.toggle]; if(o) put(Object.assign({}, o, {done:!o.done})); return; }
+  const fb = e.target.closest("[data-f]");
+  if(fb){ (fb.closest("#errFilter") ? vErrores : vVocab).f = fb.dataset.f; render(); return; }
+  if(e.target.id==="exp") exportData();
+});
+$("#view").addEventListener("change", e => {
+  if(e.target.id!=="imp" || !e.target.files[0]) return;
+  const r = new FileReader();
+  r.onload = () => { try { const data = JSON.parse(r.result); const list = Object.values(data.items||data); let n=0;
+      list.forEach(o => { if(o && o.id && o.type){ put(o); n++; } }); toast(n+" registros restaurados"); }
+    catch(err){ toast("Ese archivo no es una copia válida del notebook"); } };
+  r.readAsText(e.target.files[0]);
+});
+async function exportData(){
+  const data = JSON.stringify({app:"bilingualearn-celpip-notebook",exported:new Date().toISOString(),items}, null, 2);
+  try {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([data], {type:"application/json"}));
+    a.download = "study-notebook-"+today()+".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  } catch(e){ toast("Tu navegador no permite descargar desde aquí"); }
+}
+
+drawTabs(); render(); connect();
+})();
+</script>
+</body>
+</html>

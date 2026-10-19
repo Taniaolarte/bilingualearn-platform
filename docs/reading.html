@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CELPIP Reading Practice · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: task nav on top; guide card → exam screen (passage left, questions with dropdowns right) → results + level samples + checklist */
+:root{
+  --bg:#F3F1FB; --card:#FFFFFF; --ink:#17153B; --muted:#5B5878; --line:#E2DEF3;
+  --lav:#C4B5FD; --lav-soft:#EEE9FF; --navy:#17153B; --on-navy:#FFFFFF;
+  --rec:#E5484D; --rec-soft:#FDECEC; --ok:#2E8B6E; --ok-soft:#E3F5EE;
+  --ev:#FFF1B8; --ev-ink:#7A5B00; --paper:#FBFAFF;
+  --c45:#F59E0B; --c78:#3B82F6; --c1012:#2E8B6E;
+  --display:"Fredoka",system-ui,sans-serif; --body:"Comfortaa",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --ev:#4A3F12; --ev-ink:#FFE38A; --paper:#211E4A;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --ev:#4A3F12; --ev-ink:#FFE38A; --paper:#211E4A;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+body.wide .wrap{max-width:1180px}
+.topbar{background:var(--navy);color:var(--on-navy);border-radius:18px;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.topbar h1{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0}
+.topbar .sub{font-size:.78rem;opacity:.8}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font-family:var(--display);font-weight:500;border:1.5px solid rgba(196,181,253,.5);background:transparent;color:var(--on-navy);border-radius:999px;height:34px;padding:0 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}
+.chip .ck{margin-left:4px}
+.subbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid rgba(196,181,253,.25);padding-top:10px}
+.subbar b{font-family:var(--display);font-weight:600;color:var(--lav)}
+.topbtn{font-family:var(--display);font-weight:500;background:transparent;color:var(--on-navy);border:1.5px solid rgba(196,181,253,.5);border-radius:999px;padding:5px 12px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.label{font-family:var(--display);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+h2{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:0;text-wrap:balance}
+.lead{font-size:1rem;line-height:1.75;margin:0}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:var(--lav-soft);border-radius:14px;padding:12px;text-align:center}
+.fact b{display:block;font-family:var(--display);font-weight:600;font-size:1.4rem}
+.fact span{font-size:.8rem;color:var(--muted)}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crit div{border:1px solid var(--line);border-radius:14px;padding:12px}
+.crit b{font-family:var(--display);font-weight:600;display:block}
+.crit span{font-size:.86rem;color:var(--muted)}
+.callout{background:var(--navy);color:var(--on-navy);border-radius:16px;padding:14px 16px;font-size:.92rem}
+.callout strong{color:var(--lav);font-family:var(--display);font-weight:600}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd > div{border-radius:16px;padding:14px;min-width:0}
+.dd .yes{background:var(--ok-soft)} .dd .no{background:var(--rec-soft)}
+.dd h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0 0 6px}
+.dd ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:.88rem}
+.fixes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.fixes li{background:var(--lav-soft);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.fixes .w{color:var(--rec);text-decoration:line-through;font-weight:700}
+.fixes .r{color:var(--ok);font-weight:700}
+.fixes .why{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.flow.f3{grid-template-columns:repeat(3,1fr)}
+.step{border:2px solid var(--lav);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.step b{font-family:var(--display);font-weight:600}
+.step small{color:var(--muted);font-size:.78rem}
+.step em{font-size:.82rem;font-style:normal}
+.phr{display:flex;flex-wrap:wrap;gap:6px}
+.phr span{background:var(--lav-soft);border-radius:999px;padding:5px 12px;font-size:.86rem}
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button.main,button.ghost,button.cta{font-family:var(--display);font-weight:600;font-size:1rem;border-radius:999px;padding:12px 22px;cursor:pointer;border:2px solid var(--navy)}
+button.main{background:var(--navy);color:var(--on-navy)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.cta{background:var(--lav);color:#17153B;border-color:var(--lav);width:100%;padding:14px 18px;text-wrap:balance}
+:root[data-theme="dark"] button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+
+/* ---------- Exam screen ---------- */
+.exam{padding:0;gap:0;overflow:hidden}
+.exhead{background:var(--navy);color:var(--on-navy);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px}
+.exhead .pt{font-family:var(--display);font-weight:600;font-size:1rem}
+.exhead .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.timer{font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;background:rgba(196,181,253,.18);border-radius:999px;padding:6px 14px;font-size:.92rem}
+.timer.low{background:var(--rec);color:#fff}
+.submit{font-family:var(--display);font-weight:600;background:var(--lav);color:#17153B;border:0;border-radius:999px;padding:8px 18px;cursor:pointer;font-size:.95rem}
+.instr{background:var(--lav-soft);padding:12px 18px;font-size:.9rem;border-bottom:1px solid var(--line);margin:0}
+.divider{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy);cursor:col-resize;touch-action:none;user-select:none}
+.divider .grip{width:5px;height:44px;border-radius:999px;background:var(--lav)}
+.qcount{font-family:var(--display);font-weight:500;font-size:.85rem;opacity:.85;font-variant-numeric:tabular-nums}
+.split{display:grid;grid-template-columns:minmax(0,var(--left,1fr)) 16px minmax(0,1fr);min-height:0}
+.pane{padding:20px 22px;min-width:0;overflow:auto;max-height:calc(100vh - 210px)}
+.pane.left{background:var(--paper)}
+.passage h3{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:0 0 10px}
+.passage p{margin:0 0 12px;line-height:1.8}
+.passage .meta{font-size:.84rem;color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:12px}
+.tw{overflow-x:auto}
+.dtable{width:100%;border-collapse:collapse;font-size:.84rem;min-width:420px}
+.dtable th{background:var(--lav-soft);font-family:var(--display);font-weight:600;text-align:left;padding:7px 8px}
+.dtable td{border-top:1px solid var(--line);padding:7px 8px;vertical-align:top}
+.passage .para{display:grid;grid-template-columns:30px 1fr;gap:8px}
+.passage .para b{font-family:var(--display);font-weight:600;color:var(--muted)}
+.qblock{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.qblock .bi{font-size:.88rem;color:var(--muted);margin:0;font-style:italic}
+.q{display:flex;flex-direction:column;gap:6px;border-radius:12px;padding:6px 8px;margin:0 -8px}
+.q p{margin:0;font-size:.95rem}
+.q p b{font-family:var(--display);font-weight:600}
+select.dd-sel{font:inherit;font-size:.92rem;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;max-width:100%;cursor:pointer}
+select.dd-sel[value]:not([value=""]){border-color:var(--lav)}
+.gaptext{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;line-height:2.2;font-size:.95rem}
+.gaptext p{margin:0 0 10px}
+.gaptext .slot{white-space:normal}
+.gaptext sup{font-family:var(--display);font-weight:600;color:var(--muted);margin-right:2px}
+select.inl{font:inherit;font-size:.9rem;color:var(--ink);background:var(--lav-soft);border:2px solid var(--lav);border-radius:8px;padding:2px 6px;max-width:100%;cursor:pointer}
+/* review state */
+.reviewing select{pointer-events:none}
+.q.ok select,select.inl.ok{border-color:var(--ok);background:var(--ok-soft)}
+.q.bad select,select.inl.bad{border-color:var(--rec);background:var(--rec-soft)}
+.why{font-size:.86rem;border-radius:10px;padding:8px 10px;background:var(--lav-soft)}
+.why .res{font-family:var(--display);font-weight:600}
+.why .res.ok{color:var(--ok)} .why .res.bad{color:var(--rec)}
+.gapwhy{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.ev{border-radius:4px;transition:background .2s}
+.reviewing .ev{background:var(--ev);color:var(--ink);box-shadow:0 0 0 2px var(--ev)}
+.reviewing .ev::before{content:attr(data-l);font-family:var(--display);font-weight:600;font-size:.7rem;color:var(--ev-ink);background:var(--card);border:1px solid var(--ev-ink);border-radius:999px;padding:0 6px;margin-right:4px;vertical-align:1px}
+/* flyer (Part 2 diagram) */
+.flyer{border:2px solid var(--navy);border-radius:18px;overflow:hidden;background:var(--card)}
+.flyer .fh{background:var(--navy);color:var(--on-navy);padding:12px 16px}
+.flyer .fh b{font-family:var(--display);font-weight:600;font-size:1.05rem;display:block}
+.flyer .fh span{font-size:.8rem;opacity:.85}
+.prog{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.pc{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:.84rem;min-width:0}
+.pc .pn{font-family:var(--display);font-weight:600;font-size:.98rem}
+.pc .ic{font-size:1.5rem;line-height:1}
+.pc dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:1px 8px}
+.pc dt{color:var(--muted)} .pc dd{margin:0}
+.ff{border-top:2px dashed var(--line);padding:10px 16px;font-size:.82rem;display:flex;flex-direction:column;gap:3px}
+.ff b{font-family:var(--display);font-weight:600}
+/* results */
+.result{border-radius:16px;padding:16px;background:var(--navy);color:var(--on-navy);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.score{font-family:var(--display);font-weight:600;font-size:2rem;font-variant-numeric:tabular-nums;color:var(--lav);flex:none}
+.result p{margin:0;font-size:.9rem;flex:1;min-width:200px}
+.mockline{display:flex;gap:6px;flex-wrap:wrap}
+.mockline span{border:1.5px solid var(--line);border-radius:999px;padding:3px 10px;font-size:.82rem;font-variant-numeric:tabular-nums}
+.mockline span.done{border-color:var(--ok);color:var(--ok)}
+.conv{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
+.conv th,.conv td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.conv th{font-family:var(--display);font-weight:600;color:var(--muted)}
+.conv tr.you td{background:var(--lav-soft);font-weight:700}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tabs button{font-family:var(--display);font-weight:600;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 6px;cursor:pointer;line-height:1.2}
+.tabs button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);margin-top:2px}
+.tabs button[aria-selected="true"]{border-color:var(--lvl);background:var(--lav-soft)}
+.lvl{border:2px solid var(--lvl);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lvlhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--lvl);color:#17153B;font-family:var(--display);font-weight:600;border-radius:999px;padding:3px 12px;font-size:.85rem}
+.lvlhead span:last-child{font-size:.85rem;color:var(--muted)}
+.how{margin:0;line-height:1.75}
+.extra{font-size:.88rem;background:var(--rec-soft);border-radius:12px;padding:10px 12px;margin:0}
+.group{display:flex;flex-direction:column;gap:6px}
+.group h3{font-family:var(--display);font-weight:600;font-size:.95rem;margin:4px 0 2px;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+.chk:hover{background:var(--lav-soft)}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok);flex:none}
+.warn{color:var(--rec);font-family:var(--display);font-weight:600;font-size:.88rem;margin:0}
+footer{text-align:center;font-family:var(--display);font-weight:500;color:var(--muted);font-size:.85rem}
+@media (max-width:880px){
+  /* phone/tablet: text on top, questions below, both visible; drag the bar to resize */
+  /* phone/tablet: still side by side, each pane scrolls on its own; drag the bar to resize */
+  .split{height:calc(100vh - 150px);height:calc(100dvh - 150px);min-height:380px}
+  .pane{max-height:none;min-height:0;overscroll-behavior:contain;padding:12px 10px;font-size:.84rem}
+  .passage p{line-height:1.65}
+  .passage .para{grid-template-columns:18px 1fr;gap:4px}
+  .q p{font-size:.84rem}
+  select.dd-sel,select.inl{font-size:.8rem;padding:5px 4px}
+  .gaptext{padding:10px;line-height:2;font-size:.84rem}
+  .prog{grid-template-columns:1fr !important;padding:8px}
+  .pc{font-size:.78rem}
+  .instr{font-size:.8rem;padding:8px 14px}
+}
+@media (max-width:560px){.crit,.dd,.prog{grid-template-columns:1fr}.flow,.flow.f3{grid-template-columns:1fr 1fr}.facts{grid-template-columns:repeat(3,1fr)}.fact b{font-size:1.15rem}.card{padding:18px}.pane{padding:16px}}
+@media (prefers-reduced-motion:reduce){.ev{transition:none}}
+</style>
+</head>
+<body data-page="reading">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <h1>CELPIP Reading Practice</h1>
+      <div class="sub">Practice Task + Parts 1–4 · Original practice by Bilingualearn</div>
+    </div>
+    <div class="row" id="tasknav" role="group" aria-label="Choose a part"></div>
+    <div class="subbar">
+      <span><b id="tname"></b></span>
+      <div class="row"><button class="topbtn" id="btn-guide">📘 Guía</button><span class="row" id="qpick" role="group" aria-label="Choose a practice"></span></div>
+    </div>
+  </header>
+
+  <section class="card" id="s-intro"></section>
+
+  <section class="card" id="s-result" hidden>
+    <div class="result"><span class="score" id="r-score"></span><p id="r-text"></p></div>
+    <p class="note">⬇️ Abajo verás tus respuestas corregidas. Las partes del texto que contienen cada respuesta están resaltadas en amarillo con su número.</p>
+    <div class="mockline" id="r-mock"></div>
+  </section>
+
+  <section class="card exam" id="s-test" hidden>
+    <div class="exhead">
+      <span class="pt" id="ex-title"></span>
+      <div class="right"><span class="qcount" id="pt-count"></span><span class="timer" id="ex-timer" aria-live="off"></span><button class="submit" id="btn-submit">Submit</button></div>
+    </div>
+    <p class="instr" id="ex-instr"></p>
+    <div class="split" id="split">
+      <div class="pane left passage" id="ex-left"></div>
+      <div class="divider" id="divider" role="separator" aria-label="Drag to resize text and questions"><span class="grip"></span></div>
+      <div class="pane right" id="ex-right"></div>
+    </div>
+    <div style="padding:14px 18px;border-top:1px solid var(--line)" id="ex-foot">
+      <p class="warn" id="ex-warn" hidden></p>
+    </div>
+  </section>
+
+  <section class="card" id="s-done" hidden>
+    <button class="cta" id="btn-compare" aria-expanded="false">📊 Compara tu resultado con cómo lee cada nivel</button>
+    <div id="compare" hidden>
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-l="c45" style="--lvl:var(--c45)">CLB 4–5<small>Básico</small></button>
+        <button role="tab" data-l="c78" style="--lvl:var(--c78)">CLB 7–8<small>Bueno</small></button>
+        <button role="tab" data-l="c1012" style="--lvl:var(--c1012)">CLB 10–12<small>Excelente</small></button>
+      </div>
+      <div class="lvl" id="lvl"></div>
+    </div>
+    <details>
+      <summary style="font-family:var(--display);font-weight:600;cursor:pointer">📏 Tabla oficial aproximada: respuestas correctas (de 38) → nivel CELPIP</summary>
+      <div style="overflow-x:auto;margin-top:10px"><table class="conv" id="conv"></table></div>
+      <p class="note" style="margin-top:6px">Fuente: tabla orientativa de Paragon (CELPIP). Los rangos se superponen un poco porque cada versión del test se ajusta según su dificultad.</p>
+    </details>
+  </section>
+
+  <section class="card" id="s-check" hidden>
+    <div>
+      <h2>✍️ Checklist de estrategia</h2>
+      <p class="note" style="margin-top:4px">Marca lo que sí hiciste durante esta parte. Tu puntaje te dice qué tal te fue; el checklist te dice por qué.</p>
+    </div>
+    <div id="checklist"></div>
+    <div class="result"><span class="score" id="score"></span><p id="verdict"></p></div>
+    <div class="btns">
+      <button class="main" id="btn-next">Siguiente parte →</button>
+      <button class="ghost" id="btn-again">Repetir esta parte</button>
+    </div>
+  </section>
+
+  <footer>@bilingualearn.au</footer>
+</div>
+
+<script>
+/* ---------- Shared guide pieces ---------- */
+const CRIT=`<h2>🎯 ¿Qué miden las preguntas?</h2>
+<div class="crit">
+<div><b>Idea principal</b><span>De qué trata el texto o cuál es su propósito.</span></div>
+<div><b>Detalle</b><span>Un dato concreto: quién, cuándo, cuánto, dónde.</span></div>
+<div><b>Inferencia</b><span>Lo que el autor da a entender sin decirlo directamente.</span></div>
+<div><b>Paráfrasis</b><span>La respuesta correcta casi nunca usa las mismas palabras del texto.</span></div></div>`;
+
+
+const CHK_TIME=["Respondí todas las preguntas (no dejé ninguna en blanco)","Terminé antes de que se acabara el tiempo"];
+
+/* ---------- Tasks ---------- */
+const TASKS=[
+/* ===== PRACTICE TASK ===== */
+{name:"Practice Task (calentamiento, 1 pregunta)",short:"Practice",time:90,
+ instr:"Read the following message. Choose the best option to answer the question. (Como en el examen real, la Practice Task es un calentamiento corto: 1 mensaje breve y 1 sola pregunta, que no cuenta para el puntaje.)",
+ guide:{what:"Antes de la Parte 1, el examen real te da una <strong>tarea de práctica</strong> con un mensaje corto y <strong>una sola pregunta</strong>. No cuenta para tu puntaje: sirve para que entiendas cómo funcionan el texto a la izquierda y el menú desplegable a la derecha.",
+  facts:[["1","pregunta"],["≈1 min","para hacerla"],["0","puntos: no cuenta"]],
+  callout:"<strong>💡 Úsala para calentar, no para relajarte.</strong> Aprovecha esta tarea para practicar tu método: primero lees la pregunta, después buscas la respuesta en el texto. Así empiezas la Parte 1 con el ritmo correcto.",
+  doo:["Lee la pregunta antes que el texto.","Abre el menú y mira las 4 opciones.","Busca en el texto la frase que dice lo mismo con otras palabras.","Sigue rápido: el tiempo de las partes reales es justo."],
+  dont:["Elegir la opción que repite una palabra del texto sin comprobarla.","Leer el mensaje tres veces 'por si acaso'.","Pensar que el examen real será tan fácil como esta tarea."],
+  errors:[["Leer el texto completo antes de mirar la pregunta", "Leer la pregunta primero y buscar solo lo necesario", "Así practicas el ritmo que necesitarás en las partes largas."], ["Elegir la opción que repite una palabra del texto", "Buscar la frase que dice lo mismo con otras palabras", "La palabra repetida es la trampa más común del Reading."], ["Tomárselo con calma porque no cuenta", "Usarla para calentar tu método y entender la pantalla", "Empiezas la Parte 1 con el ritmo correcto."]],
+  flow:[["10 s","1. Pregunta","¿Qué me piden?"],["30 s","2. Texto","Busca la parte relevante"],["10 s","3. Opciones","Descarta las trampas"]],
+  phrases:["Do you want me to…? (oferta)","Could you…? (petición)","maybe you should… (sugerencia)"],
+  tips:["Distingue <em>ofrecer</em> (I can…, Do you want me to…) de <em>pedir</em> (Could you…, Would you mind…). Las preguntas lo prueban mucho.","Si ya sabes cómo funciona la pantalla, haz esta tarea en menos de un minuto."]},
+ check:[["Método",["Leí la pregunta antes que el texto","Revisé las 4 opciones antes de elegir","Encontré la frase exacta del texto que justifica mi respuesta"]],["Tiempo",["Lo hice en menos de un minuto y medio"]]],
+ left:`<h3>Text message</h3><div class="meta">From: Tom · To: Mina · Wednesday, 4:12 p.m.</div>
+<p>Hi Mina! The building manager just told me the water will be shut off on Thursday from 9 a.m. until noon because they're repairing some pipes. I'm going to fill a few big jugs tonight so I can still make coffee in the morning. [[1|Do you want me to fill one for you too?]] I've got an extra one.</p>
+<p>Also, the laundry room will be closed all day Thursday, so maybe do your washing tonight or tomorrow morning. – Tom</p>`,
+ blocks:[{type:"mc",qs:[{n:1,q:"What does Tom offer to do for Mina?",o:["repair the pipes","fill a water container for her","do her laundry on Thursday","call the building manager"],a:1,why:"Do you want me to fill one for you too? = una oferta. 'One' se refiere a 'big jugs' (recipientes de agua). Laundry y building manager aparecen en el texto, pero Tom no ofrece eso."}]}],
+ levels:{c45:{s:"0/1",d:"Lee palabra por palabra y elige la opción que reconoce del texto.",miss:[[1,2,"Vio 'laundry' en el texto y lo eligió. Pero Tom solo le recomienda lavar antes; no ofrece hacerlo él."]],x:"🔁 La trampa de la palabra repetida. Pregúntate: ¿el texto dice exactamente ESO, o solo menciona la palabra?"},
+  c78:{s:"1/1",d:"Acierta, pero lee el mensaje completo dos veces antes de mirar la pregunta. En la Parte 4, ese hábito cuesta minutos que luego faltan.",miss:[],x:"⏱️ Correcto pero lento. Empieza siempre por la pregunta."},
+  c1012:{s:"1/1",d:"Lee primero la pregunta (offer = oferta), busca una estructura de oferta en el texto y encuentra 'Do you want me to…?' en segundos.",g:["Identifica el tipo de pregunta: offer.","Reconoce que 'one' = 'a jug' (referencia).","Descarta 'laundry' porque es un consejo, no una oferta.","Termina en ~40 segundos."]}}},
+
+/* ===== PART 1 ===== */
+{name:"Reading Correspondence",short:"Part 1",time:660,
+ instr:"Read the following message. Answer questions 1–6 by choosing the best option. Then complete the response to the message (questions 7–11) by choosing the best option for each blank.",
+ guide:{what:"Vas a leer un <strong>email o carta personal</strong> (de un amigo, un vecino, un familiar) y responder dos tipos de preguntas: <strong>6 preguntas de opción múltiple</strong> sobre el mensaje y luego <strong>una respuesta a ese mensaje con 5 espacios en blanco</strong> que completas con el menú desplegable.",
+  facts:[["11","preguntas"],["11 min","de tiempo"],["≈1 min","por pregunta"]],
+  callout:"<strong>💡 La clave: la respuesta (preguntas 7–11) es la mitad fácil.</strong> Quien responde el mensaje siempre se refiere a cosas que ya leíste. Si entendiste bien el email, los espacios en blanco se resuelven rápido. Por eso, no te quedes atascado en una pregunta difícil: pasa a los blancos y vuelve después.",
+  doo:["Lee las 6 preguntas primero y subraya mentalmente las palabras clave (why, who, first, main purpose).","Lee el email por párrafos y busca la respuesta por palabras clave, no por posición: el orden de las preguntas no siempre sigue al del texto.","Fíjate en quién hace qué: el mensaje suele mencionar a varias personas además de quien escribe.","En los blancos, lee la frase completa antes y después del espacio.","Para 'main purpose', piensa: ¿por qué escribió este email?","Responde todo: no se pierden puntos por respuestas incorrectas."],
+  dont:["Elegir una opción porque tiene una palabra del texto.","Atribuirle a una persona lo que hizo o dijo otra.","Responder 'main purpose' con un detalle del email.","Gastar 3 minutos en una sola pregunta.","Dejar espacios en blanco al final.","Leer todo el email dos veces completo antes de mirar las preguntas."],
+  errors:[["Leer el email entero dos veces antes de ver las preguntas", "Leer las 6 preguntas primero y luego el email por párrafos", "Lee con las preguntas en mente. Muchas siguen el orden del texto, pero no todas: búscalas por palabras clave."], ["Responder 'main purpose' con un detalle llamativo", "Buscar el propósito en las primeras líneas (I'm writing because…)", "Los problemas o anécdotas que cuenta son detalles. El propósito es lo que pide, ofrece o comunica."], ["Mezclar a las personas del mensaje", "Preguntarte QUIÉN hace cada cosa antes de elegir", "Las trampas usan acciones de otra persona del email."], ["Completar los blancos porque 'suena bien'", "Comprobar cada opción con los hechos del email original", "Todas las opciones suelen ser gramaticalmente correctas."], ["Ignorar las palabras de secuencia", "Fijarte en first, early, after that, then", "Muchas preguntas dependen del orden de las acciones."], ["Atascarse en una pregunta difícil", "Elegir la más probable y seguir; volver si sobra tiempo", "Los blancos 7–11 suelen ser más rápidos: asegura esos puntos."]],
+  flow:[["1 min","1. Preguntas","Lee las 6 preguntas"],["5 min","2. Email + 1–6","Párrafo por párrafo"],["3 min","3. Blancos 7–11","Lee la respuesta completa"],["2 min","4. Revisión","Vuelve a las dudosas"]],
+  phrases:["I'm writing because… (propósito)","Would you be able to…? (petición)","If you can't make it… (alternativa)","before I forget… (tema nuevo)","Let me know by… (plazo)","please don't feel obligated (cortesía)"],
+  tips:["Casi siempre hay una pregunta sobre el <em>propósito general</em>. Búscalo cerca del inicio, después del saludo: frases como <em>I'm writing because…</em>, <em>I wanted to let you know…</em> o <em>I need a favour</em>.","Las preguntas <em>suelen</em> seguir el orden del texto, pero no siempre. Úsalo como pista para saber dónde buscar primero, nunca como regla: si la respuesta no está donde esperabas, busca la palabra clave en todo el texto. Las preguntas de propósito general suelen ir al final, aunque su respuesta esté al principio.","En los blancos, el menú tiene opciones que <em>suenan</em> bien gramaticalmente. Elige la que coincide con los <strong>hechos</strong> del email original.","Practica con un cronómetro: tu meta es terminar la Parte 1 en 10 minutos para tener margen."]},
+ check:[["Antes de leer",["Leí las preguntas 1–6 antes del email","Identifiqué el tipo de cada pregunta (por qué, quién, propósito)"]],
+  ["Mientras leía",["Leí por párrafos y respondí en orden","Distinguí bien a cada persona del mensaje","Busqué paráfrasis, no palabras idénticas"]],
+  ["Respuesta con blancos",["Leí la frase completa alrededor de cada blanco","Comprobé cada opción contra los hechos del email original"]],
+  ["Tiempo",CHK_TIME]],
+ left:`<h3>Garage sale this Saturday — need a hand!</h3><div class="meta">From: Elena Ruiz · To: Marcus Lee</div>
+<p>Hi Marcus,</p>
+<p>I hope you and Priya are settling into the new apartment. I still can't believe you finally found a place with a balcony!</p>
+<p>[[6|I'm writing because I need a favour.]] As you know, my parents are moving into a retirement community in Kelowna next month, and they've asked me to help them get rid of everything they won't be taking with them. [[1|Their new place is about half the size of the house]], so that's a lot of furniture. We've decided to hold a garage sale this Saturday, from 8 a.m. to 2 p.m.</p>
+<p>My brother was supposed to help, but [[2|his flight back from Halifax was cancelled]], so it's just me and Mom. Dad hurt his back last week moving boxes, so the doctor has told him not to lift anything heavier than a coffee mug, which he's not happy about! Would you be able to come over for a few hours? [[3,7|I mostly need someone strong to carry the dining table and the bookshelves out to the driveway early in the morning.]] [[8|After that, it would be great to have someone keep an eye on the cash box]] while I deal with customers.</p>
+<p>I know you're busy with your new job, so please don't feel obligated. If you can't make it, could you at least help me spread the word? [[9|You're in that big neighbourhood group on social media]], and I think [[4|a post from you would reach far more people than the paper flyers]] I put up at the community centre.</p>
+<p>Oh, and before I forget, Mom wants you to have [[10|Grandpa's old record player]]. She remembers how much you loved it when we were kids. [[5,11|If you don't have room for it now, she's happy to keep it in storage until you do.]]</p>
+<p>Let me know either way by Thursday so I can figure out a plan B.</p>
+<p>Thanks a million,<br>Elena</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"Why are Elena's parents having a garage sale?",o:["They need money for their retirement.","Their new home is much smaller.","They sold their house to Elena's brother.","They are moving to Halifax."],a:1,why:"'Half the size of the house' = much smaller. El dinero nunca se menciona como razón, y Halifax es de donde viene el hermano."},
+  {n:2,q:"Why is Elena's brother unable to help?",o:["He injured his back.","He started a new job.","His travel plans fell through.","He is moving to Kelowna."],a:2,why:"'His flight was cancelled' = his travel plans fell through. Quien se lastimó la espalda es el papá, y el trabajo nuevo es de Marcus."},
+  {n:3,q:"What will Elena need help with first on Saturday?",o:["putting up flyers","moving heavy furniture outside","looking after the money","talking to customers"],a:1,why:"'Carry the dining table and the bookshelves out… early in the morning' = mover muebles pesados afuera. El dinero viene 'after that', es decir, después."},
+  {n:4,q:"Why does Elena suggest a post on social media?",o:["Her flyers were taken down.","The community centre is closed.","It would reach more people.","Marcus works in advertising."],a:2,why:"'Would reach far more people than the paper flyers' = it would reach more people. Las otras opciones no aparecen en el texto."},
+  {n:5,q:"What does Elena say about the record player?",o:["Her mother plans to sell it on Saturday.","It can be stored until Marcus has space.","It belonged to Marcus's grandfather.","It is too heavy to carry."],a:1,why:"'Happy to keep it in storage until you do (have room)'. Es el abuelo de Elena, no el de Marcus."},
+  {n:6,q:"What is the main purpose of Elena's email?",o:["to invite Marcus to visit her parents","to ask Marcus for help with a sale","to tell Marcus about her father's injury","to congratulate Marcus on his apartment"],a:1,why:"'I'm writing because I need a favour' + todo el email gira en torno a la venta de garaje. La lesión del papá y el apartamento son detalles."}]},
+ {type:"gap",intro:"Here is a response to the message. Complete the response by filling in the blanks. Select the best choice for each blank from the drop-down menu.",
+  text:`<p>Hi Elena,</p><p>Thanks for thinking of me! Of course I'll help. I start work at noon on Saturday, but I can be at your parents' place by 7:30, so I'll have plenty of time to {{7}} before the first customers show up. Unfortunately, I'll have to leave around 11, so you might need someone else to {{8}}.</p><p>I'll also write a post tonight in the {{9}}; people there love a good bargain. Please tell your mom I'm so touched about the {{10}}. Priya and I actually have space for it now, so there's no need to {{11}}.</p><p>Tell your dad to rest that back!<br>Marcus</p>`,
+  qs:[{n:7,o:["carry the big furniture out","put up more flyers","count the money","call your brother"],a:0,why:"Marcus llega temprano (7:30) y Elena necesitaba ayuda 'early in the morning' para sacar los muebles."},
+   {n:8,o:["watch the cash box","lift the dining table","drive your dad to the doctor","pick up your brother"],a:0,why:"Marcus se va a las 11, así que no puede hacer la segunda tarea: vigilar la caja ('keep an eye on the cash box'). 'Lift the dining table' ya lo hizo él en la mañana."},
+   {n:9,o:["neighbourhood group","community centre","local newspaper","retirement community"],a:0,why:"Elena le pidió publicar en 'that big neighbourhood group on social media'. Community centre es donde están los flyers de papel."},
+   {n:10,o:["record player","bookshelves","coffee mug","balcony"],a:0,why:"Lo que la mamá quiere regalarle es 'Grandpa's old record player'."},
+   {n:11,o:["keep it in storage","sell it on Saturday","ship it to Kelowna","buy a new one"],a:0,why:"La mamá ofreció guardarlo 'in storage' si Marcus no tenía espacio. Como ahora sí tiene, no hace falta."}]}],
+ levels:{c45:{s:"5/11",d:"Lee buscando palabras que reconoce y elige la opción que las repite. Confunde a las personas del email y no ve la secuencia de tiempo (first / after that).",
+   miss:[[1,0,"Entendió 'get rid of' como 'conseguir algo' y pensó que necesitaban dinero."],[2,0,"Vio 'hurt his back' y no se fijó en que era el papá, no el hermano."],[4,0,"Leyó 'flyers' y supuso que habían desaparecido."],[5,2,"Leyó 'Grandpa' y pensó que era el abuelo de Marcus."],[8,1,"Eligió 'lift the dining table' porque vio 'table' en el email, sin notar que Marcus ya hizo eso en la mañana."],[11,1,"Eligió 'sell it on Saturday' porque el tema del email es una venta."]],
+   x:"🔁 Patrón: trampa de la palabra repetida + confusión de personas. Antes de elegir, pregúntate: ¿QUIÉN hace esto en el texto?"},
+  c78:{s:"8/11",d:"Entiende bien el email y casi todos los detalles. Falla cuando la pregunta exige ordenar acciones en el tiempo o separar el propósito general de un detalle.",
+   miss:[[3,2,"Vio que Elena necesitaba ayuda con la caja, pero no notó 'After that': eso viene en segundo lugar."],[6,2,"La lesión del papá le pareció importante, pero es un detalle, no el propósito del email."],[9,1,"Recordó 'community centre' del mismo párrafo, pero ahí están los flyers, no el grupo online."]],
+   x:"🎯 Para subir a CLB 9+: atención a palabras de secuencia (first, after that, then) y a la diferencia entre detalle y propósito."},
+  c1012:{s:"11/11",d:"Lee las preguntas primero, recorre el email párrafo por párrafo y comprueba cada respuesta con una frase concreta del texto. Termina en unos 8 minutos.",
+   g:["Identifica el propósito en la primera línea útil: 'I'm writing because I need a favour'.","Separa a las personas: papá (espalda), hermano (vuelo), mamá (tocadiscos).","Usa conectores de tiempo (early in the morning / after that) para la pregunta 3 y el blanco 8.","En la respuesta de Marcus, usa la lógica: llega a las 7:30 y se va a las 11, así que solo puede hacer la primera tarea."]}}},
+
+/* ===== PART 2 ===== */
+{name:"Reading to Apply a Diagram",short:"Part 2",time:540,
+ instr:"Read the following flyer and the email. Complete the email (questions 1–5) by choosing the best option for each blank. Then answer questions 6–8.",
+ guide:{what:"Vas a ver un <strong>diagrama</strong>: un folleto, un horario, una tabla de precios o un plano. A la derecha hay un <strong>email con 5 espacios en blanco</strong> que solo puedes completar mirando el diagrama, y después <strong>3 preguntas</strong> sobre el email que a veces también necesitan el diagrama.",
+  facts:[["8","preguntas"],["9 min","de tiempo"],["2","fuentes que combinar"]],
+  callout:"<strong>💡 La clave: tú eres el detective entre dos documentos.</strong> El email da las pistas (edad, gustos, días libres) y el diagrama tiene los datos (precios, horarios, requisitos). Casi todas las preguntas exigen cruzar las dos fuentes.",
+  doo:["Dedica 30 segundos a entender el diagrama: títulos, columnas, notas al pie.","Lee el email y anota mentalmente los datos de cada persona (edad, preferencias).","Para cada blanco, ve al diagrama y busca la fila correcta.","Lee las notas al pie: descuentos, fechas límite y excepciones salen mucho.","Comprueba cifras, días y horas con exactitud.","En las preguntas 6–8, busca la respuesta en el email y verifícala en el diagrama."],
+  dont:["Leer el diagrama completo con detalle antes de saber qué buscas.","Mezclar filas (el horario de un programa con el precio de otro).","Ignorar la letra pequeña del final.","Suponer en vez de comprobar ('seguro que tiene la edad').","Olvidar que el email puede descartar opciones (una preferencia, un horario o una limitación de la persona)."],
+  errors:[["Estudiar todo el diagrama en detalle antes de leer el email", "Mapear en 30 s títulos, columnas y notas, y luego buscar lo que pide el email", "Sin saber qué buscas, olvidarás los datos."], ["Tomar un dato correcto de la fila equivocada", "Poner el dedo en la fila de la opción antes de leer el dato", "Las opciones incorrectas casi siempre son datos reales de otra fila."], ["Ignorar las notas al pie", "Leer siempre la letra pequeña: descuentos, fechas límite, excepciones", "1 o 2 preguntas salen de ahí."], ["Usar solo el diagrama", "Cruzarlo con lo que el email dice de cada persona (necesidades, preferencias, limitaciones)", "El email descarta opciones que el diagrama sí permite."], ["Responder de memoria", "Volver al diagrama para cada dato", "Precios, días y horarios se confunden con facilidad."]],
+  flow:[["30 s","1. Diagrama","Títulos y notas"],["2 min","2. Email","Datos de cada persona"],["4 min","3. Blancos 1–5","Cruza email + diagrama"],["2 min","4. Preg. 6–8","Verifica en ambos"]],
+  phrases:["on top of / in addition to (además de)","included / not included (incluido / no incluido)","up to / at least (hasta / como mínimo)","except / excluding (excepto)","deadline / by (fecha límite)","per person / per hour (por persona / por hora)"],
+  tips:["Imagina que el diagrama es un buscador: el email te da las palabras para buscar. Si el email dice que alguien solo está libre los fines de semana, ve directo a la columna de horarios.","Si una opción del menú es correcta según el diagrama pero no encaja con lo que el email cuenta de la persona, es la trampa.","Los números son trampas frecuentes: el precio de otra opción, la fecha de otra actividad. Comprueba siempre la fila.","Si algo no te cuadra, vuelve a leer la frase completa del email: muchas veces la pista está justo antes del blanco."]},
+ check:[["Antes de leer",["Miré títulos, columnas y notas del diagrama","Identifiqué a las personas del email y sus datos"]],
+  ["Al responder",["Para cada blanco, encontré la fila exacta en el diagrama","Leí la letra pequeña (descuentos y fechas)","Comprobé edades y horarios con exactitud","Usé las pistas del email para descartar opciones"]],
+  ["Tiempo",CHK_TIME]],
+ left:`<div class="flyer"><div class="fh"><b>🍁 Maple Grove Recreation Centre</b><span>Fall Programs for Kids · September 15 – December 8</span></div>
+<div class="prog">
+<div class="pc"><span class="ic">🏊</span><span class="pn">Junior Swim</span><dl><dt>Ages</dt><dd>[[7|6–9]]</dd><dt>When</dt><dd>Tue &amp; Thu, 4:30–5:30</dd><dt>Price</dt><dd>$120</dd><dt>Note</dt><dd>[[4|Bring goggles]]</dd></dl></div>
+<div class="pc"><span class="ic">👩‍🍳</span><span class="pn">Little Chefs</span><dl><dt>Ages</dt><dd>[[7|8–12]]</dd><dt>When</dt><dd>Sat, 10:00–12:00</dd><dt>Price</dt><dd>$150 (ingredients included)</dd><dt>Note</dt><dd>Nut-free kitchen</dd></dl></div>
+<div class="pc"><span class="ic">🤖</span><span class="pn">[[1|Robotics Club]]</span><dl><dt>Ages</dt><dd>10–14</dd><dt>When</dt><dd>Wed, 5:00–6:30</dd><dt>Price</dt><dd>[[2|$180 + $25 kit]]</dd><dt>Note</dt><dd>Laptops provided</dd></dl></div>
+<div class="pc"><span class="ic">🎨</span><span class="pn">Art Explorers</span><dl><dt>Ages</dt><dd>5–8</dd><dt>When</dt><dd>[[3|Sat, 1:00–2:30]]</dd><dt>Price</dt><dd>$95</dd><dt>Note</dt><dd>[[4|Please wear old clothes]]</dd></dl></div>
+</div>
+<div class="ff"><b>Save more!</b><span>• Maple Grove residents: 10% off any program</span><span>• Early bird: register by September 8 and save $15 per child</span><span>• [[5|Sibling discount: 20% off the second child's program]]</span><span>• [[8|Free drop-in trial class for all programs: September 13]]</span></div></div>`,
+ blocks:[{type:"gap",intro:"Read the email below about the flyer. Complete the email by filling in the blanks.",
+  text:`<p><b>To:</b> Jess · <b>From:</b> Kaitlyn · <b>Subject:</b> Fall programs for the kids</p><p>Hi Jess,</p><p>I grabbed the fall program flyer from Maple Grove for you. [[6|Leo has been taking apart every gadget in the house lately]], so I think he'd love {{1}}. Just remember that it costs {{2}} on top of the program fee.</p><p>For Mia, [[7b|you said she's still nervous around water]], so swimming might not be ideal yet. Art Explorers would be a better fit, and it's {{3}}, so it won't clash with Leo's program. Make sure she wears {{4}}! Also, if you sign them both up, you'll get {{5}}, and if you register before September 8 you'll save another $15 each.</p><p>If you'd like them to try a class before you pay anything, [[8|you could take them on the 13th]].</p><p>Love,<br>Kaitlyn</p>`,
+  qs:[{n:1,o:["Robotics Club","Little Chefs","Junior Swim","Art Explorers"],a:0,why:"'Taking apart every gadget' = le interesa cómo funcionan los aparatos → Robotics Club. Leo tiene 11 (edades 10–14)."},
+   {n:2,o:["an extra $25 for the kit","$150 with ingredients","10% less for residents","nothing for the first class"],a:0,why:"'On top of the program fee' = además del precio. En la fila de Robotics: $180 + $25 kit."},
+   {n:3,o:["on Saturday afternoons","on Tuesdays and Thursdays","on Wednesday evenings","on Saturday mornings"],a:0,why:"Art Explorers: Sat, 1:00–2:30 = sábado por la tarde. Saturday mornings es Little Chefs y Wednesday es Robotics (el programa de Leo)."},
+   {n:4,o:["old clothes","goggles","a name tag","a nut-free snack"],a:0,why:"Nota de Art Explorers: 'Please wear old clothes'. Goggles es para Junior Swim y nut-free es Little Chefs."},
+   {n:5,o:["20% off the second child","a free laptop","free ingredients","a free trial class"],a:0,why:"'If you sign them both up' = inscribir a los dos hermanos → sibling discount, 20% off. La clase de prueba es gratis para todos, no por inscribir a dos."}]},
+ {type:"mc",intro:"Answer the following questions about the email and the flyer.",qs:[
+  {n:6,q:"Why does Kaitlyn suggest Robotics Club for Leo?",o:["He enjoys cooking.","He is curious about how devices work.","He already owns a laptop.","His friends are in the club."],a:1,why:"Paráfrasis de 'taking apart every gadget in the house'. Lo del laptop es una nota del folleto (laptops provided), no algo de Leo."},
+  {n:7,q:"Leo is 11 years old. Which other program on the flyer could he join?",o:["Junior Swim","Art Explorers","Little Chefs","none of the others"],a:2,why:"Hay que ir al diagrama: Little Chefs es para 8–12 años. Junior Swim (6–9) y Art Explorers (5–8) son para niños más pequeños."},
+  {n:8,q:"What does Kaitlyn suggest if Jess wants to try a class first?",o:["go on September 8","go on September 13","go on September 15","call the centre"],a:1,why:"El email dice 'on the 13th', y el folleto confirma: Free drop-in trial class, September 13. El 8 es la fecha límite del early bird y el 15 es el inicio."}]}],
+ levels:{c45:{s:"3/8",d:"Lee el email sin volver al diagrama, o mira el diagrama sin fijarse en qué fila está. Elige opciones que son verdaderas en el folleto, pero para otro programa.",
+   miss:[[1,1,"No conocía la palabra 'gadget' y eligió el programa al azar."],[2,2,"Vio '10% off' en el folleto y lo eligió sin leer 'on top of the program fee'."],[3,3,"Miró la fila de Little Chefs (sábado por la mañana) en vez de la de Art Explorers."],[5,3,"'Free trial class' le sonó a regalo, pero no tiene que ver con inscribir a dos hijos."],[7,0,"No comprobó las edades en el folleto."]],
+   x:"🔁 Patrón: datos correctos de la fila equivocada. Pon el dedo en la fila del programa antes de leer el dato."},
+  c78:{s:"6/8",d:"Cruza bien el email con el diagrama en los blancos más directos. Falla en los detalles que exigen comprobar con exactitud.",
+   miss:[[4,1,"Asoció 'nervous around water' con natación y eligió goggles, pero Mia va a Art Explorers."],[7,3,"Pensó que Leo era demasiado mayor para todo lo demás y no revisó que Little Chefs llega hasta los 12 años."]],
+   x:"🎯 Para subir a CLB 9+: no confíes en la memoria. Vuelve al diagrama para cada dato, sobre todo edades y notas."},
+  c1012:{s:"8/8",d:"Primero hace un mapa rápido del folleto (4 programas, cada uno con edad, horario, precio y nota). Luego lee el email y, para cada blanco, va directo a la fila correcta.",
+   g:["Usa la frase antes del blanco como pista: 'on top of the program fee' → busca un costo extra.","Descarta opciones con información del email: Mia tiene miedo al agua → no swim.","Lee las notas al pie: el descuento por hermanos responde el blanco 5.","Verifica edades en la pregunta 7 en vez de suponer."]}}},
+
+/* ===== PART 3 ===== */
+{name:"Reading for Information",short:"Part 3",time:600,
+ instr:"Read the following article. Decide which paragraph, A to D, has the information given in each statement. Select E if the information is not given in any of the paragraphs.",
+ guide:{what:"Vas a leer un <strong>artículo informativo con 4 párrafos (A–D)</strong>. A la derecha hay <strong>9 afirmaciones</strong>. Para cada una, eliges en qué párrafo está esa información, o <strong>E: Not given</strong> si no está en ningún párrafo.",
+  facts:[["9","afirmaciones"],["10 min","de tiempo"],["A–E","opciones fijas"]],
+  callout:"<strong>💡 La clave: esto es un ejercicio de paráfrasis.</strong> Las afirmaciones nunca copian el texto: 'costs less' puede aparecer en el texto como 'is more affordable'. Y la opción E es real: casi siempre hay 1 o 2 afirmaciones que no están en el texto, aunque usen palabras del artículo.",
+  doo:["Lee el artículo una vez rápido y pon un 'título' mental a cada párrafo (A = historia, B = un ejemplo, C = ventajas…).","Lee cada afirmación y pregúntate: ¿de qué tema es? Eso te lleva al párrafo correcto.","Busca la frase concreta que dice lo mismo con otras palabras.","Comprueba quién, cuánto, cuándo y dónde: un detalle distinto convierte la respuesta en E.","Usa E cuando el tema aparece pero el dato exacto no está.","Responde primero las fáciles y vuelve a las difíciles."],
+  dont:["Elegir un párrafo porque comparte una palabra con la afirmación.","Usar E por miedo: solo si de verdad no está.","Leer el texto entero cada vez que respondes una afirmación.","Pensar que cada párrafo se usa la misma cantidad de veces.","Confundir las opiniones de los críticos con los hechos que presenta el artículo."],
+  errors:[["Elegir el párrafo que tiene la misma palabra", "Buscar la frase que expresa la misma idea con otras palabras", "Esta parte mide paráfrasis: la palabra repetida suele ser la trampa."], ["Releer todo el artículo para cada afirmación", "Hacer un skim inicial y ponerle un tema a cada párrafo", "Con ese mapa vas directo al párrafo correcto."], ["Evitar la opción E por miedo", "Usar E cuando el tema aparece pero el dato exacto no", "Casi siempre hay 1 o 2 afirmaciones Not given."], ["Usar E cuando no entiendes la frase", "Buscar sinónimos antes de decidir que no está", "E es para información ausente, no para vocabulario difícil."], ["No distinguir quién dice qué", "Separar hechos, opiniones de defensores y opiniones de críticos", "Una afirmación sobre dudas o críticas solo encaja en el párrafo que las presenta."], ["Repartir las letras por igual", "Decidir cada afirmación por separado", "No hay un número fijo de respuestas por párrafo."]],
+  flow:[["2 min","1. Skim","Un título por párrafo"],["6 min","2. Afirmaciones","Tema → párrafo → frase"],["1 min","3. Dudas: E","¿Está el dato exacto?"],["1 min","4. Revisión","Nada en blanco"]],
+  phrases:["supporters say… (a favor)","critics argue… / not everyone is convinced (en contra)","has not been proven (no demostrado)","such as… (ejemplos)","in response… (reacción)","as a result… (consecuencia)"],
+  tips:["Cada párrafo tiene una función, por ejemplo: contexto, un caso concreto, ventajas, críticas. Si la afirmación es una crítica, búscala primero en el párrafo de críticas.","La trampa de E: la afirmación dice quién pagó o hizo algo, y el texto habla del mismo tema pero con otra persona, cifra o lugar. Comprueba QUIÉN, CUÁNTO y DÓNDE.","Haz una lista de sinónimos mientras practicas: cheaper / more affordable, increase / rise, maintenance / upkeep, help / assist.","Tu meta: 1 minuto por afirmación. Si en 90 segundos no la encuentras, elige y sigue."]},
+ check:[["Antes de responder",["Hice un skim rápido y le puse un tema a cada párrafo"]],
+  ["Al responder",["Para cada afirmación, encontré la frase exacta que la parafrasea","No elegí párrafos solo por una palabra repetida","Usé E solo cuando el dato exacto no estaba","Separé opiniones de críticos y hechos del proyecto"]],
+  ["Tiempo",CHK_TIME]],
+ left:`<h3>Tiny Forests, Big Ideas</h3><div class="meta">How a Japanese planting method is changing Canadian neighbourhoods</div>
+<div class="para"><b>A</b><p>Mini-forests, sometimes called "tiny forests," are based on a method [[1|created by the Japanese botanist Akira Miyawaki in the 1970s]]. Miyawaki noticed that the oldest, healthiest forests in Japan were made up of many layers of plants that had grown together for centuries. To recreate them quickly, [[5|planters use only species that are native to the local area]], and they place three to five young trees in every square metre of ground, far more densely than in a typical park. Because the saplings compete for light, they shoot upwards quickly, and supporters say a mini-forest can look decades old after just a few years.</p></div>
+<div class="para"><b>B</b><p>In the small town of Ridgeview, Ontario, retired teacher Paul Mensah spent two years convincing the town council to let volunteers turn [[9|a corner of the arena's old parking lot, closed since the new arena opened,]] into a forest. The project was paid for by a small grant from a local hardware store and donations from residents. [[6|On a rainy weekend last May, more than 150 volunteers, from toddlers to grandparents, planted 1,200 saplings]] of 30 native species in just two days.</p></div>
+<div class="para"><b>C</b><p>Supporters point to a long list of benefits. [[4|On hot summer days, the dense leaves provide shade and release moisture, which can make the air around a mini-forest noticeably cooler than a nearby street.]] The thick layer of mulch and roots also soaks up rainwater that would otherwise rush into storm drains. And the forests attract birds, bees and butterflies within months. [[7|At Ridgeview Public School, next door to the site, Grade 4 students now hold their science lessons among the trees]], measuring growth and counting insects.</p></div>
+<div class="para"><b>D</b><p>Not everyone is convinced. [[3|Some forest scientists say the claim that these forests grow ten times faster than normal has not been proven by careful long-term studies.]] Because the trees are so crowded, many of them die as the forest matures, which critics see as a waste of money. Planting so densely also costs more per square metre than conventional tree planting. [[8|Supporters reply that after the first three years of regular watering and weeding, a mini-forest needs almost no maintenance at all]], while a lawn must be mowed every week, forever.</p></div>`,
+ blocks:[{type:"abcde",qs:[
+  {n:1,q:"The planting method was first developed in another country.",a:0,why:"A: 'created by the Japanese botanist Akira Miyawaki'. Japón = another country."},
+  {n:2,q:"Ridgeview's forest was funded by the federal government.",a:4,why:"E (Not given). B habla de financiación, pero viene de 'a local hardware store and donations from residents'. El gobierno federal no aparece."},
+  {n:3,q:"Some researchers question how fast these forests really grow.",a:3,why:"D: 'the claim that these forests grow ten times faster… has not been proven'. Ojo: A también habla de crecimiento rápido, pero ahí son los defensores, no los que dudan."},
+  {n:4,q:"Mini-forests can lower the temperature of the surrounding area.",a:2,why:"C: 'make the air around a mini-forest noticeably cooler'. Cooler = lower temperature."},
+  {n:5,q:"Only plants that naturally grow in the region are used.",a:0,why:"A: 'species that are native to the local area'. Native = que crece naturalmente en la zona."},
+  {n:6,q:"People of all ages helped to plant the Ridgeview forest.",a:1,why:"B: 'from toddlers to grandparents' = de todas las edades."},
+  {n:7,q:"Children are using a forest as a place to learn.",a:2,why:"C: 'Grade 4 students now hold their science lessons among the trees'. Ojo: B menciona a 'toddlers', pero ellos plantaron, no estudian ahí."},
+  {n:8,q:"Once established, the forests require very little care.",a:3,why:"D: 'after the first three years… needs almost no maintenance'. Care / upkeep = maintenance."},
+  {n:9,q:"The Ridgeview forest grows on land that used to be a parking area.",a:1,why:"B: 'a corner of the arena's old parking lot, closed since the new arena opened'."}]}],
+ levels:{c45:{s:"4/9",d:"Busca la misma palabra de la afirmación en el texto. Cuando la encuentra, elige ese párrafo sin comprobar si el dato coincide. No usa E.",
+   miss:[[2,1,"Vio 'paid for by a grant' en B y lo eligió, sin notar que no es el gobierno federal."],[3,0,"Vio 'shoot upwards quickly' en A, pero ahí no hay dudas: los que dudan están en D."],[6,2,"Pensó en 'children' por los estudiantes de C."],[8,0,"Asoció 'after just a few years' (A) con 'once established'."],[9,4,"No reconoció que 'old parking lot' = 'used to be a parking area' y eligió E."]],
+   x:"🔁 Patrón: palabra igual = párrafo correcto. En esta parte, eso casi nunca funciona. Busca el significado, no la palabra."},
+  c78:{s:"7/9",d:"Reconoce la mayoría de paráfrasis. Falla en las dos trampas clásicas: la afirmación de E que comparte tema con un párrafo y la información parecida en dos párrafos.",
+   miss:[[2,1,"Vio que B habla de financiación y no comprobó QUIÉN pagó."],[8,0,"A y D hablan de lo que pasa 'después de unos años'. Solo D habla de mantenimiento."]],
+   x:"🎯 Para subir a CLB 9+: cuando dos párrafos parecen correctos, busca la palabra que hace la diferencia (care, federal, researchers)."},
+  c1012:{s:"9/9",d:"Hace un skim de 2 minutos y le pone un tema a cada párrafo: A = origen y método, B = Ridgeview, C = beneficios, D = críticas. Luego clasifica cada afirmación por tema y confirma con la frase exacta.",
+   g:["Clasifica por tema antes de buscar: 'researchers question' → críticas → D.","Comprueba el dato exacto en la 2: el dinero vino de una tienda local, así que es E.","Domina la paráfrasis: cooler = lower temperature, native = naturally grows, maintenance = care.","No le da miedo usar E cuando corresponde."]}}},
+
+/* ===== PART 4 ===== */
+{name:"Reading for Viewpoints",short:"Part 4",time:780,
+ instr:"Read the following article. Answer questions 1–5 by choosing the best option. Then read the comment written in response to the article and complete it (questions 6–10) by choosing the best option for each blank.",
+ guide:{what:"Vas a leer un <strong>artículo de opinión o reportaje</strong> donde varias personas opinan sobre un tema polémico. Respondes <strong>5 preguntas de opción múltiple</strong> y luego completas <strong>un comentario de un lector con 5 blancos</strong>. Es la parte más larga y difícil del Reading.",
+  facts:[["10","preguntas"],["13 min","de tiempo"],["3–4","puntos de vista"]],
+  callout:"<strong>💡 La clave: haz un mapa de quién piensa qué.</strong> Cada persona del artículo tiene una postura (a favor, en contra, con matices). Las preguntas casi siempre preguntan por la opinión de UNA persona concreta, y las trampas usan la opinión de OTRA.",
+  doo:["Lee las 5 preguntas primero y fíjate en los nombres que aparecen.","Al leer, haz un mapa mental: Persona → postura → razón.","Presta atención a los matices: however, but, she does agree that…","En el comentario, primero identifica si el lector está a favor o en contra.","Completa los blancos con lógica: el comentario debe ser coherente con el artículo y consigo mismo.","Guarda al menos 5 minutos para el comentario."],
+  dont:["Mezclar las opiniones de las distintas personas del artículo.","Creer que una persona está 100 % en contra si dice 'however, she agrees that…'.","Elegir una opción porque es verdad en el mundo real, aunque el texto no lo diga.","Gastar 10 minutos en las preguntas 1–5 y no llegar al comentario.","Ignorar la última frase de cada párrafo: suele tener el giro."],
+  errors:[["Leer el artículo sin un mapa de opiniones", "Anotar Persona → postura → razón mientras lees", "Las preguntas piden la opinión de una persona y las trampas usan la de otra."], ["Leer solo el inicio de cada párrafo", "Prestar atención a however, but, admits, does agree", "El giro de la opinión suele estar al final del párrafo."], ["Elegir lo que es verdad en la vida real", "Elegir solo lo que dice el texto", "Tu conocimiento general no cuenta; el texto sí."], ["Gastar 10 minutos en las preguntas 1–5", "Dejar al menos 5 minutos para el comentario", "Son 5 puntos: no llegar es perderlos todos."], ["Completar el comentario sin saber la postura del lector", "Identificar primero si el lector está a favor o en contra", "Cada blanco debe ser coherente con esa postura."], ["Leer solo la frase del blanco", "Leer también la frase anterior y la siguiente", "La pista suele estar justo antes o después del blanco."]],
+  flow:[["1 min","1. Preguntas","Nombres y palabras clave"],["6 min","2. Artículo + 1–5","Mapa: quién piensa qué"],["5 min","3. Comentario","Postura del lector"],["1 min","4. Revisión","Nada en blanco"]],
+  phrases:["X admits that… (concede algo)","X warns that… (advierte)","in her view… (opinión)","not all … welcome the idea (desacuerdo)","she does agree, however, that… (matiz)","for now… (situación actual)"],
+  tips:["Escribe el mapa en tu borrador del examen si lo tienes: <em>Persona 1 = a favor, porque… · Persona 2 = en contra, pero acepta que… · Persona 3 = propone…</em>.","Los verbos de opinión dan pistas del tono: <em>admits</em> (reconoce algo negativo), <em>warns</em> (advierte de un riesgo), <em>believes</em> (opina).","En el comentario, cada blanco suele referirse a una persona del artículo. Busca el nombre justo antes del blanco.","Esta parte vale 10 puntos de 38. Llegar con tiempo suficiente vale tanto como saber inglés."]},
+ check:[["Antes de leer",["Leí las preguntas y me fijé en los nombres"]],
+  ["Mientras leía",["Hice un mapa: cada persona → postura → razón","Noté los matices (however, admits, does agree)"]],
+  ["Comentario",["Identifiqué la postura del lector antes de completar","Para cada blanco, relacioné la frase con una persona del artículo","Revisé que el comentario completo tuviera sentido"]],
+  ["Tiempo",CHK_TIME]],
+ left:`<h3>The End of the Tip? Canadian Restaurants Rethink How Servers Get Paid</h3>
+<p>Tipping has long been part of eating out in Canada, but the custom is under more pressure than ever. Payment machines now suggest tips of 18, 20 or even 25 percent, and [[1|they increasingly appear at bakery counters and self-serve coffee shops where no one brings anything to a table]]. Many customers say they now feel pressured to tip for almost nothing.</p>
+<p>In response, a small number of restaurants have adopted a "no-tipping" model. At Harbour &amp; Vine in Halifax, owner Graham Ostrowski raised menu prices by 18 percent two years ago and now pays every employee, from dishwashers to servers, a fixed hourly wage well above the minimum. "Before, [[2,6|my servers could earn three times what my cooks earned on a busy Friday]]," he says. [[2|"That never felt fair. The cooks work just as hard, and the kitchen is where the food comes from."]]</p>
+<p>Ostrowski admits the change has not been easy. Several experienced servers left within the first six months, saying they could make more elsewhere. And [[3|some first-time customers, seeing the higher prices on the menu, assume the restaurant is overpriced and walk out]] before reading the note explaining the policy. "We had to learn to put the message right at the top of the menu," he says.</p>
+<p>Not all servers welcome the idea. Jasmine Koh, who has worked in Vancouver restaurants for twelve years, [[4|says tips reward people who are good at their jobs]]. "On a great night, I can take home more than double my wage. [[7|A flat salary would treat a careless server and an excellent one exactly the same.]]" [[4|She does agree, however, that the prompts at counters have gone too far.]] "Asking for 20 percent on a muffin that I handed you myself? I understand why people are annoyed."</p>
+<p>Economists are divided on what would happen if the practice disappeared. Dr. Anita Rao, who studies the hospitality industry at a university in Toronto, believes a tip-free system would make pay more stable and reduce discrimination, since research has shown that tips can be influenced by a server's appearance or accent. But she warns that a single restaurant cannot easily make the change alone. [[8|"If your competitor's menu looks 18 percent cheaper, many diners will go there, even if the final bill ends up about the same,"]] she explains. In her view, [[5,9|real change would only come if provincial governments set clear rules for the whole industry]].</p>
+<p>For now, most Canadians will keep calculating tips at the end of a meal. But as the debate grows louder, the question may soon shift from how much to tip to whether we should tip at all.</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"According to the article, why are more customers frustrated with tipping?",o:["Restaurants have raised their prices.","Tip requests appear where there is little service.","Servers have become less friendly.","Payment machines often make mistakes."],a:1,why:"Las máquinas piden propina en 'bakery counters and self-serve coffee shops where no one brings anything to a table' = donde casi no hay servicio. Quien subió precios fue solo Ostrowski."},
+  {n:2,q:"Why did Ostrowski change the way his restaurant pays staff?",o:["to attract more customers","He felt the pay gap between staff was unfair.","His servers asked him to.","A new law required it."],a:1,why:"'My servers could earn three times what my cooks earned… That never felt fair'."},
+  {n:3,q:"What problem did Harbour & Vine face after the change?",o:["The cooks demanded higher wages.","Some customers misunderstood the higher prices.","The restaurant had to close on Fridays.","The quality of the food declined."],a:1,why:"Clientes nuevos 'assume the restaurant is overpriced and walk out before reading the note' = no entendieron por qué los precios eran más altos."},
+  {n:4,q:"What is Jasmine Koh's opinion?",o:["Tipping should be banned everywhere.","Tips reward good servers, but counter prompts go too far.","Servers earn too little no matter what.","Customers should tip 20 percent on everything."],a:1,why:"Koh defiende las propinas ('tips reward people who are good at their jobs') pero con un matiz: 'she does agree, however, that the prompts at counters have gone too far'."},
+  {n:5,q:"According to Dr. Rao, what would make a tip-free system succeed?",o:["better training for servers","higher menu prices","rules that apply to all restaurants","a new survey of customers"],a:2,why:"'Real change would only come if provincial governments set clear rules for the whole industry'. Whole industry = all restaurants."}]},
+ {type:"gap",intro:"Here is a comment from a reader of the article. Complete the comment by filling in the blanks.",
+  text:`<p><b>Ray, Winnipeg</b></p><p>I've worked as a line cook for years, so this article really hit home. Mr. Ostrowski is right that the {{6}} can cause real tension in a restaurant. I also understand Ms. Koh's point that a flat wage might {{7}}, but in my experience the best servers would still be valued and promoted.</p><p>What worries me more is the problem Dr. Rao describes: a restaurant that drops tipping on its own will {{8}}. That's why I agree with her that {{9}}.</p><p>[[10|Like Ms. Koh, I'm also tired of being asked for 20 percent when I've served myself.]] Until the rules change, I'll keep tipping, but only where someone has actually {{10}}.</p>`,
+  qs:[{n:6,o:["pay gap between servers and cooks","service at the counter","price of a muffin","customers' accents"],a:0,why:"Ostrowski habla de la diferencia de ingresos entre meseros y cocineros. Ray es cocinero, por eso le 'toca de cerca'."},
+   {n:7,o:["fail to reward excellent service","make customers walk out","increase discrimination","lower menu prices"],a:0,why:"Koh: 'A flat salary would treat a careless server and an excellent one exactly the same' = no premiaría el buen servicio. 'But' después del blanco confirma que Ray responde a ese argumento."},
+   {n:8,o:["look more expensive than its competitors","lose all of its cooks","need government approval","earn three times more"],a:0,why:"Rao: 'If your competitor's menu looks 18 percent cheaper…' → el restaurante sin propinas parece más caro."},
+   {n:9,o:["governments should set rules for the whole industry","owners should decide on their own","customers should tip less","servers should leave the industry"],a:0,why:"La conclusión de Rao: hacen falta reglas provinciales para toda la industria. 'Owners should decide on their own' es justo lo contrario."},
+   {n:10,o:["served me at a table","cooked my meal","raised the price","handed me a muffin"],a:0,why:"Ray acaba de decir que está cansado de dar propina cuando se sirve él mismo. Lo lógico: solo dará propina cuando alguien le sirva de verdad, en la mesa."}]}],
+ levels:{c45:{s:"4/10",d:"Entiende el tema general (propinas) pero no separa a las personas. Elige opciones que mencionan algo del artículo aunque lo diga otra persona o en otro contexto.",
+   miss:[[1,0,"Vio 'raised menu prices' y lo eligió, pero eso fue en un solo restaurante."],[3,0,"Pensó que los cocineros, al ganar menos antes, pedirían más."],[4,0,"Vio 'gone too far' y creyó que Koh quería prohibir las propinas."],[5,1,"Recordó '18 percent' de precios más altos y no leyó 'In her view'."],[7,2,"Vio 'discrimination' en el texto, pero es un argumento de Rao, no de Koh."],[8,2,"Mezcló las ideas de 'gobierno' y 'restaurante' del mismo párrafo."]],
+   x:"🔁 Patrón: ideas del artículo puestas en la boca equivocada. Haz el mapa Persona → postura antes de responder."},
+  c78:{s:"7/10",d:"Sigue bien el artículo y casi todo el comentario. Falla en los matices: una idea parecida a la correcta y un blanco que depende de la frase anterior del comentario.",
+   miss:[[5,1,"Pensó que subir precios era la solución de Rao, pero eso es lo que hizo Ostrowski."],[8,2,"Vio 'governments' en el párrafo de Rao y lo usó en el blanco equivocado."],[10,1,"No conectó el blanco con la frase anterior de Ray sobre servirse a sí mismo."]],
+   x:"🎯 Para subir a CLB 9+: en el comentario, lee siempre la frase anterior y la siguiente al blanco. Ahí está la lógica."},
+  c1012:{s:"10/10",d:"Lee las preguntas, hace un mapa de 3 personas mientras lee y llega al comentario con 6 minutos de margen. Identifica que Ray es cocinero y apoya un cambio regulado.",
+   g:["Mapa claro: Ostrowski (justicia salarial), Koh (propinas sí, pero no en mostradores), Rao (reglas para toda la industria).","Detecta los matices: 'admits', 'does agree, however', 'warns'.","Usa los conectores del comentario: 'but' en el blanco 7 indica que Ray responde a un argumento en contra.","Resuelve el blanco 10 con la frase anterior del propio comentario."]}}}
+];
+
+const EXTRA={};
+EXTRA[0]=[
+{left:`<h3>Notice</h3><div class="meta">Posted in the staff kitchen · Monday</div>
+<p><b>Fridge clean-out this Friday at 4 p.m.</b></p>
+<p>Everything left inside the fridge will be thrown away, even if it has your name on it. [[1|If you want to keep something, please move it to the blue cooler by the window before then.]] The cooler will be emptied on Monday morning.</p>
+<p>Thanks for helping us keep the kitchen clean! – Facilities Team</p>`,
+ blocks:[{type:"mc",qs:[{n:1,q:"What should staff do if they want to keep their food?",o:["move it to the cooler before Friday afternoon","write their name on it","clean the fridge themselves","take it home on Monday"],why:"'Move it to the blue cooler by the window before then (Friday 4 p.m.)'. Escribir el nombre no sirve: 'even if it has your name on it'."}]}],
+ levels:{c45:{s:"0/1",d:"Elige la opción que le resulta familiar sin leer la frase completa.",miss:[[1,1,"Leyó 'your name on it' y no vio 'even if', que significa 'aunque'."]],x:"🔁 Las palabras pequeñas (even if, unless, except) cambian todo el sentido."},
+  c78:{s:"1/1",d:"Acierta, pero duda entre dos opciones porque no está segura de qué significa 'even if'.",miss:[],x:"🎯 Repasa conectores de contraste y condición: even if, unless, as long as."},
+  c1012:{s:"1/1",d:"Busca en el aviso la acción que se pide (please…) y la encuentra en segundos.",g:["Busca la instrucción directa: 'please move it…'.","Entiende 'even if' y descarta escribir el nombre.","Termina en menos de 40 segundos."]}}},
+{left:`<h3>Text message</h3><div class="meta">From: Jules · To: Ana · 12:05 p.m.</div>
+<p>Hey Ana, I'm running about 20 minutes late. The bus broke down on Main Street 🙄 [[1|Can you grab us a table by the window and order me an iced tea?]] I'll pay you back when I get there. Sorry!!</p>`,
+ blocks:[{type:"mc",qs:[{n:1,q:"What does Jules ask Ana to do?",o:["get a table and order a drink for her","pay for their lunch","wait for her at the bus stop","call the bus company"],why:"'Can you grab us a table… and order me an iced tea?' = conseguir mesa y pedirle una bebida. Jules dice que ella le devolverá el dinero, no que Ana pague el almuerzo."}]}],
+ levels:{c45:{s:"0/1",d:"Ve la palabra 'pay' y elige la opción que la contiene.",miss:[[1,1,"'I'll pay you back' significa 'te lo devuelvo', no 'paga tú el almuerzo'."]],x:"🔁 Cuidado con los phrasal verbs: pay back, grab, run late."},
+  c78:{s:"1/1",d:"Entiende el mensaje, aunque no conoce 'grab' y lo deduce por el contexto.",miss:[],x:"✅ Deducir por contexto es una gran estrategia. Sigue así."},
+  c1012:{s:"1/1",d:"Identifica la petición por la estructura 'Can you…?' y responde de inmediato.",g:["Reconoce que 'Can you…?' introduce una petición.","Sabe que 'grab a table' = conseguir una mesa.","Descarta 'pay' gracias a 'pay you back'."]}}},
+{left:`<h3>Email</h3><div class="meta">From: Principal Gagnon · To: Lakeview School families</div>
+<p>Dear parents,</p>
+<p>Because of the snowstorm, Lakeview School will open two hours late tomorrow, at 10:30 a.m. Buses will run on the same delayed schedule. Morning kindergarten is cancelled, but [[1|afternoon kindergarten will run as usual]].</p>
+<p>Please check the school website for updates.<br>Principal Gagnon</p>`,
+ blocks:[{type:"mc",qs:[{n:1,q:"What will happen to afternoon kindergarten?",o:["It will run at its usual time.","It will start two hours late.","It is cancelled.","It will move to the morning."],why:"'Afternoon kindergarten will run as usual' = a su hora normal. Lo cancelado es el kínder de la mañana."}]}],
+ levels:{c45:{s:"0/1",d:"Ve 'kindergarten' y 'cancelled' en la misma frase y no separa mañana de tarde.",miss:[[1,2,"La cancelación es del kínder de la mañana. 'But' introduce lo contrario para la tarde."]],x:"🔁 'But' anuncia un cambio de dirección: lo que viene después contradice lo anterior."},
+  c78:{s:"1/1",d:"Acierta, pero primero duda con 'two hours late', porque es lo que aplica a toda la escuela.",miss:[],x:"🎯 Lee hasta el final de la frase: las excepciones suelen ir al final."},
+  c1012:{s:"1/1",d:"Busca 'afternoon kindergarten' en el texto y lee la frase completa.",g:["Escanea la palabra clave de la pregunta.","Usa 'but' para separar las dos situaciones.","Sabe que 'as usual' = como siempre."]}}},
+{left:`<h3>Sign</h3><div class="meta">Front desk · Hillcrest Community Pool</div>
+<p><b>Lane swim update</b></p>
+<p>From June 1, weekday lane swim moves from 6–8 a.m. to 7–9 a.m. Saturday times stay the same.</p>
+<p>Lockers now need a $1 coin. [[1|Your coin comes back when you open the locker.]]</p>`,
+ blocks:[{type:"mc",qs:[{n:1,q:"What is true about the lockers?",o:["Swimmers get their coin back.","They cost $1 per hour.","They are only for Saturday swimmers.","They are free after June 1."],why:"'Your coin comes back when you open the locker' = te devuelven la moneda. No dice nada de precio por hora."}]}],
+ levels:{c45:{s:"0/1",d:"Ve '$1' y supone una tarifa normal.",miss:[[1,1,"Asoció '$1' con un precio por hora. El aviso no menciona horas para los lockers."]],x:"🔁 No completes con lo que es normal en la vida real; responde solo con lo que dice el texto."},
+  c78:{s:"1/1",d:"Acierta después de releer el aviso completo dos veces.",miss:[],x:"⏱️ Lee primero la pregunta: 'lockers' te lleva directo a la última parte."},
+  c1012:{s:"1/1",d:"Escanea 'lockers' y entiende la segunda frase como una paráfrasis de 'te devuelven la moneda'.",g:["Va directo a la parte de los lockers.","Reconoce la paráfrasis: comes back = get it back.","Ignora la información de horarios, que no se pregunta."]}}}
+];
+EXTRA[1]=[
+/* ---------- Set 2 ---------- */
+{left:`<h3>A big favour while I'm in Calgary</h3><div class="meta">From: Nadia Haddad · To: Carlos Mendes</div>
+<p>Hi Carlos,</p>
+<p>How was your sister's wedding? I saw the photos online and the venue looked amazing.</p>
+<p>I have some news. [[1|My company is sending me to our Calgary office for three weeks to train the new team]], starting on the 14th. It's a great opportunity, but it means I need someone to look after Biscuit while I'm away. I know it's a lot to ask. My usual dog sitter, Mrs. Park, has just had knee surgery, [[2,11|so she can't take long walks for at least a month.]]</p>
+<p>Biscuit is easy to care for, as you know. He needs two walks a day, and his food is measured out in a container on the counter. [[3,8,9|The only tricky thing is his medicine for his skin allergy, which has to be given with his dinner, never on an empty stomach.]] I'll leave clear instructions on the fridge.</p>
+<p>You'd be welcome to stay at my place if that's easier, since it's closer to your office than your apartment. [[4,7|Otherwise, Biscuit could stay with you, but your building doesn't allow pets over 10 kilos, and he's about 14 now.]]</p>
+<p>Of course, I'd like to pay you for your time. [[5,10|I was thinking $300 a week, which is what I usually pay Mrs. Park, but if you'd rather not take money, I'll at least bring you back a box of those chocolates from the Calgary shop you love.]]</p>
+<p>Could you let me know by Friday? [[6|If you can't do it, I'll need to book a place at the kennel]], and they fill up quickly.</p>
+<p>Thanks so much,<br>Nadia</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"Why is Nadia going to Calgary?",o:["to train new staff","to attend a wedding","to start a new job","to visit Mrs. Park"],why:"'To train the new team' = entrenar al personal nuevo. La boda es de la hermana de Carlos y el trabajo no es nuevo: la empresa la envía."},
+  {n:2,q:"Why can't Mrs. Park look after the dog?",o:["She can't walk long distances right now.","She is travelling to Calgary.","She doesn't like big dogs.","Her building doesn't allow pets."],why:"Por la cirugía de rodilla, 'she can't take long walks'. La regla del edificio es del edificio de Carlos, no del de Mrs. Park."},
+  {n:3,q:"What does Nadia say about Biscuit's medicine?",o:["It must be given with food.","It must be given twice a day.","It is kept in a container on the counter.","It is for a problem with his knee."],why:"'Given with his dinner, never on an empty stomach' = siempre con comida. En el recipiente del mostrador está la comida, y la rodilla es de Mrs. Park."},
+  {n:4,q:"Why might it be difficult for Biscuit to stay at Carlos's apartment?",o:["Biscuit is too heavy for the building's rules.","Carlos's apartment is being repaired.","Carlos works too far away.","Biscuit gets nervous in new places."],why:"El edificio no permite mascotas de más de 10 kilos y Biscuit pesa unos 14."},
+  {n:5,q:"What does Nadia offer Carlos?",o:["the same pay her usual sitter gets","a trip to Calgary","a free stay at the kennel","three weeks of free rent"],why:"'$300 a week, which is what I usually pay Mrs. Park' = lo mismo que le paga a su cuidadora habitual."},
+  {n:6,q:"What will Nadia do if Carlos says no?",o:["book a kennel for Biscuit","ask Mrs. Park again","cancel her trip","take Biscuit with her"],why:"'If you can't do it, I'll need to book a place at the kennel'."}]},
+ {type:"gap",intro:"Here is a response to the message. Complete the response by filling in the blanks. Select the best choice for each blank from the drop-down menu.",
+  text:`<p>Hi Nadia,</p><p>Congratulations on the Calgary trip! I'd be happy to look after Biscuit. Since my building has a weight limit, I think it makes more sense for me to {{7}}. It'll actually shorten my commute!</p><p>Please do leave those instructions on the fridge, especially about his {{8}}. I'd hate to give it to him {{9}}.</p><p>As for paying me, please don't. I'm happy to help, but I won't say no to {{10}}. And I hope {{11}} soon!</p><p>Carlos</p>`,
+  qs:[{n:7,o:["stay at your place","bring him to my apartment","leave him at the kennel","walk him only at night"],why:"Biscuit no puede quedarse en el edificio de Carlos por el peso, así que él se queda en casa de Nadia (que además está más cerca de su oficina)."},
+   {n:8,o:["allergy medicine","food container","walking route","vet's phone number"],why:"Nadia dijo que lo único complicado es la medicina para la alergia."},
+   {n:9,o:["before he's eaten","after his walk","at the wrong time of year","with too much water"],why:"La medicina nunca se da 'on an empty stomach' (con el estómago vacío), es decir, antes de que coma."},
+   {n:10,o:["the chocolates","$300 a week","a trip to Calgary","Mrs. Park's help"],why:"Carlos rechaza el dinero, y Nadia ofreció chocolates como alternativa."},
+   {n:11,o:["Mrs. Park's knee heals","your sister's wedding goes well","the kennel has space","Biscuit's walks get shorter"],why:"Mrs. Park acaba de operarse de la rodilla. La boda fue de la hermana de Carlos y ya pasó."}]}],
+ levels:{c45:{s:"5/11",d:"Entiende que Nadia viaja y necesita ayuda con el perro, pero confunde quién tiene cada problema y elige palabras que reconoce.",
+   miss:[[2,3,"Vio 'building doesn't allow pets' y no notó que es el edificio de Carlos."],[3,2,"Asoció 'container on the counter' con la medicina, pero ahí está la comida."],[6,1,"Pensó que Nadia volvería a pedirle ayuda a Mrs. Park."],[8,1,"Vio 'food' en el mismo párrafo y eligió esa opción."],[9,1,"No entendió 'empty stomach' y eligió algo relacionado con los paseos."],[10,1,"Vio '$300' y no notó que Carlos acababa de rechazar el dinero."]],
+   x:"🔁 Patrón: atribuir datos a la persona equivocada. Antes de elegir, pregúntate de quién habla esa frase."},
+  c78:{s:"8/11",d:"Entiende casi todo el email. Falla cuando la respuesta exige combinar dos datos o descartar una suposición lógica que el texto no dice.",
+   miss:[[4,3,"Supuso que el perro se pondría nervioso, algo razonable que el texto no menciona."],[9,1,"Entendió que había una regla, pero no la conectó con 'never on an empty stomach'."],[11,2,"Pensó en el último párrafo (el kennel), pero Carlos ya aceptó, así que no hace falta."]],
+   x:"🎯 Para subir a CLB 9+: elige solo lo que el texto dice, aunque otra opción te parezca lógica."},
+  c1012:{s:"11/11",d:"Hace un mapa rápido de las personas (Nadia, Carlos, Mrs. Park) y de sus problemas, y resuelve los blancos con la lógica de la respuesta de Carlos.",
+   g:["Separa los problemas: la rodilla es de Mrs. Park y el límite de peso es del edificio de Carlos.","Entiende 'on an empty stomach' por contexto ('with his dinner').","En el blanco 10, usa 'please don't' (no aceptes dinero) para elegir los chocolates.","Comprueba que cada blanco sea coherente con lo que Carlos ya dijo."]}}},
+
+/* ---------- Set 3 ---------- */
+{left:`<h3>Cabin weekend: all the details!</h3><div class="meta">From: Jordan Blake · To: Aisha Karim</div>
+<p>Hi Aisha,</p>
+<p>I'm so glad you can come to the cabin on the long weekend! [[6|Here's everything you need to know.]]</p>
+<p>[[1|We'll be leaving the city on Friday around 3 p.m. to beat the traffic]], but since you finish work later, [[7|you could take the 6 p.m. bus to Hope and I'll pick you up at the station.]] [[2|The drive from Hope to the cabin is only 20 minutes, but the last part is a gravel road with no lights, so I don't want you trying to find it on your own in the dark.]]</p>
+<p>The cabin is pretty basic. There's electricity and a wood stove, but [[3|there's no running water in the winter months, so we bring big containers of drinking water from town.]] There's also no cell signal at the cabin itself. [[4,8|If you need to make a call, you have to walk up the hill behind the shed.]] Honestly, it's nice to disconnect for a few days.</p>
+<p>As for what to bring: [[5,9|warm layers, good boots and a sleeping bag. We have extra pillows and blankets, so don't worry about those.]] Food is all taken care of. Marco is planning a big Saturday dinner, so if you want to contribute something, maybe bring a dessert. [[10|Just remember that Marco's partner can't eat anything with nuts.]]</p>
+<p>On Saturday we're hoping to go snowshoeing on the lake trail, weather permitting. [[11|If it's too windy, we'll stay in and play board games instead.]]</p>
+<p>See you soon!<br>Jordan</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"When will Jordan leave the city?",o:["on Friday afternoon","on Friday at 6 p.m.","on Saturday morning","on Thursday night"],why:"'Friday around 3 p.m.' = viernes por la tarde. Las 6 p.m. es la hora del autobús de Aisha."},
+  {n:2,q:"Why will Jordan pick Aisha up in Hope?",o:["The road to the cabin is hard to find at night.","Aisha doesn't have a driver's licence.","There is no bus to Hope.","Jordan needs to buy water in town."],why:"Camino de grava sin luces: 'I don't want you trying to find it on your own in the dark'."},
+  {n:3,q:"What does Jordan say about water?",o:["They have to bring their own drinking water.","The tap water is unsafe in summer.","The lake provides clean water.","Water is kept in the shed."],why:"'No running water in the winter months, so we bring big containers of drinking water from town'."},
+  {n:4,q:"How can Aisha make a phone call at the cabin?",o:["by going up a hill near the cabin","by using the cabin's landline","by driving back to Hope","by borrowing Marco's phone"],why:"'You have to walk up the hill behind the shed'."},
+  {n:5,q:"Which item does Aisha NOT need to bring?",o:["a pillow","a sleeping bag","boots","warm clothes"],why:"Ojo con el NOT: Jordan tiene almohadas y mantas extra. Lo demás sí hay que llevarlo."},
+  {n:6,q:"What is the main purpose of Jordan's email?",o:["to give Aisha practical information about the trip","to invite Aisha to the cabin for the first time","to ask Aisha to cook Saturday dinner","to cancel the snowshoeing plans"],why:"Aisha ya aceptó ('I'm so glad you can come'). El email da los detalles: 'Here's everything you need to know'."}]},
+ {type:"gap",intro:"Here is a response to the message. Complete the response by filling in the blanks. Select the best choice for each blank from the drop-down menu.",
+  text:`<p>Hi Jordan,</p><p>Thanks for all the details! I'll take the {{7}} and text you when I'm close, while I still have signal. I've told my mom that if she needs me this weekend, I'll only be reachable when I {{8}}.</p><p>I'll pack my sleeping bag and boots, but I'll leave {{9}} since you have extras. For Saturday, I'll bake a lemon cake, and don't worry, I'll make sure it's {{10}}. And if the weather is bad, I'm ready to {{11}}!</p><p>Aisha</p>`,
+  qs:[{n:7,o:["6 p.m. bus","3 p.m. bus","gravel road","morning train"],why:"Jordan le sugirió el autobús de las 6 p.m. porque ella sale tarde del trabajo."},
+   {n:8,o:["walk up the hill","go snowshoeing","sit by the wood stove","get to the lake"],why:"La única forma de tener señal es subir la colina detrás del cobertizo."},
+   {n:9,o:["my pillow at home","my warm layers at home","the water containers","the board games"],why:"Jordan tiene almohadas extra. La ropa abrigada sí hay que llevarla."},
+   {n:10,o:["nut-free","gluten-free","big enough for two","ready by Thursday"],why:"La pareja de Marco no puede comer frutos secos (nuts)."},
+   {n:11,o:["lose at board games","snowshoe across the lake","drive the gravel road","cook dinner with Marco"],why:"Si hace mucho viento, se quedan adentro con juegos de mesa."}]}],
+ levels:{c45:{s:"4/11",d:"Lee rápido buscando horas y objetos conocidos. No nota la palabra NOT y confunde los planes de Jordan con los de Aisha.",
+   miss:[[1,1,"Vio '6 p.m.' y lo eligió, pero esa es la hora del autobús de Aisha."],[3,1,"Entendió 'no water' pero no 'winter months' ni 'bring containers'."],[5,1,"No vio el NOT y eligió algo que sí debe llevar."],[6,1,"Pensó que el email era una invitación, pero Aisha ya había aceptado."],[7,1,"Eligió la hora de salida de Jordan."],[9,1,"No relacionó 'extras' con almohadas y mantas."],[11,1,"Eligió snowshoeing, que es justo lo que no harán si hay mal tiempo."]],
+   x:"🔁 Patrón: no leer las palabras que cambian la pregunta (NOT, instead, if). Subráyalas mentalmente antes de leer."},
+  c78:{s:"8/11",d:"Sigue bien la logística, pero cae en dos trampas de lectura de preguntas y en una suposición.",
+   miss:[[2,1,"Supuso que Aisha no maneja, pero el texto da otra razón: el camino oscuro."],[5,1,"Leyó rápido y no vio el NOT."],[6,1,"Pensó en 'invitar', sin notar que la primera línea confirma que ya iba."]],
+   x:"🎯 Para subir a CLB 9+: lee la pregunta dos veces cuando tenga NOT, EXCEPT o MAIN."},
+  c1012:{s:"11/11",d:"Lee las preguntas primero, nota el NOT de la pregunta 5 y usa la primera línea del email para el propósito.",
+   g:["Distingue los horarios de cada persona (3 p.m. Jordan, 6 p.m. Aisha).","Reconoce 'I'm so glad you can come' como confirmación, no invitación.","Conecta 'extras' con 'pillows and blankets'.","Usa 'instead' para saber qué pasa con mal tiempo."]}}},
+
+/* ---------- Set 4 ---------- */
+{left:`<h3>A favour (and some advice!)</h3><div class="meta">From: Olivia Grant · To: Daniel Sato</div>
+<p>Hi Daniel,</p>
+<p>It's been ages! I hope things are going well at the hospital. I still miss our coffee breaks in the staff room.</p>
+<p>I'm writing with some news and a request. After six years at the clinic, [[1,7|I've decided it's time for a change, and I've applied for a patient coordinator position at a health centre in Toronto.]] [[6|I was wondering if you'd be willing to be one of my references.]] [[2|You supervised me during the vaccination program in 2023, so you know better than anyone how I handle pressure.]] The hiring manager, Ms. Abara, may call you sometime next week. [[3,8|She told me the call would take about fifteen minutes and that she's mostly interested in how I communicate with patients and coordinate schedules.]]</p>
+<p>I'm also nervous about the move itself. You lived in Toronto for a few years, didn't you? [[4,9|Rents there are so much higher than here that I'm thinking of sharing an apartment, at least for the first year.]] If you have any advice about neighbourhoods close to public transit but not too expensive, I'd really appreciate it. [[5,10|I won't be bringing my car, so being near a subway station is a must.]]</p>
+<p>No pressure at all on the reference. If you're too busy, just tell me and I'll ask someone else.</p>
+<p>Hope to hear from you soon,<br>Olivia</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"Why is Olivia applying for a new job?",o:["She wants to try something different.","She lost her job at the clinic.","Her clinic is moving to Toronto.","She wants a higher salary."],why:"'I've decided it's time for a change' = quiere algo diferente. El texto no habla de despido ni de salario."},
+  {n:2,q:"Why does Olivia ask Daniel to be her reference?",o:["He has seen how she works under stress.","He knows Ms. Abara personally.","He works at the health centre in Toronto.","He lived in Toronto for years."],why:"'You know better than anyone how I handle pressure'. Que viviera en Toronto es la razón de la segunda petición (consejos), no de la referencia."},
+  {n:3,q:"What will Ms. Abara mainly want to know?",o:["how well Olivia communicates and organizes","details about the vaccination program","Olivia's salary at the clinic","why Olivia is leaving the clinic"],why:"'Mostly interested in how I communicate with patients and coordinate schedules'."},
+  {n:4,q:"Why is Olivia thinking about sharing an apartment?",o:["Housing in Toronto is expensive.","She doesn't want to live alone.","Daniel suggested it.","Her new employer requires it."],why:"'Rents there are so much higher than here'."},
+  {n:5,q:"What is essential for Olivia when choosing where to live?",o:["being close to the subway","having a parking space","being near the hospital","living on a quiet street"],why:"'Being near a subway station is a must' (no llevará su auto)."},
+  {n:6,q:"What is the main purpose of Olivia's email?",o:["to ask Daniel to support her job application","to invite Daniel to visit Toronto","to remind Daniel about the vaccination program","to ask Daniel for a job at his hospital"],why:"La petición principal: 'I was wondering if you'd be willing to be one of my references'."}]},
+ {type:"gap",intro:"Here is a response to the message. Complete the response by filling in the blanks. Select the best choice for each blank from the drop-down menu.",
+  text:`<p>Hi Olivia,</p><p>Great to hear from you, and congratulations on {{7}}! Of course I'll be a reference. I'll be happy to tell Ms. Abara how well you {{8}} during the vaccination program. Fifteen minutes is no problem at all.</p><p>About Toronto: you're right that rent is high, so {{9}}. Since you won't have a car, look at areas along the subway lines a little outside downtown. They're more affordable, and you can still {{10}}.</p><p>Let me know when you {{11}}!</p><p>Daniel</p>`,
+  qs:[{n:7,o:["taking this big step","getting the job","buying a new car","finishing the vaccination program"],why:"Olivia solo ha aplicado; todavía no tiene el trabajo. 'Taking this big step' es lo único que encaja."},
+   {n:8,o:["handled patients and busy schedules","managed the hospital budget","drove patients to appointments","trained new doctors"],why:"Ms. Abara quiere saber sobre comunicación con pacientes y coordinación de horarios."},
+   {n:9,o:["sharing a place for the first year is a smart idea","buying a house would be cheaper","you should bring your car","living downtown is the cheapest option"],why:"Daniel confirma que el alquiler es caro, así que apoya la idea de compartir."},
+   {n:10,o:["get to work quickly by train","park for free","walk to the clinic","avoid public transit"],why:"Zonas junto al metro: llegar rápido en tren sin auto."},
+   {n:11,o:["hear back from the health centre","sell your car","start at the hospital","move to Calgary"],why:"Olivia está esperando la respuesta de su aplicación."}]}],
+ levels:{c45:{s:"5/11",d:"Entiende que Olivia quiere un trabajo nuevo, pero responde con suposiciones comunes (despido, auto) y con palabras sueltas del texto.",
+   miss:[[1,1,"Supuso que la despidieron; el texto dice que ella decidió cambiar."],[2,3,"Eligió la razón de los consejos de vivienda, no la de la referencia."],[3,1,"Vio 'vaccination program' y lo eligió."],[5,1,"No vio 'I won't be bringing my car' y eligió estacionamiento."],[7,1,"No notó que Olivia solo aplicó al trabajo."],[10,1,"Eligió algo relacionado con autos sin leer 'since you won't have a car'."]],
+   x:"🔁 Patrón: responder con lo que suele pasar en la vida real. Comprueba siempre en el texto."},
+  c78:{s:"8/11",d:"Entiende las dos peticiones del email, pero falla en un matiz de tiempo y en una pregunta con dos razones posibles.",
+   miss:[[2,3,"Hay dos razones para escribirle a Daniel. Eligió la de los consejos, no la de la referencia."],[3,1,"El programa de vacunación es el contexto; lo que Ms. Abara pregunta es otra cosa."],[7,1,"'Congratulations on getting the job' suena natural, pero todavía no lo tiene."]],
+   x:"🎯 Para subir a CLB 9+: cuando un email tiene dos peticiones, relaciona cada razón con su petición."},
+  c1012:{s:"11/11",d:"Identifica las dos peticiones (referencia y consejos sobre Toronto) y relaciona cada pregunta con la petición correcta.",
+   g:["Separa la razón de la referencia (trabajó con ella bajo presión) de la razón de los consejos (vivió en Toronto).","Nota que Olivia solo ha aplicado: no puede felicitarla por obtener el trabajo.","Usa 'I won't be bringing my car' para los blancos sobre transporte.","Lee la respuesta de Daniel completa antes de rellenar."]}}},
+
+/* ---------- Set 5 ---------- */
+{left:`<h3>Our trip in July!</h3><div class="meta">From: Lucas Ferreira · To: Sofia Ferreira</div>
+<p>Hi Sofia,</p>
+<p>Great news: we've finally booked our flights! Ana and I will arrive in Vancouver on July 3rd and stay for ten days. [[6|I'm writing to ask for your advice on planning our time there]], since you know the city so well.</p>
+<p>First, accommodation. [[1|Hotels downtown are much more expensive than we expected, so we're thinking of renting a small apartment in North Vancouver instead.]] Is it easy to get downtown from there? [[2,7|We won't be renting a car because Ana doesn't feel comfortable driving on the highway.]]</p>
+<p>Second, we'd love to spend a couple of days outside the city. A friend recommended Whistler, but [[3,8,11|Ana gets carsick on mountain roads, so we'd prefer somewhere we can reach by ferry or train.]] Do you have any suggestions?</p>
+<p>And of course, we want to see you! [[4|We know you'll be busy with work during the week, so maybe we could get together on the weekend of the 6th?]] [[5,9|We'd love to take you out for dinner to thank you for all your help]], somewhere with good seafood if possible.</p>
+<p>Oh, one more thing: [[10|is July rainy? I'm trying to decide whether to pack a raincoat or just an umbrella.]]</p>
+<p>Hugs,<br>Lucas</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"Why are Lucas and Ana thinking of staying in North Vancouver?",o:["It costs less than downtown.","It is closer to the airport.","Sofia lives there.","There are no hotels downtown."],why:"Los hoteles del centro son 'much more expensive than we expected'."},
+  {n:2,q:"Why won't they rent a car?",o:["Ana isn't comfortable driving on highways.","Renting a car is too expensive.","Neither of them has a licence.","Sofia will drive them everywhere."],why:"'Ana doesn't feel comfortable driving on the highway'."},
+  {n:3,q:"Why are they not keen on visiting Whistler?",o:["Mountain roads make Ana feel sick.","It is too expensive.","There is no ferry there.","Their friend didn't like it."],why:"'Ana gets carsick on mountain roads' = se marea en carreteras de montaña."},
+  {n:4,q:"When do Lucas and Ana suggest meeting Sofia?",o:["on a weekend","on a weekday evening","on the day they arrive","at the end of their trip"],why:"Sofia trabaja entre semana, así que proponen 'the weekend of the 6th'."},
+  {n:5,q:"What do Lucas and Ana want to do for Sofia?",o:["treat her to a meal","cook her a seafood dinner","bring her a raincoat","take her to Whistler"],why:"'Take you out for dinner' = invitarla a cenar fuera, no cocinar."},
+  {n:6,q:"What is the main purpose of the email?",o:["to ask for help planning a trip","to invite Sofia to visit them","to cancel their hotel booking","to describe their flights"],why:"'I'm writing to ask for your advice on planning our time there'."}]},
+ {type:"gap",intro:"Here is a response to the message. Complete the response by filling in the blanks. Select the best choice for each blank from the drop-down menu.",
+  text:`<p>Hi Lucas,</p><p>I'm so excited you're coming! North Vancouver is a great choice. It's much more affordable, and you won't need a car because {{7}}.</p><p>For a trip outside the city, I'd skip Whistler since the road is very winding. Instead, why not {{8}}? It's a beautiful ride and easy on the stomach.</p><p>Saturday the 6th works perfectly for me, and I'm happy to {{9}}. I know a great seafood place by the water! As for the weather, July is usually dry and sunny, so {{10}}. I'll send you some ideas for {{11}} this week.</p><p>See you soon!<br>Sofia</p>`,
+  qs:[{n:7,o:["the ferry takes you downtown in about 15 minutes","the highway is very quiet","I can drive you every day","the hotels are close by"],why:"Necesitan una forma de llegar al centro sin auto. Sofia no puede llevarlos todos los días porque trabaja."},
+   {n:8,o:["take the ferry to Victoria","drive up to the mountains","rent a car for a day","take a mountain bus tour"],why:"Prefieren ferry o tren por el mareo. Las demás opciones usan carreteras de montaña o auto."},
+   {n:9,o:["let you treat me to dinner","cook for you at home","pick you up at the airport","work that weekend"],why:"Lucas y Ana quieren invitarla a cenar; Sofia acepta."},
+   {n:10,o:["you probably won't need a raincoat","bring a heavy raincoat","pack warm boots","expect some snow"],why:"Si julio es seco y soleado, el impermeable sobra."},
+   {n:11,o:["day trips by ferry and train","renting a car","hotels downtown","mountain roads"],why:"Lucas pidió sugerencias de lugares a los que se llegue en ferry o tren."}]}],
+ levels:{c45:{s:"5/11",d:"Entiende que Lucas viene de visita, pero mezcla las razones y elige opciones con palabras que reconoce.",
+   miss:[[1,3,"Entendió 'hotels downtown' pero no 'more expensive than we expected'."],[3,2,"Vio 'ferry' en la misma frase y eligió esa opción."],[4,2,"Vio 'July 3rd' y lo eligió, pero es la fecha de llegada."],[5,1,"Vio 'seafood' y pensó que ellos cocinarían."],[8,1,"No conectó el mareo con la necesidad de evitar las montañas."],[10,1,"Vio 'raincoat' y lo eligió sin leer 'dry and sunny'."]],
+   x:"🔁 Patrón: elegir la palabra conocida. Lee el porqué de cada dato: 'because', 'so', 'but'."},
+  c78:{s:"8/11",d:"Entiende las tres peticiones de Lucas, pero falla en matices de expresiones y en el propósito.",
+   miss:[[4,1,"Leyó 'busy with work' y pensó que la verían después del trabajo, pero Lucas propone el fin de semana."],[6,1,"Pensó que era una invitación porque Lucas quiere ver a Sofia, pero eso es solo una parte."],[9,1,"No sabía que 'take you out for dinner' significa invitar a comer fuera."]],
+   x:"🎯 Para subir a CLB 9+: aprende expresiones fijas (take someone out, treat someone) y busca el propósito en 'I'm writing to…'."},
+  c1012:{s:"11/11",d:"Divide el email en sus tres temas (alojamiento, excursión, encuentro) y conecta cada respuesta de Sofia con el tema correspondiente.",
+   g:["Encuentra el propósito en la frase 'I'm writing to ask for your advice'.","Conecta 'carsick on mountain roads' con elegir ferry o tren.","Usa 'busy with work during the week' para descartar entre semana.","Entiende 'take you out for dinner' = invitar a cenar."]}}}
+];
+EXTRA[2]=[
+/* ---------- Set 2: gym ---------- */
+{left:`<div class="flyer"><div class="fh"><b>💪 Peak Fitness · Membership Options</b><span>Prices per month · Taxes included</span></div>
+<div class="tw"><table class="dtable"><tr><th>Plan</th><th>Price</th><th>Hours</th><th>Includes</th><th>Contract</th></tr>
+<tr><td><b>Basic</b></td><td>$29</td><td>[[1|6 a.m.–10 p.m.]]</td><td>Gym floor only</td><td>12 months</td></tr>
+<tr><td><b>Flex</b></td><td>$45</td><td>24/7</td><td>[[2|Gym floor + group classes]]</td><td>[[3|Month to month]]</td></tr>
+<tr><td><b>Premium</b></td><td>$65</td><td>24/7</td><td>Everything + pool + 2 personal training sessions</td><td>12 months</td></tr>
+<tr><td><b>Student</b></td><td>[[7|$25]]</td><td>[[7|6 a.m.–4 p.m., weekdays]]</td><td>Gym floor + group classes</td><td>Month to month · student ID required</td></tr></table></div>
+<div class="ff"><b>Good to know</b><span>• Group classes include spin, yoga and boxing.</span><span>• [[5|$50 sign-up fee (waived in January)]]</span><span>• [[4|Freeze your membership for up to 2 months a year (Premium only)]]</span><span>• [[8|Bring a friend for free on Fridays]]</span></div></div>`,
+ blocks:[{type:"gap",intro:"Read the email below about the membership options. Complete the email by filling in the blanks.",
+  text:`<p><b>To:</b> Dev · <b>From:</b> Ming · <b>Subject:</b> Which gym plan?</p><p>Hi Dev,</p><p>You asked which plan at Peak Fitness I'd recommend. Since you work night shifts and usually go to the gym after midnight, you can forget about {{1}}, because it closes at 10. You said you love the spin classes, so {{2}} would give you what you need without paying for extras. It's also {{3}}, which is great because [[6|you might move to Edmonton next spring]].</p><p>If you decide to go Premium for the pool, remember that it's the only plan that lets you {{4}}. Oh, and if you wait until January, you won't have to pay {{5}}.</p><p>Ming</p>`,
+  qs:[{n:1,o:["the Basic plan","the Flex plan","the Premium plan","the group classes"],why:"Basic es el único plan general que cierra a las 10 p.m.; Flex y Premium abren 24/7."},
+   {n:2,o:["Flex","Basic","Premium","the pool"],why:"Flex incluye clases grupales (spin) sin piscina ni entrenador personal, que serían extras."},
+   {n:3,o:["month to month","a 12-month contract","free in January","only for students"],why:"Flex es 'month to month': puede cancelarlo si se muda."},
+   {n:4,o:["freeze your membership","bring a friend","skip the sign-up fee","use the gym at night"],why:"Nota: 'Freeze your membership… (Premium only)'. Traer a un amigo es para todos los planes."},
+   {n:5,o:["the $50 sign-up fee","the first month","for group classes","for personal training"],why:"'$50 sign-up fee (waived in January)': en enero no se cobra."}]},
+ {type:"mc",intro:"Answer the following questions about the email and the table.",qs:[
+  {n:6,q:"Why does Ming think Dev should avoid a long contract?",o:["He may move to another city.","He doesn't like spin classes.","He works night shifts.","He wants to use the pool."],why:"'You might move to Edmonton next spring'."},
+  {n:7,q:"Dev's younger brother is a college student who can only exercise on weekday mornings. Which plan is the cheapest option for him?",o:["Student","Basic","Flex","Premium"],why:"Student ($25) abre de 6 a.m. a 4 p.m. entre semana: le sirve y es el más barato."},
+  {n:8,q:"What can every member do on Fridays at no extra cost?",o:["bring a friend","freeze their plan","take a personal training session","use the pool"],why:"Nota: 'Bring a friend for free on Fridays'."}]}],
+ levels:{c45:{s:"3/8",d:"Mira la tabla sin seguir bien las filas y no lee las notas al pie completas.",
+   miss:[[1,1,"No relacionó 'closes at 10' con la columna de horarios."],[2,3,"Vio 'pool' en el email y lo eligió."],[4,1,"Leyó la nota de los viernes en vez de la de Premium only."],[5,1,"Pensó que en enero el primer mes era gratis."],[7,1,"Eligió Basic sin comparar el precio con Student."]],
+   x:"🔁 Patrón: datos de la fila o nota equivocada. Lee la tabla en horizontal, fila por fila."},
+  c78:{s:"6/8",d:"Cruza bien el email con la tabla, pero no revisa todas las opciones antes de elegir.",
+   miss:[[4,1,"Recordó una nota con 'free' y no la de Premium only."],[7,1,"Basic le pareció barato y no comparó con Student ($25)."]],
+   x:"🎯 Para subir a CLB 9+: en preguntas de 'cheapest' o 'only', compara todas las filas."},
+  c1012:{s:"8/8",d:"Primero entiende la estructura de la tabla (5 columnas) y de las notas. Luego, para cada blanco, identifica qué columna necesita.",
+   g:["Traduce el dato del email a una columna: after midnight → Hours.","Lee los paréntesis de las notas: (Premium only), (waived in January).","En la pregunta 7, combina dos condiciones: horario + precio.","Comprueba que cada opción encaje con la frase completa del email."]}}},
+
+/* ---------- Set 3: moving quotes ---------- */
+{left:`<div class="flyer"><div class="fh"><b>🚚 Moving Quotes · Ottawa → Kingston</b><span>2-bedroom apartment · All prices include fuel</span></div>
+<div class="tw"><table class="dtable"><tr><th>Company</th><th>Price</th><th>What's included</th><th>Available</th><th>Insurance</th></tr>
+<tr><td><b>SwiftMove</b></td><td>$1,450</td><td>Truck + 2 movers · boxes extra ($120)</td><td>[[1|Weekdays only]]</td><td>Up to $5,000</td></tr>
+<tr><td><b>Maple Movers</b></td><td>[[7|$1,800]]</td><td>Truck + 3 movers · packing and unpacking</td><td>Weekends only</td><td>[[4|Up to $20,000]]</td></tr>
+<tr><td><b>Budget Boxes</b></td><td>$990</td><td>[[2,8|Truck rental only · you load and drive]]</td><td>Any day</td><td>Not included</td></tr>
+<tr><td><b>CarePro</b></td><td>$2,300</td><td>[[3|Truck + 3 movers · packing · piano moving]]</td><td>Any day</td><td>Full value</td></tr></table></div>
+<div class="ff"><b>Special offer</b><span>• [[5,7|Book 3+ weeks ahead and save 10% with Maple Movers or CarePro.]]</span><span>• Cancellations less than 48 hours before the move: $200 fee.</span></div></div>`,
+ blocks:[{type:"gap",intro:"Read the email below about the moving quotes. Complete the email by filling in the blanks.",
+  text:`<p><b>To:</b> Tom · <b>From:</b> Rachel · <b>Subject:</b> Moving quotes</p><p>Hi Tom,</p><p>I got the four moving quotes for Kingston. [[6|Since neither of us can take time off work, we'll have to move on a Saturday]], so SwiftMove is out because {{1}}. I really don't want us driving a truck on the highway with your bad back, so {{2}}.</p><p>That leaves Maple Movers and CarePro. We don't have the piano anymore, so {{3}}. Maple Movers covers up to {{4}}, which should be enough for our furniture. Our moving date is five weeks away, so if we book now we'll get {{5}}.</p><p>Rachel</p>`,
+  qs:[{n:1,o:["it only works on weekdays","it's the most expensive","it doesn't include a truck","it has no insurance"],why:"SwiftMove: 'Weekdays only', y ellos se mudan en sábado."},
+   {n:2,o:["Budget Boxes isn't an option","CarePro is too expensive","Maple Movers is out","we need a piano mover"],why:"Con Budget Boxes ellos mismos cargan y manejan el camión."},
+   {n:3,o:["paying extra for CarePro doesn't make sense","Maple Movers can't help us","we don't need insurance","fuel will cost too much"],why:"CarePro es más caro y su extra es mover pianos, algo que ya no necesitan."},
+   {n:4,o:["$20,000","$5,000","the full value","nothing"],why:"Fila de Maple Movers, columna Insurance: 'Up to $20,000'. $5,000 es de SwiftMove."},
+   {n:5,o:["10% off","free boxes","a third mover","free fuel"],why:"Reservar con 3 o más semanas de anticipación da 10% de descuento. El combustible ya está incluido en todos los precios."}]},
+ {type:"mc",intro:"Answer the following questions about the email and the table.",qs:[
+  {n:6,q:"Why can't Rachel and Tom move on a weekday?",o:["They both have to work.","Tom has a back problem.","The movers are fully booked.","Their lease ends on a Saturday."],why:"'Neither of us can take time off work'."},
+  {n:7,q:"How much will Maple Movers cost if Rachel books now?",o:["$1,620","$1,800","$2,070","$1,450"],why:"$1,800 − 10% = $1,620. Faltan más de 3 semanas, así que aplica el descuento."},
+  {n:8,q:"With which company would Rachel and Tom have to load the truck themselves?",o:["Budget Boxes","SwiftMove","Maple Movers","CarePro"],why:"Budget Boxes: 'Truck rental only · you load and drive'."}]}],
+ levels:{c45:{s:"3/8",d:"Lee el email y busca precios en la tabla, pero sin fijarse en la fila ni aplicar las condiciones.",
+   miss:[[1,1,"Pensó que descartaban SwiftMove por precio, pero es el día."],[3,1,"No entendió por qué el piano importa."],[4,1,"Tomó el seguro de la fila de SwiftMove."],[5,3,"Vio 'fuel' en la tabla y pensó que era un regalo; ya estaba incluido."],[7,1,"Copió el precio sin aplicar el 10% de descuento."]],
+   x:"🔁 Patrón: copiar un dato sin aplicar las condiciones (descuentos, días). Lee siempre las notas."},
+  c78:{s:"6/8",d:"Descarta bien las empresas, pero falla en la precisión de los números.",
+   miss:[[4,1,"Confundió la fila de Maple Movers con la de SwiftMove."],[7,1,"Recordó el descuento en el email, pero no lo aplicó en la pregunta."]],
+   x:"🎯 Para subir a CLB 9+: haz los cálculos sencillos en tu borrador (10% de 1,800 = 180)."},
+  c1012:{s:"8/8",d:"Usa el email como un filtro: elimina empresas una por una con cada razón de Rachel y luego comprueba los números de la que queda.",
+   g:["Elimina con condiciones: sábado → no SwiftMove; no manejar → no Budget Boxes.","Relaciona 'no piano' con el extra de CarePro.","Aplica la nota del descuento al calcular la pregunta 7.","Se fija en la fila exacta para el seguro."]}}},
+
+/* ---------- Set 4: festival ---------- */
+{left:`<div class="flyer"><div class="fh"><b>🎪 Riverside Summer Festival</b><span>Saturday, August 16 · Riverside Park</span></div>
+<div class="tw"><table class="dtable"><tr><th>Time</th><th>Main Stage</th><th>Kids' Zone</th><th>Food Court</th></tr>
+<tr><td>10:00</td><td>Opening ceremony</td><td>[[8|Face painting (free)]]</td><td>[[1|Pancake breakfast ($8, until 11:30)]]</td></tr>
+<tr><td>12:00</td><td>Local jazz band</td><td>Puppet show</td><td>BBQ lunch</td></tr>
+<tr><td>2:00</td><td>Dance competition</td><td>[[2,6|Science workshop (ages 7+, registration required)]]</td><td>[[3|Ice cream social (free)]]</td></tr>
+<tr><td>4:00</td><td>Cooking demo with Chef Amara</td><td>[[7|Bouncy castle (until 6:00)]]</td><td>Food trucks</td></tr>
+<tr><td>7:00</td><td>Headline concert: The Northern Lights</td><td>[[7|Closed]]</td><td>Food trucks</td></tr></table></div>
+<div class="ff"><b>Getting there</b><span>• [[4|Free shuttle from Central Station every 30 minutes from 9:30 a.m.]]</span><span>• Parking at the arena: $10 (limited spaces)</span><span>• Free bike valet at the main gate</span><span>• [[5|Fireworks at 9:30 p.m., weather permitting]]</span></div></div>`,
+ blocks:[{type:"gap",intro:"Read the email below about the festival. Complete the email by filling in the blanks.",
+  text:`<p><b>To:</b> Leila · <b>From:</b> Hannah · <b>Subject:</b> Festival on Saturday!</p><p>Hi Leila,</p><p>Here's the festival schedule. If we want the pancake breakfast, we'll need to get there before {{1}}. Omar would love the {{2}} at 2, but you'll have to register him in advance. [[6|Noor's too young for it]], so maybe I'll take her to {{3}} at the same time.</p><p>Since parking costs money and the lot fills up fast, let's take {{4}} from Central Station. I'd love to stay for the headline concert, and if the weather is good, we can watch {{5}} before heading home.</p><p>Hannah</p>`,
+  qs:[{n:1,o:["11:30","10:00","9:30","noon"],why:"El desayuno de panqueques es 'until 11:30'. Las 10:00 es la hora de inicio."},
+   {n:2,o:["science workshop","puppet show","bouncy castle","dance competition"],why:"A las 2:00 en el Kids' Zone: Science workshop, que requiere inscripción."},
+   {n:3,o:["the ice cream social","the cooking demo","the puppet show","the jazz band"],why:"'At the same time' = a las 2:00. La otra actividad a esa hora para niños pequeños es el ice cream social."},
+   {n:4,o:["the free shuttle","our bikes","the car","a taxi"],why:"Desde Central Station sale el shuttle gratuito. La bicicleta no sale 'from Central Station'."},
+   {n:5,o:["the fireworks","the puppet show","the face painting","the cooking demo"],why:"Los fuegos artificiales son a las 9:30 p.m., después del concierto, si hace buen tiempo."}]},
+ {type:"mc",intro:"Answer the following questions about the email and the schedule.",qs:[
+  {n:6,q:"Why can't Noor join the 2:00 activity in the Kids' Zone?",o:["She is younger than the minimum age.","She isn't registered yet.","The Kids' Zone is closed at 2:00.","It is too expensive."],why:"El taller es para mayores de 7 y el email dice que Noor es muy pequeña."},
+  {n:7,q:"Until what time are there activities in the Kids' Zone?",o:["6:00","7:00","4:00","9:30"],why:"El último es el bouncy castle 'until 6:00'; a las 7:00 está cerrado."},
+  {n:8,q:"Which of these is free?",o:["face painting","the pancake breakfast","parking at the arena","all food trucks"],why:"'Face painting (free)'. El desayuno cuesta $8 y el estacionamiento $10."}]}],
+ levels:{c45:{s:"4/8",d:"Lee el horario por columnas sueltas y toma la primera hora que ve.",
+   miss:[[1,1,"Tomó la hora de inicio (10:00) en vez de la de cierre (until 11:30)."],[3,2,"No conectó 'at the same time' con las 2:00."],[4,1,"Vio 'free bike valet' y eligió bicicletas, pero el email dice 'from Central Station'."],[7,1,"Vio '7:00 Closed' y respondió 7:00, pero las actividades terminan a las 6:00."]],
+   x:"🔁 Patrón: tomar el primer número que aparece. Lee las palabras junto a los números: until, from, every."},
+  c78:{s:"6/8",d:"Entiende bien el horario, pero no lee con detalle la frase del email ni la diferencia entre 'cerrado' y 'hasta'.",
+   miss:[[4,1,"Pensó que las bicis también son una opción gratis, pero no salen de Central Station."],[7,1,"Confundió el momento en que se cierra con el fin de las actividades."]],
+   x:"🎯 Para subir a CLB 9+: cada blanco tiene una pista en su propia frase ('from Central Station'). Úsala."},
+  c1012:{s:"8/8",d:"Lee el horario como una cuadrícula (hora × lugar) y usa las pistas de tiempo del email para ir a la celda correcta.",
+   g:["Traduce 'at the same time' a la fila de las 2:00.","Distingue 'until 11:30' (fin) de '10:00' (inicio).","Usa 'from Central Station' para elegir el shuttle.","Comprueba precios entre paréntesis para la pregunta 8."]}}},
+
+/* ---------- Set 5: phone plans ---------- */
+{left:`<div class="flyer"><div class="fh"><b>📱 Northline Mobile · Monthly Plans</b><span>All plans include unlimited calls and texts within Canada</span></div>
+<div class="tw"><table class="dtable"><tr><th>Plan</th><th>Price</th><th>Data</th><th>Calls</th><th>Extras</th></tr>
+<tr><td><b>Talk</b></td><td>[[1|$25]]</td><td>[[1|1 GB]]</td><td>Canada</td><td>–</td></tr>
+<tr><td><b>Smart</b></td><td>$40</td><td>[[2|15 GB]]</td><td>Canada</td><td>Voicemail</td></tr>
+<tr><td><b>Global</b></td><td>[[7|$60]]</td><td>30 GB</td><td>Canada + US</td><td>[[3|500 international minutes]]</td></tr>
+<tr><td><b>Family</b></td><td>$150 total</td><td>20 GB per line</td><td>Canada + US</td><td>[[5|For 4 lines]] · parental controls</td></tr></table></div>
+<div class="ff"><b>Fine print</b><span>• New phone: $0 down with a 24-month contract.</span><span>• [[4,7|Bring your own phone: $5/month off any plan.]]</span><span>• Students: 15% off the Smart plan.</span><span>• [[8|Extra data: $10 per GB.]]</span></div></div>`,
+ blocks:[{type:"gap",intro:"Read the email below about the phone plans. Complete the email by filling in the blanks.",
+  text:`<p><b>To:</b> Mom · <b>From:</b> Sam · <b>Subject:</b> Phone plans</p><p>Hi Mom,</p><p>I looked at the Northline plans for you and Dad. [[6|You hardly use the internet on your phone and mostly just call me and Aunt Rita]], so {{1}} would be enough for you. Dad is different. He watches the news and hockey highlights on his phone every day, so he needs more data. The Smart plan gives him {{2}}, which should be plenty. But since he calls his brother in Portugal every week, {{3}}.</p><p>Also, you both already have phones that work fine, so you'd each save {{4}}. I don't think the Family plan makes sense, since it's {{5}} and there are only two of you.</p><p>Love,<br>Sam</p>`,
+  qs:[{n:1,o:["Talk","Smart","Global","Family"],why:"Casi no usa internet: Talk ($25, 1 GB) es suficiente."},
+   {n:2,o:["15 GB","1 GB","30 GB","20 GB"],why:"Fila Smart, columna Data: 15 GB."},
+   {n:3,o:["the Global plan might be better","the Talk plan is fine","he should get the Family plan","voicemail would help"],why:"Global incluye 500 minutos internacionales para llamar a Portugal."},
+   {n:4,o:["$5 a month","$10 per GB","15% a month","the cost of a new phone each year"],why:"'Bring your own phone: $5/month off any plan'."},
+   {n:5,o:["designed for four lines","only for students","only for calls","limited to the US"],why:"Family: 'For 4 lines'. Ellos son solo dos."}]},
+ {type:"mc",intro:"Answer the following questions about the email and the table.",qs:[
+  {n:6,q:"Why does Sam suggest a small plan for his mother?",o:["She rarely uses mobile data.","She only sends texts.","She is a student.","She calls family in Portugal."],why:"'You hardly use the internet on your phone'. Quien llama a Portugal es el papá."},
+  {n:7,q:"How much would Dad pay each month for the Global plan using his own phone?",o:["$55","$60","$65","$51"],why:"$60 − $5 (trae su propio teléfono) = $55."},
+  {n:8,q:"What happens if Dad uses more data than his plan includes?",o:["He pays $10 for each extra GB.","His plan is upgraded automatically.","His service stops until next month.","He loses his voicemail."],why:"Nota: 'Extra data: $10 per GB'."}]}],
+ levels:{c45:{s:"3/8",d:"Lee los datos de la tabla sin relacionarlos con la persona del email.",
+   miss:[[2,3,"Tomó el dato de la fila Family (20 GB)."],[3,1,"No relacionó Portugal con las llamadas internacionales."],[4,1,"Leyó la nota de datos extra en vez de la de 'bring your own phone'."],[5,3,"No entendió 'For 4 lines'."],[7,1,"Copió el precio sin el descuento."]],
+   x:"🔁 Patrón: datos sin conexión con la persona. Antes de buscar en la tabla, pregúntate qué necesita esa persona."},
+  c78:{s:"6/8",d:"Elige bien los planes, pero no lee con cuidado la letra pequeña.",
+   miss:[[5,3,"Pensó que el plan familiar era para Estados Unidos, por la columna Calls."],[7,1,"Olvidó aplicar el descuento de $5."]],
+   x:"🎯 Para subir a CLB 9+: si la pregunta menciona una condición (using his own phone), busca la nota que la explica."},
+  c1012:{s:"8/8",d:"Hace una ficha mental de cada persona (mamá: poco internet; papá: muchos datos + Portugal) y la cruza con las columnas.",
+   g:["Relaciona cada necesidad con una columna: internet → Data; Portugal → Extras.","Aplica la condición de la pregunta 7 con la nota del pie.","Lee 'For 4 lines' para descartar el plan familiar.","Descarta la opción de la persona equivocada en la pregunta 6."]}}}
+];
+EXTRA[3]=[
+/* ---------- Set 2: libraries ---------- */
+{left:`<h3>More Than Books: The New Public Library</h3><div class="meta">Canadian libraries are reinventing what it means to borrow</div>
+<div class="para"><b>A</b><p>For more than a century, Canada's public libraries were mainly places to borrow books and study in silence. [[8|In the early 2000s, as more reading moved online, visits fell in many cities]], and [[2|some politicians began to ask whether libraries were still worth the money.]] Instead of disappearing, however, many libraries decided to change.</p></div>
+<div class="para"><b>B</b><p>Today, a growing number of libraries run a "library of things," lending items that people need only occasionally, such as drills, sewing machines, cameras and musical instruments. [[1|The Westbrook Public Library in Manitoba began lending snowshoes and ice skates in 2021, and they are now among its most borrowed items.]] Many branches also offer 3D printers and [[9|small soundproof studios where members can record podcasts or music]], all at no cost.</p></div>
+<div class="para"><b>C</b><p>Libraries have also become important community spaces. [[4|Newcomers to Canada join free English conversation circles]], job seekers get help writing résumés, and seniors take classes on using smartphones. [[6|During summer heat waves, several cities open their libraries as cooling centres for people who don't have air conditioning at home.]]</p></div>
+<div class="para"><b>D</b><p>These changes bring challenges. In many places, budgets have not grown to match the new services, and [[3|staff need training to manage everything from recording equipment to résumé workshops.]] [[7|Some long-time users complain that libraries have become too noisy]], although most branches still keep at least one quiet floor for reading and study.</p></div>`,
+ blocks:[{type:"abcde",qs:[
+  {n:1,q:"Some libraries lend equipment for outdoor winter activities.",a:1,why:"B: snowshoes and ice skates = equipo para actividades de invierno al aire libre."},
+  {n:2,q:"Some people questioned whether libraries still had a purpose.",a:0,why:"A: 'some politicians began to ask whether libraries were still worth the money'."},
+  {n:3,q:"Library workers need to learn new skills.",a:3,why:"D: 'staff need training to manage everything…'. B menciona el equipo, pero no habla del personal."},
+  {n:4,q:"Libraries offer support to people who have recently arrived in Canada.",a:2,why:"C: 'Newcomers to Canada join free English conversation circles'."},
+  {n:5,q:"Libraries now charge a small fee to borrow equipment.",a:4,why:"E (Not given). B habla de préstamo de objetos, pero no menciona ninguna tarifa. Al contrario, dice 'at no cost'."},
+  {n:6,q:"Libraries provide a place to escape very hot weather.",a:2,why:"C: 'cooling centres' durante las olas de calor."},
+  {n:7,q:"Some visitors are unhappy about the noise level.",a:3,why:"D: 'Some long-time users complain that libraries have become too noisy'."},
+  {n:8,q:"Library visits dropped as people started reading online.",a:0,why:"A: 'as more reading moved online, visits fell'."},
+  {n:9,q:"Members can use equipment to make their own audio recordings.",a:1,why:"B: 'soundproof studios where members can record podcasts or music'."}]}],
+ levels:{c45:{s:"4/9",d:"Busca palabras iguales en el texto. No reconoce las paráfrasis y elige párrafos por palabras sueltas.",
+   miss:[[1,4,"No reconoció que snowshoes y skates son equipo de invierno."],[3,1,"Vio 'equipment' en B y lo eligió, pero B no habla del personal."],[5,1,"Vio 'borrow' y 'equipment' en B y no comprobó si había tarifa."],[6,4,"No sabía qué es un 'cooling centre' y eligió E."],[8,3,"Asoció 'dropped' con los presupuestos de D."]],
+   x:"🔁 Patrón: palabra repetida = párrafo. Comprueba que el párrafo dice exactamente lo que dice la afirmación."},
+  c78:{s:"7/9",d:"Reconoce casi todas las paráfrasis. Falla en la trampa de E y en una afirmación cuyo tema aparece en dos párrafos.",
+   miss:[[3,1,"El equipo de grabación aparece en B, pero la necesidad de formación está en D."],[5,1,"Encontró el tema del préstamo y no comprobó el detalle de la tarifa."]],
+   x:"🎯 Para subir a CLB 9+: identifica el sujeto de la afirmación (staff, users, newcomers) y búscalo."},
+  c1012:{s:"9/9",d:"Asigna un tema a cada párrafo (A: historia, B: objetos, C: comunidad, D: retos) y usa ese mapa para cada afirmación.",
+   g:["Clasifica primero: 'staff need skills' es un reto → D.","Comprueba el detalle de la 5: el texto dice 'at no cost', no menciona tarifa → E.","Reconoce paráfrasis: newcomers = recently arrived, cooling centres = escape heat.","No elige por palabras sueltas como 'equipment'."]}}},
+
+/* ---------- Set 3: school start times ---------- */
+{left:`<h3>Should High School Start Later?</h3><div class="meta">The science of teenage sleep and the debate it has started</div>
+<div class="para"><b>A</b><p>During puberty, the body's internal clock shifts. [[1|Teenagers begin to release the sleep hormone melatonin later in the evening, which makes it hard for many of them to fall asleep before 11 p.m.]] [[9|Sleep experts recommend that teenagers get between eight and ten hours a night]], but with classes starting at 8 a.m. or earlier, few manage to do so.</p></div>
+<div class="para"><b>B</b><p>In 2019, the Riverbend School District moved its high school start time from 8:00 to 9:15 a.m. After two years, [[2|attendance in first-period classes had risen]] and students reported feeling less sleepy during the day. [[6|Teachers also noticed fewer students falling asleep at their desks in morning lessons.]] The district is now studying whether the change has affected other areas of school life.</p></div>
+<div class="para"><b>C</b><p>Not every district finds the change easy. [[8|Many high schools share buses with elementary schools, so moving one schedule means changing the other.]] [[3|Later classes also mean that after-school sports, music practice and part-time jobs end later in the evening.]] And parents who start work early may have to leave home before their teenagers do.</p></div>
+<div class="para"><b>D</b><p>Some schools have looked for other solutions. [[4|They have reduced homework loads or added lessons on healthy sleep habits]], such as keeping a regular bedtime. [[7|Others encourage students to put their phones away an hour before bed, since screen light can delay sleep even further.]] Experts say these steps help, but they cannot change teenagers' biology.</p></div>`,
+ blocks:[{type:"abcde",qs:[
+  {n:1,q:"Changes in the body make it hard for teenagers to go to bed early.",a:0,why:"A: la melatonina se libera más tarde y es difícil dormirse antes de las 11."},
+  {n:2,q:"Students missed fewer classes after a schedule change.",a:1,why:"B: 'attendance in first-period classes had risen'. Más asistencia = faltaron menos."},
+  {n:3,q:"A later start can affect students who work after school.",a:2,why:"C: 'part-time jobs end later in the evening'."},
+  {n:4,q:"Some schools teach students about healthy sleep routines.",a:3,why:"D: 'lessons on healthy sleep habits'."},
+  {n:5,q:"Students' grades improved greatly after the change.",a:4,why:"E (Not given). B habla de asistencia y sueño, y dice que todavía están estudiando otros efectos. No menciona notas."},
+  {n:6,q:"Teachers saw fewer sleepy students in morning classes.",a:1,why:"B: 'fewer students falling asleep at their desks in morning lessons'."},
+  {n:7,q:"Using phones at night can make sleep problems worse.",a:3,why:"D: 'screen light can delay sleep even further'."},
+  {n:8,q:"Changing school hours can complicate transportation.",a:2,why:"C: los autobuses se comparten con las escuelas primarias."},
+  {n:9,q:"Specialists recommend a certain amount of sleep for teenagers.",a:0,why:"A: 'Sleep experts recommend… between eight and ten hours'."}]}],
+ levels:{c45:{s:"4/9",d:"Entiende el tema general, pero elige párrafos por asociación de ideas y no por la información exacta.",
+   miss:[[2,2,"Asoció 'schedule change' con el párrafo de problemas de horarios."],[3,1,"Pensó en el ejemplo del distrito porque habla de cambios."],[5,1,"Supuso que si mejoró la asistencia, también mejoraron las notas."],[7,0,"Asoció el sueño con la biología del párrafo A."],[8,4,"No entendió que 'share buses' tiene que ver con transporte."]],
+   x:"🔁 Patrón: suponer en vez de leer. Si el texto no lo dice, es E aunque sea lógico."},
+  c78:{s:"7/9",d:"Encuentra casi todas las paráfrasis, pero cae en la trampa de la inferencia lógica.",
+   miss:[[5,1,"Le pareció lógico que las notas mejoraran, pero el texto no lo dice."],[7,0,"El sueño aparece en A y D. Solo D habla de los teléfonos."]],
+   x:"🎯 Para subir a CLB 9+: en la opción E, pregúntate si el texto lo dice o si tú lo estás deduciendo."},
+  c1012:{s:"9/9",d:"Hace un mapa de funciones: A = biología, B = ejemplo, C = problemas, D = alternativas. Luego busca la frase exacta para cada afirmación.",
+   g:["Reconoce 'missed fewer classes' = 'attendance had risen'.","No deduce resultados que el texto no menciona (notas → E).","Distingue la causa biológica (A) de las soluciones (D).","Conecta 'transportation' con 'share buses'."]}}},
+
+/* ---------- Set 4: food rescue apps ---------- */
+{left:`<h3>Rescuing Dinner, One App at a Time</h3><div class="meta">How smartphones are helping Canadians fight food waste</div>
+<div class="para"><b>A</b><p>[[3|Food waste is a serious problem across Canada.]] Studies suggest that a large share of the food produced in the country never gets eaten. [[9|Much of it is thrown away by bakeries, grocery stores and restaurants at the end of the day]], simply because it can't be sold the next morning.</p></div>
+<div class="para"><b>B</b><p>Food rescue apps aim to change that. Businesses post their unsold food as "surprise bags," and [[1|users can buy them for about a third of the regular price.]] [[8|After reserving a bag in the app, customers must pick it up during a set time window]], usually just before closing.</p></div>
+<div class="para"><b>C</b><p>University student Mei Lin uses one of these apps three times a week. "I save a lot of money, and I've tried foods I'd never have bought," she says. The downside? [[2|"You never know exactly what you'll get. Once I got six loaves of bread and nothing else."]] [[6|She also finds that some pick-up times are inconvenient, especially when they're after 10 p.m.]]</p></div>
+<div class="para"><b>D</b><p>For business owners, the apps offer a way to recover some of their costs. [[4|Many say that new customers discover their shop through the app and later come back to buy at full price.]] [[7|However, a few worry that regular customers might start waiting for discounted bags instead of shopping normally.]]</p></div>`,
+ blocks:[{type:"abcde",qs:[
+  {n:1,q:"Users usually pay much less than the normal price.",a:1,why:"B: 'about a third of the regular price'."},
+  {n:2,q:"Customers can't choose exactly what they receive.",a:2,why:"C: 'You never know exactly what you'll get'."},
+  {n:3,q:"Wasting food is a significant problem nationwide.",a:0,why:"A: 'Food waste is a serious problem across Canada'."},
+  {n:4,q:"Some customers return later and pay the full price.",a:3,why:"D: 'later come back to buy at full price'."},
+  {n:5,q:"The apps are only available in large cities.",a:4,why:"E (Not given). El texto no dice dónde funcionan las apps."},
+  {n:6,q:"Some collection times are not convenient.",a:2,why:"C: 'some pick-up times are inconvenient'. B menciona el horario, pero no dice que sea incómodo."},
+  {n:7,q:"Some shop owners fear losing normal sales.",a:3,why:"D: 'a few worry that regular customers might start waiting for discounted bags'."},
+  {n:8,q:"Customers must collect their food within a specific period.",a:1,why:"B: 'pick it up during a set time window'."},
+  {n:9,q:"A lot of food is discarded by businesses at closing time.",a:0,why:"A: 'thrown away by bakeries, grocery stores and restaurants at the end of the day'."}]}],
+ levels:{c45:{s:"4/9",d:"Encuentra los párrafos con palabras conocidas (price, time, customers), pero no distingue el hecho de la opinión.",
+   miss:[[1,2,"Vio 'save a lot of money' en C, pero la información del precio está en B."],[5,2,"Supuso que Mei Lin vive en una gran ciudad y eligió C."],[6,1,"Vio 'time window' en B, pero la queja sobre los horarios está en C."],[8,2,"Asoció 'pick-up times' de C con la regla de B."],[7,1,"Vio 'discounted' y eligió el párrafo de precios."]],
+   x:"🔁 Patrón: dos párrafos tratan el mismo tema desde ángulos distintos (la regla y la experiencia). Pregúntate cuál es el ángulo de la afirmación."},
+  c78:{s:"7/9",d:"Entiende el texto, pero confunde la descripción de cómo funciona la app (B) con la experiencia de un usuario (C).",
+   miss:[[6,1,"El horario aparece en B, pero 'inconvenient' (la opinión) está en C."],[8,2,"La regla de recoger en un horario está en B, no en la experiencia de Mei Lin."]],
+   x:"🎯 Para subir a CLB 9+: separa 'cómo funciona algo' de 'qué opina alguien sobre eso'."},
+  c1012:{s:"9/9",d:"Ve que B y C hablan de lo mismo desde ángulos distintos y usa eso para separar reglas de opiniones.",
+   g:["B = cómo funciona (regla) / C = experiencia personal (opinión).","Paráfrasis: 'a third of the price' = 'much less'.","No supone dónde funcionan las apps → E.","Reconoce 'fear' = 'worry' en D."]}}},
+
+/* ---------- Set 5: e-bikes ---------- */
+{left:`<h3>E-Bikes Take Over the Bike Lane</h3><div class="meta">Electric bicycles are booming, and cities are trying to keep up</div>
+<div class="para"><b>A</b><p>Sales of electric bicycles have grown quickly in recent years. With a small motor to help with pedalling, [[1|e-bikes let riders climb hills and travel much longer distances]] without arriving at work covered in sweat. [[6|They have become especially popular with commuters and with older riders]] who want to stay active but find a regular bike too tiring.</p></div>
+<div class="para"><b>B</b><p>[[2|To encourage people to leave their cars at home, some provinces and cities have offered rebates that cover part of the cost of a new e-bike.]] Even without help, an e-bike is far cheaper to run than a car. [[5|The main extra expense is the battery, which usually needs to be replaced every few years and can cost several hundred dollars.]]</p></div>
+<div class="para"><b>C</b><p>As the number of e-bikes grows, so do safety concerns. Because they can travel faster than regular bicycles, [[8|they sometimes create conflicts in shared spaces with slower cyclists and pedestrians.]] [[4|In response, some cities have introduced speed limits on popular paths]], and police are reminding riders that helmets are required in many provinces.</p></div>
+<div class="para"><b>D</b><p>[[9|For many food delivery workers, e-bikes have become essential tools of the job.]] But fire departments have raised concerns about battery fires in apartment buildings. [[3|They advise owners to charge batteries away from doors and exits, and never overnight with cheap or damaged chargers.]]</p></div>`,
+ blocks:[{type:"abcde",qs:[
+  {n:1,q:"E-bikes allow people to travel farther.",a:0,why:"A: 'travel much longer distances'."},
+  {n:2,q:"Some governments help people pay for e-bikes.",a:1,why:"B: 'provinces and cities have offered rebates'."},
+  {n:3,q:"Charging batteries can create a fire risk at home.",a:3,why:"D: incendios de baterías en edificios y consejos para cargarlas. B también habla de baterías, pero de su costo."},
+  {n:4,q:"Some bike paths now have a maximum speed.",a:2,why:"C: 'some cities have introduced speed limits on popular paths'."},
+  {n:5,q:"Replacing parts of an e-bike can be expensive.",a:1,why:"B: la batería 'can cost several hundred dollars'."},
+  {n:6,q:"Older people are among those choosing e-bikes.",a:0,why:"A: 'especially popular… with older riders'."},
+  {n:7,q:"E-bike owners must register their bikes like cars.",a:4,why:"E (Not given). C menciona cascos y límites de velocidad, pero no habla de registro."},
+  {n:8,q:"Faster bikes can cause tension with people on foot.",a:2,why:"C: 'conflicts in shared spaces with… pedestrians'."},
+  {n:9,q:"Some workers depend on e-bikes to earn a living.",a:3,why:"D: 'food delivery workers… essential tools of the job'."}]}],
+ levels:{c45:{s:"4/9",d:"Encuentra 'battery' en dos párrafos y elige al azar entre ellos. No usa E.",
+   miss:[[3,1,"Vio 'battery' en B, pero ahí habla del costo, no del fuego."],[4,4,"No reconoció 'speed limits' como 'maximum speed'."],[5,3,"Vio 'batteries' en D, pero el costo de reemplazo está en B."],[7,2,"Pensó que las reglas de seguridad de C incluían el registro."],[8,0,"Asoció 'faster' con A, que habla de ventajas."]],
+   x:"🔁 Patrón: la misma palabra en dos párrafos. Busca el aspecto específico: costo, seguridad, uso."},
+  c78:{s:"7/9",d:"Domina las paráfrasis simples, pero confunde los dos párrafos que mencionan baterías y deduce una regla que no está.",
+   miss:[[5,3,"El tema 'batería' aparece en B y D. El costo está en B."],[7,2,"C habla de reglas (cascos, velocidad), pero no de registro."]],
+   x:"🎯 Para subir a CLB 9+: cuando un tema aparece en dos párrafos, pregunta qué dice cada uno sobre él."},
+  c1012:{s:"9/9",d:"Etiqueta los párrafos (A ventajas, B costos, C seguridad, D trabajo y riesgos) y separa los dos usos de 'battery'.",
+   g:["Batería + dinero → B; batería + fuego → D.","Reconoce 'maximum speed' = 'speed limits'.","No añade reglas que el texto no menciona (registro → E).","Paráfrasis: 'earn a living' = 'tools of the job'."]}}}
+];
+EXTRA[4]=[
+/* ---------- Set 2: four-day week ---------- */
+{left:`<h3>Is Canada Ready for the Four-Day Work Week?</h3>
+<p>Across the world, companies are testing a radical idea: employees work 32 hours over four days, for the same pay they used to earn in five. Supporters say it improves well-being without hurting results. Critics say it only works for certain kinds of jobs.</p>
+<p>Liam Fraser, who runs a software company in Saskatoon, switched to a four-day week eighteen months ago. He says productivity has stayed the same, and sick days have dropped by almost half. [[1,6|"The biggest surprise was hiring," he says. "We used to get forty applications for a job. Now we get three hundred."]] To make it work, the team cut most meetings to fifteen minutes.</p>
+<p>Sandra Mbeki, who manages staff at a large hospital in Winnipeg, is less enthusiastic. [[2,7|"Patients don't stop being sick on Fridays," she points out. "For us, a four-day week would mean hiring many more nurses, and we already can't find enough."]] She supports the idea for office workers, but [[3|she warns that it could widen the gap between people who work at desks and front-line workers who can't take advantage of it.]]</p>
+<p>Economist Dr. Paul Lavigne believes the early results are promising but incomplete. [[4,8|"Most trials have involved companies that volunteered because they were confident it would work," he explains. "That doesn't tell us what would happen in a factory or a restaurant."]] He wants longer studies across many industries before governments consider any new rules.</p>
+<p>Employees themselves are mostly positive. Tara Nguyen, a graphic designer at Fraser's company, loves her long weekends. Still, [[5,9|she admits that the four workdays have become more intense. "There are fewer breaks, and I'm more tired on Thursday than I used to be on Friday."]]</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"What has changed at Fraser's company since the switch?",o:["Many more people apply for jobs there.","Employees work longer hours.","Productivity has dropped.","Meetings have become longer."],why:"De 40 a 300 solicitudes por puesto. Las reuniones se acortaron, no se alargaron."},
+  {n:2,q:"Why does Mbeki think a four-day week would be difficult in hospitals?",o:["Care is needed every day, so more staff would be required.","Nurses would not want to work fewer days.","Hospitals already have a short work week.","Patients would complain about the change."],why:"'Patients don't stop being sick on Fridays… would mean hiring many more nurses'."},
+  {n:3,q:"What concern does Mbeki raise?",o:["It could create inequality between types of workers.","Office workers would lose part of their pay.","Doctors would leave for other countries.","Hospitals would close on Fridays."],why:"'Widen the gap between people who work at desks and front-line workers'."},
+  {n:4,q:"Why is Lavigne cautious about the results so far?",o:["The companies tested may not represent all businesses.","The trials lasted too long.","Workers gave false information.","The government ran the trials."],why:"Las empresas se ofrecieron porque ya confiaban en que funcionaría: no representan a fábricas o restaurantes."},
+  {n:5,q:"What does Tara Nguyen say about her work week?",o:["Her workdays feel more demanding.","She wishes she could work five days.","She has more breaks than before.","She feels less tired than before."],why:"'The four workdays have become more intense… fewer breaks'."}]},
+ {type:"gap",intro:"Here is a comment from a reader of the article. Complete the comment by filling in the blanks.",
+  text:`<p><b>Joanne, Moncton</b></p><p>I run a small bakery, and I read this article with interest. Mr. Fraser's results sound great, especially how much easier it became to {{6}}. But I agree with Ms. Mbeki that some businesses simply can't close for a day: my customers want fresh bread {{7}}.</p><p>I also think Dr. Lavigne makes a fair point that the companies in the trials {{8}}. And Ms. Nguyen's comment worries me. If my bakers are exhausted by Thursday, they'll {{9}}. So for now, instead of a four-day week, I'm going to offer my staff {{10}}.</p>`,
+  qs:[{n:6,o:["find new employees","cut long meetings","work on Fridays","reduce salaries"],why:"Fraser destaca que contratar se volvió más fácil (300 solicitudes)."},
+   {n:7,o:["every day of the week","only on Fridays","during meetings","at the hospital"],why:"Como los pacientes de Mbeki, los clientes de una panadería necesitan servicio todos los días."},
+   {n:8,o:["might have succeeded anyway","were all bakeries","lost a lot of money","were forced to take part"],why:"Lavigne dice que las empresas eran voluntarias y confiaban en el éxito, así que probablemente les iría bien de todos modos."},
+   {n:9,o:["be more likely to make mistakes","earn more money","take longer breaks","hire more people"],why:"Un empleado agotado comete más errores. Nguyen dice que tiene menos descansos, no más."},
+   {n:10,o:["more flexible schedules","Fridays off","a four-day week","fewer days of service"],why:"Joanne rechaza la semana de cuatro días ('instead of'), así que ofrece algo diferente que no cierre la panadería."}]}],
+ levels:{c45:{s:"4/10",d:"Capta el tema, pero no separa las opiniones de cada persona ni entiende los matices (admits, warns).",
+   miss:[[1,3,"Vio 'meetings' y no leyó que se acortaron."],[2,1,"Supuso que las enfermeras no querrían el cambio."],[4,1,"Leyó 'longer studies' y pensó que las pruebas fueron largas."],[5,2,"Vio 'breaks' y no leyó 'fewer'."],[8,2,"Pensó que perder dinero era la crítica de Lavigne."],[9,2,"Asoció 'breaks' con cansancio, pero Nguyen dice que tiene menos descansos."]],
+   x:"🔁 Patrón: palabras clave sin sus modificadores (fewer, shorter, more). Lee la frase completa alrededor de la palabra."},
+  c78:{s:"7/10",d:"Sigue las opiniones principales, pero falla en las inferencias y en el blanco final del comentario.",
+   miss:[[3,1,"Pensó en el salario, pero Mbeki habla de la brecha entre tipos de trabajadores."],[4,1,"Interpretó 'longer studies' como una crítica a la duración."],[10,1,"No notó 'instead of a four-day week' y eligió 'Fridays off'."]],
+   x:"🎯 Para subir a CLB 9+: 'instead of' y 'but' en el comentario indican lo que el lector rechaza."},
+  c1012:{s:"10/10",d:"Hace un mapa: Fraser (resultados positivos, contratación), Mbeki (imposible en hospitales, desigualdad), Lavigne (falta evidencia), Nguyen (más intenso).",
+   g:["Separa los dos argumentos de Mbeki: personal y desigualdad.","Entiende la crítica de Lavigne: las empresas eran voluntarias.","Usa 'instead of' para el blanco 10.","Lee los modificadores: fewer breaks, shorter meetings."]}}},
+
+/* ---------- Set 3: phones in schools ---------- */
+{left:`<h3>Phones Away: Inside the Classroom Cell Phone Debate</h3>
+<p>Several provinces have introduced rules limiting cell phone use in classrooms, and many schools are going further. But parents, students and experts don't agree on how strict the rules should be.</p>
+<p>Rebecca Holt, principal of Lakeside Secondary, banned phones for the entire school day last year, including lunch. [[1,6|"The change in the cafeteria was immediate," she says. "Students are talking to each other again, playing cards, laughing."]] She has also seen fewer conflicts that start on social media and continue at school.</p>
+<p>Not all parents are convinced. Daniel Okafor's daughter takes two buses to get home. [[2,7|"I'm not asking for her to text during math class," he says. "But if something happens on her way home, I need to be able to reach her."]] He believes a complete ban goes too far.</p>
+<p>Students have mixed feelings. Priya, 16, admits she concentrates better in class without her phone nearby. [[3,8|"But at lunch, it's our free time,"]] she says. "We use our phones to check schedules, message our parents and just relax. Lessons and lunch shouldn't have the same rules."</p>
+<p>Psychologist Dr. Elena Varga studies attention in teenagers. [[4|She says research shows that notifications can distract students even when they don't look at their phones.]] However, [[5,9|she believes that bans alone don't teach young people how to manage technology. "At some point, they'll have phones in their pockets all day. Schools need to teach those skills, not just take the phones away."]]</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"What change has Holt noticed since the ban?",o:["Students interact more with each other.","Students' grades have doubled.","Fewer students eat lunch at school.","More students bring tablets instead."],why:"'Students are talking to each other again, playing cards, laughing'."},
+  {n:2,q:"Why does Okafor oppose a complete ban?",o:["He wants to be able to contact his daughter in case of problems.","He thinks phones help students learn math.","His daughter needs her phone for homework.","The school didn't consult parents."],why:"'If something happens on her way home, I need to be able to reach her'."},
+  {n:3,q:"What is Priya's opinion?",o:["Phones should be limited in class but allowed at lunch.","Phones should be banned all day.","Phones never distract her.","Teachers should use phones more in lessons."],why:"Se concentra mejor sin el teléfono en clase, pero cree que el almuerzo es tiempo libre."},
+  {n:4,q:"According to Varga, why can phones be distracting?",o:["Notifications can pull attention even when ignored.","Students play games during lessons.","Screens damage students' eyesight.","Teachers check their phones in class."],why:"'Notifications can distract students even when they don't look at their phones'."},
+  {n:5,q:"What does Varga suggest?",o:["teaching students to manage their technology use","stricter punishments for phone use","banning phones at home too","giving every student a tablet"],why:"'Schools need to teach those skills, not just take the phones away'."}]},
+ {type:"gap",intro:"Here is a comment from a reader of the article. Complete the comment by filling in the blanks.",
+  text:`<p><b>Mark, Grade 10 teacher</b></p><p>I see both sides of this debate. Like Ms. Holt, I've noticed that when phones are put away, students {{6}}. Still, I understand Mr. Okafor. Parents simply want to {{7}}.</p><p>Priya's idea seems like a fair compromise: no phones {{8}}, but freedom during breaks. Still, I think Dr. Varga makes the most important point. A rule doesn't teach students {{9}}. That's why next term I'm going to {{10}}.</p>`,
+  qs:[{n:6,o:["talk to each other more","argue online more","leave class early","spend more time alone"],why:"Holt observó que los estudiantes vuelven a conversar entre ellos."},
+   {n:7,o:["know their children are safe","check their children's grades","ban phones at home","buy their children new phones"],why:"Okafor quiere poder comunicarse con su hija por seguridad."},
+   {n:8,o:["during lessons","at lunch","on the bus","at home"],why:"La idea de Priya: sin teléfono en clase, libertad en el almuerzo. 'But freedom during breaks' confirma el contraste."},
+   {n:9,o:["how to control their own phone use","how to check their schedules","how to take the bus","how to message their parents"],why:"Varga dice que las prohibiciones no enseñan a manejar la tecnología."},
+   {n:10,o:["include lessons on healthy digital habits","ban phones at lunch","give everyone a tablet","stop using technology in class"],why:"Mark está de acuerdo con Varga, así que enseñará habilidades digitales."}]}],
+ levels:{c45:{s:"4/10",d:"Entiende el tema, pero confunde las posturas y elige opciones que mencionan algo del artículo sin relación con la pregunta.",
+   miss:[[1,2,"Vio 'cafeteria' y pensó que menos estudiantes almuerzan en la escuela."],[2,2,"Pensó en tareas porque el texto menciona 'math class'."],[3,1,"Vio 'concentrates better without her phone' y no leyó el 'But' que sigue."],[5,1,"Pensó que una psicóloga propondría castigos más fuertes."],[7,1,"No conectó la seguridad con la preocupación de Okafor."],[8,1,"Invirtió la idea de Priya."]],
+   x:"🔁 Patrón: quedarse con la primera mitad de la opinión. Las opiniones de este tipo de texto casi siempre tienen un 'but'."},
+  c78:{s:"7/10",d:"Entiende bien a cada persona, pero falla en las opiniones con dos partes y en el último blanco.",
+   miss:[[3,1,"Se quedó con 'concentrates better' y no con la postura completa."],[9,1,"Recordó que Priya usa el teléfono para ver horarios y lo mezcló con Varga."],[10,1,"Pensó que Mark seguiría la postura de Holt."]],
+   x:"🎯 Para subir a CLB 9+: en el comentario, 'the most important point' te dice con quién está más de acuerdo el lector."},
+  c1012:{s:"10/10",d:"Hace un mapa de las cuatro voces, con sus matices, y lee el comentario buscando con quién está de acuerdo el lector en cada frase.",
+   g:["Holt: prohibición total → más interacción.","Okafor: en contra de la prohibición total, por seguridad.","Priya: sí en clase, no en el almuerzo (dos partes).","Varga: las prohibiciones no enseñan. El lector la elige como la idea más importante."]}}},
+
+/* ---------- Set 4: return to office ---------- */
+{left:`<h3>Back to the Office? The Battle Over Where We Work</h3>
+<p>Years after the pandemic sent millions of Canadians home to work, many employers are now calling them back. The result is one of the most heated workplace debates in recent memory.</p>
+<p>Marcus Whitfield, CEO of a national insurance company, now requires staff to be in the office four days a week. He admits that productivity didn't fall while people worked from home. [[1,6|"But our younger employees were missing out," he says. "You learn this job by sitting next to someone experienced, asking questions and listening to how they handle difficult calls."]]</p>
+<p>Aisha Rahman, a claims analyst at a different firm, has a ninety-minute commute each way. [[2,7|"When I worked from home, I could take my kids to school and still start work at eight," she says. "Now I leave before they wake up and get home just in time for bed."]] She is considering looking for a new job.</p>
+<p>The debate also matters for cities. Urban planner Dr. Kenji Mori points out that [[3|many downtown cafés, dry cleaners and lunch spots lost a large share of their customers when office workers stopped coming in.]] [[4,9|Rather than forcing workers back, he suggests converting some of the half-empty office towers into apartments, which would bring people downtown seven days a week.]]</p>
+<p>Researcher Dr. Ruth Adeyemi, who studies remote work, says the evidence is mixed. [[5,8|"For focused, independent tasks, people are often more productive at home. For training and creative teamwork, being together helps. The best arrangement depends on the work itself."]]</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"Why does Whitfield want employees back in the office?",o:["He believes newer staff learn better in person.","Productivity at home was very low.","Employees asked to return.","The company's office rent is already paid."],why:"'Our younger employees were missing out… you learn this job by sitting next to someone experienced'. Él mismo admite que la productividad no bajó."},
+  {n:2,q:"What is Rahman's main problem with the policy?",o:["Her long commute takes time away from her family.","She doesn't get along with her colleagues.","Her salary was reduced.","Her office is too noisy."],why:"Antes llevaba a sus hijos a la escuela; ahora sale antes de que despierten."},
+  {n:3,q:"What does Mori say about downtown areas?",o:["Local businesses have lost customers.","They are busier than ever.","Housing there is too cheap.","Office towers are full again."],why:"'Many downtown cafés… lost a large share of their customers'."},
+  {n:4,q:"What does Mori propose?",o:["turning unused office space into homes","building more office towers","lowering parking prices downtown","requiring workers to return"],why:"'Converting some of the half-empty office towers into apartments'. 'Rather than forcing workers back' descarta la última opción."},
+  {n:5,q:"What is Adeyemi's view?",o:["The best option depends on the type of work.","Everyone should work from home.","Offices are always more productive.","Remote work has clearly failed."],why:"'The best arrangement depends on the work itself'."}]},
+ {type:"gap",intro:"Here is a comment from a reader of the article. Complete the comment by filling in the blanks.",
+  text:`<p><b>Felipe, Calgary</b></p><p>I'm a junior accountant who started my job during the pandemic, so Mr. Whitfield's argument about {{6}} really speaks to me. I learned much faster once I could sit next to experienced colleagues. That said, I feel for Ms. Rahman. Nobody should have to choose between {{7}}.</p><p>I think Dr. Adeyemi is right that {{8}}: for focused work like reviewing reports, I'm more productive at home. And if Dr. Mori's idea catches on, maybe one day I could {{9}}, and my commute would disappear altogether. In the end, I'd support {{10}}.</p>`,
+  qs:[{n:6,o:["learning from experienced colleagues","saving on office rent","supporting downtown cafés","long commutes"],why:"Felipe es un empleado joven que aprendió más rápido junto a colegas con experiencia, justo el argumento de Whitfield."},
+   {n:7,o:["their job and their family","two different offices","renting and buying","coffee and lunch"],why:"Rahman siente que su trayecto le quita tiempo con sus hijos."},
+   {n:8,o:["it depends on the task","offices always win","home is always better","commutes don't matter"],why:"Adeyemi: la mejor opción depende del tipo de trabajo, y Felipe lo confirma con su ejemplo."},
+   {n:9,o:["live in a converted office building downtown","commute ninety minutes","work four days in the office","move to the suburbs"],why:"La propuesta de Mori: oficinas convertidas en apartamentos. Vivir ahí eliminaría el trayecto."},
+   {n:10,o:["a mix of office and home days","five office days a week","working from home permanently","closing the office"],why:"Felipe valora aprender en la oficina y concentrarse en casa: apoya un modelo mixto."}]}],
+ levels:{c45:{s:"4/10",d:"Entiende que hay un debate, pero elige opciones que suenan lógicas sin comprobar lo que dice cada persona.",
+   miss:[[1,1,"Supuso que el CEO criticaba la productividad, pero él admite que no bajó."],[3,3,"Vio 'office towers' y no leyó 'half-empty'."],[4,3,"Pensó que Mori quiere que los trabajadores vuelvan; dice 'rather than'."],[5,1,"Vio 'more productive at home' y no leyó el resto."],[7,1,"No relacionó a Rahman con su familia."],[9,1,"Vio 'ninety minutes' y lo eligió."]],
+   x:"🔁 Patrón: ignorar las palabras de contraste (admits, rather than, but). Ellas cambian el sentido de la opinión."},
+  c78:{s:"7/10",d:"Entiende las posturas principales, pero falla con 'admits' y con la conclusión del lector.",
+   miss:[[1,1,"Leyó 'productivity' y no notó que el CEO admite que no bajó."],[5,1,"Se quedó con la primera parte de la opinión de Adeyemi."],[10,2,"Felipe valora el trabajo en casa, pero también la oficina: su conclusión es mixta."]],
+   x:"🎯 Para subir a CLB 9+: si el lector está de acuerdo con dos personas opuestas, su conclusión suele ser un punto medio."},
+  c1012:{s:"10/10",d:"Lee las concesiones de cada voz (Whitfield admite, Mori dice 'rather than') y ve que el lector combina ideas de varias personas.",
+   g:["Whitfield: aprendizaje en persona, no productividad.","Mori: dos ideas (negocios afectados + convertir oficinas).","Adeyemi: depende de la tarea.","Felipe apoya a Whitfield y a Adeyemi → modelo mixto."]}}},
+
+/* ---------- Set 5: congestion charge ---------- */
+{left:`<h3>Should Drivers Pay to Enter Downtown?</h3>
+<p>City council is debating a proposal that would charge drivers $10 a day to enter the downtown core on weekdays. The plan has divided residents, business owners and experts.</p>
+<p>Councillor Grace Chen, who introduced the proposal, says traffic downtown has reached a breaking point. [[1|"Every dollar collected would go directly into public transit: more buses, more frequent service and safer stations,"]] she says. "People will only leave their cars at home if they have a real alternative."</p>
+<p>Tony Russo, who owns a flower shop downtown, is worried. Many of his customers drive in to pick up large orders, and [[2,7|he relies on his van for deliveries. "If the city goes ahead, it should at least exempt delivery vehicles. I can't deliver a wedding order on the bus."]]</p>
+<p>Transit advocate Olu Bello supports the idea in principle but [[3,6|warns that the timing matters. "If you charge drivers before improving transit, you're punishing people who have no other option. Fix the buses first, then introduce the charge."]]</p>
+<p>Transportation researcher Dr. Ingrid Solberg has studied similar charges in several European cities. [[4,8|"In most cases, the public was strongly against it at first," she says. "But once people saw less traffic and cleaner air, opinion turned in favour, and support kept growing."]]</p>`,
+ blocks:[{type:"mc",qs:[
+  {n:1,q:"According to Chen, what would the money be used for?",o:["improving public transit","repairing downtown roads","helping small businesses","building new parking lots"],why:"'Every dollar collected would go directly into public transit'."},
+  {n:2,q:"What does Russo ask for?",o:["an exception for delivery vehicles","lower parking prices","a ban on all cars downtown","free bus passes for business owners"],why:"'It should at least exempt delivery vehicles'."},
+  {n:3,q:"What is Bello's condition for supporting the plan?",o:["Public transit must improve first.","The charge must be lower than $10.","Cars must be banned completely.","Businesses must agree to it."],why:"'Fix the buses first, then introduce the charge'."},
+  {n:4,q:"According to Solberg, what happened in other cities?",o:["Public opinion became more positive over time.","Traffic increased after the charge.","The charges were cancelled after a year.","Many businesses had to close."],why:"Al principio la gente estaba en contra, pero luego la opinión cambió a favor."},
+  {n:5,q:"What is the article mainly about?",o:["different opinions on a plan to charge drivers","the history of traffic in the city","how to run a flower business","European public transit systems"],why:"Presenta las posturas de cuatro personas sobre la propuesta del cargo de $10."}]},
+ {type:"gap",intro:"Here is a comment from a reader of the article. Complete the comment by filling in the blanks.",
+  text:`<p><b>Wendy, night-shift nurse</b></p><p>I work nights at the downtown hospital, and buses barely run when my shift ends at 3 a.m. That's why I agree with Mr. Bello that the charge would be unfair unless {{6}}. I also see Mr. Russo's point: a florist can't deliver flowers {{7}}.</p><p>On the other hand, Dr. Solberg's research is encouraging. If people in other cities {{8}}, maybe we would too. I'd support Ms. Chen's plan if the money really goes to {{9}}. And I'd ask the city to consider {{10}}.</p>`,
+  qs:[{n:6,o:["transit service improves first","parking becomes free","businesses close early","bikes are banned"],why:"Es la condición de Bello: primero mejorar el transporte público."},
+   {n:7,o:["by bus","in a van","at night","to the hospital"],why:"Russo: 'I can't deliver a wedding order on the bus'."},
+   {n:8,o:["changed their minds after seeing less traffic","stopped driving altogether","moved out of downtown","paid much higher taxes"],why:"Solberg: la opinión cambió al ver menos tráfico y aire más limpio."},
+   {n:9,o:["better buses, especially at night","new parking lots","road repairs downtown","the hospital's budget"],why:"Chen promete invertir en transporte público, y Wendy necesita buses de noche."},
+   {n:10,o:["an exemption for night-shift workers","a higher daily charge","a ban on delivery vans","closing downtown to all cars"],why:"Wendy no tiene alternativa de noche, así que pide una excepción como la que pide Russo."}]}],
+ levels:{c45:{s:"4/10",d:"Entiende que se trata de un cargo para conductores, pero mezcla las condiciones y propuestas de cada persona.",
+   miss:[[1,2,"Pensó que el dinero ayudaría a negocios como el de Russo."],[2,3,"Vio 'on the bus' y eligió pases de autobús."],[3,1,"Pensó que la condición era un cargo más bajo."],[4,1,"No leyó la segunda parte de la cita: 'opinion turned in favour'."],[8,1,"Supuso que la gente dejó de manejar del todo."],[10,1,"No conectó la situación de Wendy con la petición de una excepción."]],
+   x:"🔁 Patrón: quedarse con la primera parte de la cita. Lee hasta el final: el cambio suele venir después de 'but'."},
+  c78:{s:"7/10",d:"Sigue bien las posturas, pero falla en el propósito general y en la lógica de los últimos blancos.",
+   miss:[[5,1,"Pensó que el artículo trata del tráfico en general, pero presenta opiniones sobre una propuesta."],[9,3,"Pensó en el hospital porque Wendy trabaja ahí, pero el dinero es para transporte."],[10,1,"Eligió un cargo más alto, que contradice todo su comentario."]],
+   x:"🎯 Para subir a CLB 9+: comprueba que el blanco final sea coherente con todo lo que el lector dijo antes."},
+  c1012:{s:"10/10",d:"Mapea las cuatro posturas (Chen propone, Russo pide excepción, Bello pone condición, Solberg aporta evidencia) y ve que Wendy toma una idea de cada uno.",
+   g:["Separa propuesta, excepción, condición y evidencia.","Lee la cita completa de Solberg: rechazo inicial → apoyo después.","Conecta la situación personal de Wendy (turno de noche) con los blancos 9 y 10.","Identifica el propósito: presentar opiniones distintas."]}}}
+];
+
+/* ---------- Score conversion (Paragon approximate) ---------- */
+const CONV=[["33–38","10–12"],["31–33","9"],["28–31","8"],["24–28","7"],["19–25","6"],["15–20","5"],["10–16","4"],["8–11","3"],["0–7","M"]];
+function clbFor38(x){x=Math.round(x);return x>=33?"10–12":x>=31?"9":x>=28?"8":x>=24?"7":x>=19?"6":x>=15?"5":x>=10?"4":x>=8?"3":"M";}
+function convRow(x){x=Math.round(x);return x>=33?0:x>=31?1:x>=28?2:x>=24?3:x>=19?4:x>=15?5:x>=10?6:x>=8?7:8;}
+
+/* ---------- App ---------- */
+let ti=0, si=0, lvl="c78", tleft=0, tick=null, submitted=false, armed=false;
+const res={};
+const $=id=>document.getElementById(id);
+const T=()=>TASKS[ti];
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const ev=h=>h.replace(/\[\[([\w,]+)\|([\s\S]+?)\]\]/g,(m,n,t)=>`<span class="ev" data-l="${n.replace(/b/g,"").split(",").join(" · ")}">${t}</span>`);
+TASKS.forEach((t,i)=>{t.sets=[{left:t.left,blocks:t.blocks,levels:t.levels}].concat(typeof EXTRA!=="undefined"&&EXTRA[i]||[])});
+const done={};
+const S=()=>T().sets[si];
+const A=q=>q.a||0;
+const allQs=()=>S().blocks.flatMap(b=>b.qs);
+function seedRand(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
+function order(q){const n=optsOf(q).length,idx=[...Array(n).keys()];if(!q.o)return idx;const r=seedRand(`${ti}-${si}-${q.n}-bl`);for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}return idx;}
+const L5=["A","B","C","D","E – Not given in any of the above paragraphs"];
+const optsOf=q=>q.o||L5;
+
+function buildNav(){
+  $("tasknav").innerHTML=TASKS.map((t,i)=>`<button class="chip" aria-pressed="${i===ti}" data-t="${i}">${t.short}${res[i]?'<span class="ck">✓</span>':''}</button>`).join("");
+  $("tasknav").querySelectorAll("button").forEach(b=>b.onclick=()=>{ti=+b.dataset.t;si=0;reset(true)});
+  $("tname").textContent=`${T().short} · ${T().name}`;
+  $("qpick").innerHTML=T().sets.map((_,i)=>`<button class="chip" aria-pressed="${i===si}" aria-label="Práctica ${i+1}" data-q="${i}">${i+1}${done[ti+"-"+i]?'<span class="ck">✓</span>':''}</button>`).join("");
+  $("qpick").querySelectorAll("button").forEach(b=>b.onclick=()=>{si=+b.dataset.q;reset(false)});
+}
+function renderGuide(){const t=T(),g=t.guide;
+  $("s-intro").innerHTML=`<div class="label">Antes de empezar · Guía de ${t.short}</div>
+  <h2 style="font-size:1.35rem">🐨 ${esc(t.name)}: cómo funciona</h2>
+  <p class="lead">${g.what}</p>
+  <div class="facts">${g.facts.map(f=>`<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+  ${CRIT}<div class="callout">${g.callout}</div>
+  <h2>✅ Qué hacer y ❌ qué no hacer</h2>
+  <div class="dd"><div class="yes"><h3>✅ Haz esto</h3><ul>${g.doo.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <div class="no"><h3>❌ Evita esto</h3><ul>${g.dont.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+  <h2>⚠️ Errores comunes de estrategia</h2>
+  <ul class="fixes">${g.errors.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")}</ul>
+  <h2>🚀 Tips para boost your score</h2>
+  <div class="flow ${g.flow.length===3?'f3':''}">${g.flow.map(f=>`<div class="step"><small>${f[0]}</small><b>${esc(f[1])}</b><em>${esc(f[2])}</em></div>`).join("")}</div>
+  <div><p style="font-family:var(--display);font-weight:600;margin:0 0 8px">Palabras señal que debes reconocer:</p><div class="phr">${g.phrases.map(p=>`<span>${esc(p)}</span>`).join("")}</div></div>
+  <ol class="tips">${g.tips.map(x=>`<li>${x}</li>`).join("")}</ol>
+  <button class="main" id="btn-begin">Empezar ${t.short} · ${fmt(t.time)} min →</button>`;
+  $("btn-begin").onclick=startTest;
+}
+function selHTML(q,cls){return `<select class="${cls}" id="sel-${ti}-${si}-${q.n}" data-n="${q.n}" aria-label="Question ${q.n}"><option value="">${cls==="inl"?"Choose…":"Select an answer"}</option>${order(q).map(i=>`<option value="${i}">${esc(optsOf(q)[i])}</option>`).join("")}</select>`;}
+function renderTest(){const t=T();
+  $("ex-title").textContent=`Reading ${t.short}: ${t.name} · Práctica ${si+1}`;
+  $("ex-instr").textContent=t.instr;
+  $("ex-left").innerHTML=ev(S().left);
+  let h="";
+  S().blocks.forEach(b=>{
+    h+=`<div class="qblock">${b.intro?`<p class="bi">${esc(b.intro)}</p>`:""}`;
+    if(b.type==="gap"){
+      const qmap=Object.fromEntries(b.qs.map(q=>[q.n,q]));
+      h+=`<div class="gaptext">${ev(b.text).replace(/\{\{(\d+)\}\}/g,(m,n)=>`<span class="slot"><sup>${n}</sup>${selHTML(qmap[n],"inl")}</span>`)}</div><div class="gapwhy" id="gw-${b.qs[0].n}"></div>`;
+    } else {
+      b.qs.forEach(q=>{h+=`<div class="q" id="q-${q.n}"><p><b>${q.n}.</b> ${esc(q.q)}</p>${selHTML(q,"dd-sel")}<div class="why" hidden></div></div>`});
+    }
+    h+=`</div>`;
+  });
+  $("ex-right").innerHTML=h;
+  $("ex-right").querySelectorAll("select").forEach(s=>s.onchange=()=>{s.setAttribute("value",s.value);armed=false;$("ex-warn").hidden=true;count()});
+  count();
+}
+function count(){const n=allQs().length,a=[...$("ex-right").querySelectorAll("select")].filter(s=>s.value!=="").length;$("pt-count").textContent=`${a}/${n} respondidas`;return n-a;}
+const narrow=()=>matchMedia("(max-width:880px)").matches;
+(function(){const d=$("divider"),sp=$("split");let drag=false;
+  d.addEventListener("pointerdown",e=>{drag=true;d.setPointerCapture(e.pointerId);e.preventDefault()});
+  d.addEventListener("pointermove",e=>{if(!drag)return;const r=sp.getBoundingClientRect();const pct=Math.min(80,Math.max(20,(e.clientX-r.left)/r.width*100));sp.style.setProperty("--left",pct+"fr");sp.style.setProperty("--rf",(100-pct)+"fr");sp.style.gridTemplateColumns=`minmax(0,${pct}fr) 16px minmax(0,${100-pct}fr)`});
+  const end=()=>{drag=false};d.addEventListener("pointerup",end);d.addEventListener("pointercancel",end);})();
+function startTest(){
+  submitted=false;armed=false;document.body.classList.add("wide");
+  $("s-test").classList.remove("reviewing");renderTest();$("split").style.gridTemplateColumns="";$("ex-left").scrollTop=0;$("ex-right").scrollTop=0;
+  $("btn-submit").hidden=false;$("ex-warn").hidden=true;
+  show(["s-test"]);if(narrow())$("s-test").scrollIntoView();else window.scrollTo(0,0);
+  clearInterval(tick);tleft=T().time;const tm=$("ex-timer");
+  const upd=()=>{tm.textContent="⏱ Time remaining: "+fmt(tleft);tm.classList.toggle("low",tleft<=60)};upd();
+  tick=setInterval(()=>{tleft--;upd();if(tleft<=0){clearInterval(tick);submit(true)}},1000);
+}
+function submit(force){
+  const left=count();
+  if(!force&&left>0&&!armed){armed=true;$("ex-warn").hidden=false;$("ex-warn").textContent=`Te faltan ${left} respuesta${left>1?"s":""}. En el examen no se restan puntos por error: mejor elige algo. Toca Submit otra vez para entregar.`;return;}
+  clearInterval(tick);submitted=true;
+  const used=T().time-Math.max(0,tleft);
+  let c=0;const wrong=[];
+  S().blocks.forEach(b=>{
+    if(b.type==="gap"){let w="";
+      b.qs.forEach(q=>{const s=$(`sel-${ti}-${si}-${q.n}`),ok=s.value!==""&&+s.value===A(q);if(ok)c++;else wrong.push(q.n);s.classList.add(ok?"ok":"bad");
+        w+=`<div class="why"><span class="res ${ok?'ok':'bad'}">${q.n}. ${ok?"✅ Correcta":"❌ "+(s.value===""?"Sin respuesta":"Elegiste «"+esc(optsOf(q)[+s.value])+"»")}</span>${ok?"":` · Correcta: <b>${esc(optsOf(q)[A(q)])}</b>`}<br>${esc(q.why)}</div>`});
+      $(`gw-${b.qs[0].n}`).innerHTML=w;
+    } else b.qs.forEach(q=>{const s=$(`sel-${ti}-${si}-${q.n}`),box=$(`q-${q.n}`),ok=s.value!==""&&+s.value===A(q);if(ok)c++;else wrong.push(q.n);box.classList.add(ok?"ok":"bad");
+      const wh=box.querySelector(".why");wh.hidden=false;
+      wh.innerHTML=`<span class="res ${ok?'ok':'bad'}">${ok?"✅ Correcta":"❌ "+(s.value===""?"Sin respuesta":"Incorrecta")}</span>${ok?"":` · Correcta: <b>${esc(optsOf(q)[A(q)])}</b>`}<br>${esc(q.why)}`;});
+  });
+  const n=allQs().length;res[ti]={c,n};done[ti+"-"+si]=1;
+  if(ti>0&&window.BL)BL.submitObjective({skill:"Reading",task:`${T().short} · ${T().name}`,practice:si+1,correct:c,total:n,clb:clbFor38(c/n*38),detail:`Tiempo: ${fmt(used)} de ${fmt(T().time)}${force&&tleft<=0?" (tiempo agotado)":""}${wrong.length?` · Falló: ${wrong.join(", ")}`:""}`});
+  $("s-test").classList.add("reviewing");$("btn-submit").hidden=true;$("ex-warn").hidden=true;
+  $("ex-timer").classList.remove("low");$("ex-timer").textContent=`⏱ Usaste ${fmt(used)} de ${fmt(T().time)}`;
+  renderResult(c,n,force&&tleft<=0);buildNav();renderLevel();buildChecklist();renderConv(c,n);
+  show(["s-result","s-test","s-done","s-check"]);window.scrollTo(0,0);
+}
+function renderResult(c,n,timeout){
+  $("r-score").textContent=`${c}/${n}`;
+  const p=c/n;let msg;
+  if(ti===0)msg="La tarea de práctica no cuenta en el examen real, pero te dice si tu método funciona.";
+  else msg=`Si mantuvieras este ritmo en las 38 preguntas del Reading, estarías cerca de <b>CLB ${clbFor38(p*38)}</b> (orientativo).`;
+  $("r-text").innerHTML=(timeout?"⏰ Se acabó el tiempo y tus respuestas se entregaron solas. ":"")+msg+(p===1?" ¡Perfecto! 🎉":"");
+  const parts=[1,2,3,4];const done=parts.filter(i=>res[i]);
+  let m=parts.map(i=>`<span class="${res[i]?'done':''}">${TASKS[i].short}: ${res[i]?res[i].c+"/"+res[i].n:"–"}</span>`).join("");
+  if(done.length===4){const tot=done.reduce((a,i)=>a+res[i].c,0);m+=`<span class="done"><b>Mock completo: ${tot}/38 → CLB ${clbFor38(tot)}</b></span>`;}
+  else m+=`<span>Haz las 4 partes para ver tu nivel total del mock</span>`;
+  $("r-mock").innerHTML=m;
+}
+function renderConv(c,n){const you=ti===0?-1:convRow(c/n*38);
+  $("conv").innerHTML=`<tr><th>Correctas (de 38)</th><th>Nivel CELPIP</th></tr>`+CONV.map((r,i)=>`<tr class="${i===you?'you':''}"><td>${r[0]}</td><td>${r[1]}${i===you?" ← tu ritmo":""}</td></tr>`).join("");}
+function renderLevel(){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.l===lvl));
+  const d=S().levels[lvl],L={c45:["CLB 4–5","Básico: lee palabra por palabra y cae en trampas","var(--c45)"],c78:["CLB 7–8","Bueno: entiende el texto, falla en matices","var(--c78)"],c1012:["CLB 10–12","Excelente: estrategia, paráfrasis y buen uso del tiempo","var(--c1012)"]}[lvl];
+  const box=$("lvl");box.style.setProperty("--lvl",L[2]);
+  const qmap=Object.fromEntries(allQs().map(q=>[q.n,q]));
+  let h=`<div class="lvlhead"><span class="badge">${L[0]} · ${d.s}</span><span>${L[1]}</span></div><p class="how">${esc(d.d)}</p>`;
+  if(d.miss){if(d.miss.length){h+=`<h2 style="font-size:1rem">❌ Dónde falló y por qué</h2><ul class="fixes">`+d.miss.map(([n,pick,y])=>{const q=qmap[n];return `<li><b>${n}.</b> Eligió <span class="w">${esc(optsOf(q)[pick])}</span> → <span class="r">${esc(optsOf(q)[A(q)])}</span><span class="why">${esc(y)}</span></li>`}).join("")+`</ul>`;}
+    h+=`<p class="extra">${esc(d.x)}</p>`;}
+  else h+=`<h2 style="font-size:1rem">⭐ Cómo lo logra</h2><ul class="fixes">`+d.g.map(g=>`<li>${esc(g)}</li>`).join("")+`</ul>`;
+  box.innerHTML=h;
+}
+function buildChecklist(){let h="",k=0;
+  T().check.forEach(([g,items])=>{h+=`<div class="group"><h3>${g}</h3>`;items.forEach(it=>{h+=`<label class="chk"><input type="checkbox" id="c${ti}-${k}"><span>${esc(it)}</span></label>`;k++});h+=`</div>`});
+  $("checklist").innerHTML=h;$("checklist").querySelectorAll("input").forEach(i=>i.onchange=updateScore);updateScore();}
+function updateScore(){const all=$("checklist").querySelectorAll("input").length,n=$("checklist").querySelectorAll("input:checked").length,r=n/all;
+  $("score").textContent=n+"/"+all;
+  $("verdict").textContent=r<=.45?"Estrategia en construcción. Antes de leer más textos, practica el método: preguntas primero, luego busca la paráfrasis.":r<=.78?"Buen método. Para tu siguiente práctica, elige 1–2 puntos sin marcar y concéntrate solo en ellos.":"¡Método sólido! Si tu puntaje aún no refleja esto, el siguiente paso es ampliar vocabulario y sinónimos.";}
+function show(ids){["s-intro","s-result","s-test","s-done","s-check"].forEach(s=>$(s).hidden=!ids.includes(s))}
+function reset(intro){
+  clearInterval(tick);document.body.classList.remove("wide");buildNav();renderGuide();
+  $("compare").hidden=true;$("btn-compare").setAttribute("aria-expanded","false");lvl="c78";
+  $("btn-next").textContent=si<T().sets.length-1?`Siguiente: Práctica ${si+2} →`:ti<TASKS.length-1?`Siguiente: ${TASKS[ti+1].short} →`:"Volver a la Practice Task →";
+  if(intro){show(["s-intro"]);window.scrollTo(0,0);}else startTest();
+}
+$("btn-submit").onclick=()=>submit(false);
+$("btn-guide").onclick=()=>reset(true);
+$("btn-again").onclick=()=>reset(false);
+$("btn-next").onclick=()=>{if(si<T().sets.length-1){si++;reset(false)}else{ti=(ti+1)%TASKS.length;si=0;reset(true)}};
+$("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
+reset(true);
+</script>
+</body>
+</html>

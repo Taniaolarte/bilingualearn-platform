@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Todo sobre el CELPIP · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: navy frame with BILINGUALEARN watermark bands top & bottom; white rounded inner page holding section cards */
+:root{
+  --navy:#17153B; --navy-2:#24205A; --lav:#C4B5FD; --lav-soft:#EEE9FF;
+  --page:#FFFFFF; --ink:#1E1B3F; --muted:#5B587A; --line:#E4E0F5;
+  --mint:#D7F5EA; --mint-ink:#0F6B4E; --peach:#FFE6D6; --peach-ink:#9A4A16;
+  --sky:#DCEBFF; --sky-ink:#1F4E8C; --rose:#FFE0EC; --rose-ink:#9B1F55;
+  --sun:#FFF3C4; --sun-ink:#7A5A00;
+  --f-title:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Comfortaa","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
+.band{overflow:hidden;white-space:nowrap;padding-block:14px;color:rgba(196,181,253,.16);font-family:var(--f-title);font-weight:700;font-size:28px;letter-spacing:.18em;user-select:none}
+.band span{display:block}
+.band span+span{margin-left:-120px}
+.frame{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.page{max-width:1000px;margin:0 auto;background:var(--page);border-radius:28px;padding:clamp(20px,4vw,48px);display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-title);color:var(--navy);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:700}
+h2{font-size:clamp(23px,3.4vw,30px);font-weight:600;display:flex;gap:10px;align-items:center}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+a{color:#4B32C8}
+.eyebrow{font-family:var(--f-title);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#6A4FE0}
+.hero{display:grid;gap:18px}
+.hero .lead{font-size:17px;color:var(--muted);max-width:62ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips a{font-family:var(--f-title);font-weight:500;font-size:14px;text-decoration:none;color:var(--navy);background:var(--lav-soft);border:1px solid var(--lav);padding:6px 14px;border-radius:999px}
+.chips a:hover,.chips a:focus-visible{background:var(--lav);outline:none}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:16px}
+.intro{color:var(--muted);max-width:68ch}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fact{background:var(--lav-soft);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.fact b{font-family:var(--f-title);font-size:24px;color:var(--navy);font-weight:600}
+.fact small{color:var(--muted);font-size:13px;line-height:1.45}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.lav{border-color:var(--lav);background:#FBFAFF}
+.card ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.tag{align-self:flex-start;font-family:var(--f-title);font-weight:600;font-size:13px;padding:3px 12px;border-radius:999px}
+.t-mint{background:var(--mint);color:var(--mint-ink)}.t-peach{background:var(--peach);color:var(--peach-ink)}
+.t-sky{background:var(--sky);color:var(--sky-ink)}.t-rose{background:var(--rose);color:var(--rose-ink)}
+.t-sun{background:var(--sun);color:var(--sun-ink)}.t-lav{background:var(--lav-soft);color:#4B32C8}
+/* order strip */
+.order{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.step{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.step .n{font-family:var(--f-title);font-size:13px;font-weight:600;opacity:.8}
+.step .k{font-family:var(--f-title);font-size:20px;font-weight:600}
+.step .t{font-size:13px;font-variant-numeric:tabular-nums}
+.s1{background:var(--sky);color:var(--sky-ink)}.s2{background:var(--mint);color:var(--mint-ink)}
+.s3{background:var(--peach);color:var(--peach-ink)}.s4{background:var(--rose);color:var(--rose-ink)}
+@media (max-width:620px){.order{grid-template-columns:1fr 1fr}}
+/* skill blocks */
+.skill{border-radius:24px;padding:clamp(16px,3vw,26px);display:flex;flex-direction:column;gap:14px}
+.skill.l{background:#F1F7FF}.skill.r{background:#F0FBF6}.skill.w{background:#FFF6EF}.skill.sp{background:#FFF3F8}
+.skill-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.tbl{overflow-x:auto;border-radius:14px;background:#fff;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:460px;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-title);font-weight:600;color:var(--navy);background:var(--lav-soft);font-size:14px}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tip{background:var(--navy);color:#fff;border-radius:18px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.tip .ic{font-size:22px;line-height:1}
+.tip b{font-family:var(--f-title);color:var(--lav);font-weight:600}
+.tip p{color:#E9E6FF;font-size:14px}
+/* CLB ladder */
+.ladder{display:grid;gap:6px}
+.rung{display:grid;grid-template-columns:86px 1fr 86px;gap:10px;align-items:center;font-size:14px}
+.rung .lv,.rung .clb{font-family:var(--f-title);font-weight:600;text-align:center;border-radius:12px;padding:6px 4px;font-variant-numeric:tabular-nums}
+.rung .lv{background:var(--navy);color:#fff}
+.rung .clb{background:var(--lav);color:var(--navy)}
+.rung .d{background:var(--lav-soft);border-radius:12px;padding:6px 12px;min-width:0}
+.rung.hl .d{background:var(--sun);color:var(--sun-ink)}
+.ladder-head{display:grid;grid-template-columns:86px 1fr 86px;gap:10px;font-family:var(--f-title);font-weight:600;font-size:13px;color:var(--muted);text-align:center}
+.ladder-head span:nth-child(2){text-align:left;padding-left:12px}
+@media (max-width:480px){.rung,.ladder-head{grid-template-columns:62px 1fr 62px}}
+.req{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.req div{border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.req b{font-family:var(--f-title);font-size:22px;font-weight:600}
+.req small{font-size:13px;line-height:1.4}
+.flag{font-size:30px;line-height:1}
+.country-head{display:flex;gap:12px;align-items:center}
+.places{display:flex;flex-wrap:wrap;gap:6px}
+.places span{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.check{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.check li{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.check li .e{font-size:20px;line-height:1.4}
+.cta{background:var(--lav);border-radius:24px;padding:clamp(20px,4vw,32px);display:grid;gap:12px;color:var(--navy)}
+.cta h2{color:var(--navy)}
+.cta .handle{font-family:var(--f-title);font-weight:700;font-size:20px}
+.note{font-size:13px;color:var(--muted);border-top:2px dashed var(--line);padding-top:16px;display:grid;gap:6px}
+footer.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:var(--f-title);color:var(--navy);font-weight:600;font-size:14px}
+:focus-visible{outline:3px solid #6A4FE0;outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body data-page="guia">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="band" aria-hidden="true"><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</span><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</span></div>
+
+<div class="frame">
+<main class="page">
+
+  <header class="hero">
+    <span class="eyebrow">🐨 Guía Bilingualearn · Actualizada octubre 2026</span>
+    <h1>Todo sobre el CELPIP-General</h1>
+    <p class="lead">Qué es, cómo está organizado, cuánto dura cada parte, cómo se califica, cómo se convierte tu nivel al CLB y qué puntaje necesitas si vas para Canadá, Australia o presentas el examen en cualquier otro país. 🌎</p>
+    <nav class="chips" aria-label="Secciones">
+      <a href="#que-es">¿Qué es?</a><a href="#versiones">Versiones</a><a href="#formato">Formato</a>
+      <a href="#listening">Listening</a><a href="#reading">Reading</a><a href="#writing">Writing</a><a href="#speaking">Speaking</a>
+      <a href="#puntajes">Puntajes y CLB</a><a href="#canada">Canadá</a><a href="#australia">Australia</a><a href="#mundo">Resto del mundo</a><a href="#dia">Día del examen</a>
+    </nav>
+  </header>
+
+  <section id="que-es">
+    <h2>📌 ¿Qué es el CELPIP?</h2>
+    <p class="intro">CELPIP significa <b>Canadian English Language Proficiency Index Program</b>. Es un examen de inglés general (no académico) con situaciones de la vida diaria y del trabajo: correos, vecinos, compras, problemas con un servicio, noticias, opiniones. Lo desarrolla Paragon Testing Enterprises (parte de Prometric) y se hace <b>100% en computador</b>, en una sola sesión y en un centro oficial.</p>
+    <div class="facts">
+      <div class="fact"><b>≈ 2 h 50 min</b><small>Todo en una sola sesión, sin cita aparte para Speaking</small></div>
+      <div class="fact"><b>4 habilidades</b><small>Listening, Reading, Writing y Speaking</small></div>
+      <div class="fact"><b>Niveles 1–12</b><small>Un nivel CELPIP por habilidad, sin puntaje "overall" oficial</small></div>
+      <div class="fact"><b>2–4 días hábiles</b><small>Resultados en línea en tu cuenta CELPIP</small></div>
+      <div class="fact"><b>Spell-check ✅</b><small>Writing trae corrector ortográfico y contador de palabras</small></div>
+    </div>
+  </section>
+
+  <section id="versiones">
+    <h2>🔀 Dos versiones: elige la correcta</h2>
+    <p class="intro">Presentar la versión equivocada es perder el dinero del examen. Revisa esto antes de inscribirte.</p>
+    <div class="two">
+      <article class="card lav">
+        <span class="tag t-lav">La más común</span>
+        <h3>CELPIP-General</h3>
+        <ul>
+          <li>Evalúa las <b>4 habilidades</b>.</li>
+          <li>Sirve para <b>residencia permanente en Canadá</b> (Express Entry, PNP) y designaciones profesionales.</li>
+          <li>Aceptado por <b>Australia</b> para visas (si lo presentas en centro, no en línea).</li>
+          <li>Canadá: CAD $299 + impuestos · Australia: aprox. AUD $355.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <span class="tag t-sun">Solo ciudadanía canadiense</span>
+        <h3>CELPIP-General LS</h3>
+        <ul>
+          <li>Solo <b>Listening + Speaking</b> (≈ 1 h 7 min).</li>
+          <li>Sirve para la <b>ciudadanía canadiense</b> (CLB 4 en Speaking y Listening).</li>
+          <li><b>No</b> sirve para residencia permanente ni para Australia.</li>
+          <li>Canadá: CAD $199 + impuestos.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="tip"><span class="ic">⚠️</span><p><b>Ojo con "CELPIP Online".</b> Australia solo acepta el CELPIP-General presentado en un centro de examen seguro. Las versiones en línea / desde casa no sirven para visas australianas.</p></div>
+  </section>
+
+  <section id="formato">
+    <h2>🧭 Formato y orden del examen</h2>
+    <p class="intro">Las secciones siempre van en este orden. Listening, Reading y Speaking empiezan con una pregunta de práctica que no cuenta.</p>
+    <div class="order">
+      <div class="step s1"><span class="n">1</span><span class="k">🎧 Listening</span><span class="t">46–55 min · 38 preguntas</span></div>
+      <div class="step s2"><span class="n">2</span><span class="k">📖 Reading</span><span class="t">43–56 min · 38 preguntas</span></div>
+      <div class="step s3"><span class="n">3</span><span class="k">✍️ Writing</span><span class="t">53 min · 2 tareas</span></div>
+      <div class="step s4"><span class="n">4</span><span class="k">🗣️ Speaking</span><span class="t">15 min · 8 tareas</span></div>
+    </div>
+    <div class="tip"><span class="ic">💡</span><p><b>Preguntas sin puntaje.</b> Listening y Reading pueden incluir una parte extra de prueba (con el mismo formato que las demás) que no cuenta. Como no sabes cuál es, responde todo como si contara. Por eso el tiempo aparece como un rango.</p></div>
+  </section>
+
+  <section id="listening" class="skill l">
+    <div class="skill-head"><h2>🎧 Listening</h2><span class="tag t-sky">46–55 min · 6 partes · 38 preguntas</span></div>
+    <p>El audio se escucha <b>una sola vez</b> y las preguntas aparecen después. Te dan papel y lápiz para tomar notas. Todas son de selección múltiple y se califican automáticamente.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Parte</th><th>Qué escuchas</th><th class="num">Preguntas</th></tr></thead>
+      <tbody>
+        <tr><td>1. Listening to Problem Solving</td><td>Dos personas resuelven un problema cotidiano (en 3 secciones)</td><td class="num">8</td></tr>
+        <tr><td>2. Daily Life Conversation</td><td>Conversación informal del día a día</td><td class="num">5</td></tr>
+        <tr><td>3. Listening for Information</td><td>Alguien explica o pide información detallada</td><td class="num">6</td></tr>
+        <tr><td>4. Listening to a News Item</td><td>Un reporte de noticias</td><td class="num">5</td></tr>
+        <tr><td>5. Listening to a Discussion</td><td>Video con varias personas discutiendo (mira gestos y contexto)</td><td class="num">8</td></tr>
+        <tr><td>6. Listening for Viewpoints</td><td>Un tema con distintas opiniones; la más difícil</td><td class="num">6</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><span class="ic">🎯</span><p><b>Tipos de pregunta:</b> idea general (tema, propósito), información específica (detalles, opiniones, ejemplos) e inferencia (actitud, tono, intención). Las respuestas casi siempre están <b>parafraseadas</b>: no busques las mismas palabras del audio. Si das clic en "Next" no puedes volver atrás.</p></div>
+  </section>
+
+  <section id="reading" class="skill r">
+    <div class="skill-head"><h2>📖 Reading</h2><span class="tag t-mint">43–56 min · 4 partes · 38 preguntas</span></div>
+    <p>El texto aparece a la izquierda y las preguntas a la derecha, con menús desplegables. La dificultad sube poco a poco.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Parte</th><th>Qué lees</th><th class="num">Preguntas</th></tr></thead>
+      <tbody>
+        <tr><td>1. Reading Correspondence</td><td>Un correo o carta + completar la respuesta a ese correo</td><td class="num">11</td></tr>
+        <tr><td>2. Reading to Apply a Diagram</td><td>Un diagrama, tabla o folleto + un correo que lo usa</td><td class="num">8</td></tr>
+        <tr><td>3. Reading for Information</td><td>Texto informativo de 4 párrafos: ¿en cuál está cada dato?</td><td class="num">9</td></tr>
+        <tr><td>4. Reading for Viewpoints</td><td>Artículo de opinión + comentario de un lector</td><td class="num">10</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><span class="ic">🔍</span><p><b>Estrategia:</b> mira la pantalla completa, haz <b>skimming</b> del texto (30–40 segundos máximo), lee las preguntas y luego haz <b>scanning</b> para encontrar la respuesta. Elimina opciones incorrectas y nunca dejes una pregunta en blanco: no se resta por errores.</p></div>
+  </section>
+
+  <section id="writing" class="skill w">
+    <div class="skill-head"><h2>✍️ Writing</h2><span class="tag t-peach">53 min · 2 tareas · 150–200 palabras c/u</span></div>
+    <div class="two">
+      <article class="card" style="background:#fff">
+        <span class="tag t-peach">Tarea 1 · 27 min</span>
+        <h3>Writing an Email</h3>
+        <ul>
+          <li>Correo sobre una situación cotidiana (quejarte, pedir algo, agradecer, proponer).</li>
+          <li>Normalmente te piden <b>3 puntos</b>: cubre los 3.</li>
+          <li>Tono: ni muy formal ni muy informal, según a quién escribes.</li>
+        </ul>
+      </article>
+      <article class="card" style="background:#fff">
+        <span class="tag t-peach">Tarea 2 · 26 min</span>
+        <h3>Responding to Survey Questions</h3>
+        <ul>
+          <li>Una encuesta con <b>2 opciones</b>: eliges una y explicas por qué es mejor.</li>
+          <li>No lleva formato de correo.</li>
+          <li>Ideas claras + razones + ejemplos concretos.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="tip"><span class="ic">📝</span><p><b>Cómo te califican:</b> contenido y coherencia, vocabulario, legibilidad (párrafos, conectores, gramática, puntuación) y cumplimiento de la tarea (relevancia, tono, número de palabras). Usa plantillas como <b>estructura</b>, nunca como texto memorizado: las respuestas genéricas y memorizadas se detectan y bajan el puntaje.</p></div>
+  </section>
+
+  <section id="speaking" class="skill sp">
+    <div class="skill-head"><h2>🗣️ Speaking</h2><span class="tag t-rose">≈ 15 min · 8 tareas grabadas</span></div>
+    <p>Hablas al micrófono: no hay examinador frente a ti. Cada tarea tiene tiempo de preparación y tiempo para hablar. Escucharás a otras personas hablando en la sala: es normal.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Tarea</th><th>Qué haces</th><th class="num">Preparas</th><th class="num">Hablas</th></tr></thead>
+      <tbody>
+        <tr><td>1. Giving Advice</td><td>Aconsejar a un amigo o familiar</td><td class="num">30 s</td><td class="num">90 s</td></tr>
+        <tr><td>2. Personal Experience</td><td>Contar una experiencia personal</td><td class="num">30 s</td><td class="num">60 s</td></tr>
+        <tr><td>3. Describing a Scene</td><td>Describir una imagen a alguien que no la ve</td><td class="num">30 s</td><td class="num">60 s</td></tr>
+        <tr><td>4. Making Predictions</td><td>Predecir qué pasará en la misma imagen</td><td class="num">30 s</td><td class="num">60 s</td></tr>
+        <tr><td>5. Comparing and Persuading</td><td>Elegir entre 2 opciones y convencer a alguien</td><td class="num">60 s + 60 s</td><td class="num">60 s</td></tr>
+        <tr><td>6. Difficult Situation</td><td>Resolver un dilema hablando con una persona</td><td class="num">60 s</td><td class="num">60 s</td></tr>
+        <tr><td>7. Expressing Opinions</td><td>Dar tu opinión sobre un tema y justificarla</td><td class="num">30 s</td><td class="num">90 s</td></tr>
+        <tr><td>8. Unusual Situation</td><td>Describir algo extraño a alguien por teléfono</td><td class="num">30 s</td><td class="num">60 s</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><span class="ic">🎙️</span><p><b>Clave del Speaking:</b> te califican contenido, vocabulario, "listenability" (ritmo, pronunciación, entonación, pausas) y cumplimiento de la tarea. En las imágenes empieza con una visión general y háblale directamente a la persona. Habla hasta que termine la barra azul y mantén un volumen constante.</p></div>
+  </section>
+
+  <section id="puntajes">
+    <h2>🏆 Puntajes y equivalencia con el CLB</h2>
+    <p class="intro">Recibes un nivel CELPIP por cada habilidad. El CLB (Canadian Language Benchmark) es la escala oficial que usa Canadá. La buena noticia: en el CELPIP <b>el nivel equivale directamente al CLB</b>. El promedio que ves en el reporte no es un nivel CLB.</p>
+    <div class="ladder" role="table" aria-label="Equivalencia CELPIP y CLB">
+      <div class="ladder-head" role="row"><span>CELPIP</span><span>Qué significa</span><span>CLB</span></div>
+      <div class="rung" role="row"><span class="lv">12</span><span class="d">Nivel experto en contextos laborales y comunitarios</span><span class="clb">12</span></div>
+      <div class="rung" role="row"><span class="lv">11</span><span class="d">Avanzado en contextos laborales y comunitarios</span><span class="clb">11</span></div>
+      <div class="rung hl" role="row"><span class="lv">10</span><span class="d">Muy alto · puntaje máximo de idioma en Express Entry · Superior en Australia pide 10 (y 12 en Writing)</span><span class="clb">10</span></div>
+      <div class="rung hl" role="row"><span class="lv">9</span><span class="d">Efectivo · Proficient en Australia pide 9 en Listening</span><span class="clb">9</span></div>
+      <div class="rung hl" role="row"><span class="lv">8</span><span class="d">Bueno · Proficient en Australia pide 8 en Reading y Speaking</span><span class="clb">8</span></div>
+      <div class="rung hl" role="row"><span class="lv">7</span><span class="d">Adecuado · mínimo FSW Canadá · Competent English en Australia</span><span class="clb">7</span></div>
+      <div class="rung" role="row"><span class="lv">6</span><span class="d">En desarrollo</span><span class="clb">6</span></div>
+      <div class="rung" role="row"><span class="lv">5</span><span class="d">Inicial-intermedio · Vocational English en Australia</span><span class="clb">5</span></div>
+      <div class="rung" role="row"><span class="lv">4</span><span class="d">Adecuado para algunos contextos · mínimo ciudadanía</span><span class="clb">4</span></div>
+      <div class="rung" role="row"><span class="lv">3</span><span class="d">Algo de competencia</span><span class="clb">3</span></div>
+      <div class="rung" role="row"><span class="lv">M</span><span class="d">Competencia mínima o insuficiente</span><span class="clb">0–2</span></div>
+      <div class="rung" role="row"><span class="lv">NA</span><span class="d">No administrado (no presentaste esa sección)</span><span class="clb">—</span></div>
+    </div>
+
+    <h3>¿Cuántas respuestas correctas necesito? (aprox., de 38)</h3>
+    <p class="intro">Listening y Reading se califican por respuestas correctas. Estas tablas son las guías aproximadas que publica CELPIP; los rangos se cruzan porque cada versión del examen tiene una dificultad un poco distinta.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Nivel CELPIP</th><th class="num">🎧 Listening</th><th class="num">📖 Reading</th></tr></thead>
+      <tbody>
+        <tr><td>10–12</td><td class="num">35–38</td><td class="num">33–38</td></tr>
+        <tr><td>9</td><td class="num">33–35</td><td class="num">31–32</td></tr>
+        <tr><td>8</td><td class="num">30–33</td><td class="num">28–30</td></tr>
+        <tr><td>7</td><td class="num">27–31</td><td class="num">24–27</td></tr>
+        <tr><td>6</td><td class="num">22–28</td><td class="num">19–23</td></tr>
+        <tr><td>5</td><td class="num">17–23</td><td class="num">15–18</td></tr>
+        <tr><td>4</td><td class="num">11–18</td><td class="num">10–14</td></tr>
+        <tr><td>3</td><td class="num">7–12</td><td class="num">8–9</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><span class="ic">🧠</span><p><b>Writing y Speaking</b> los califican evaluadores humanos certificados en Canadá con los cuatro criterios de cada sección. No se pueden calcular con "respuestas correctas": se mejoran con práctica y retroalimentación.</p></div>
+  </section>
+
+  <section id="canada">
+    <div class="country-head"><span class="flag">🇨🇦</span><h2>Si vas para Canadá</h2></div>
+    <p class="intro">IRCC acepta el CELPIP-General para residencia permanente. Necesitas el mínimo en <b>cada una</b> de las cuatro habilidades, no en el promedio.</p>
+    <div class="req">
+      <div style="background:var(--sky);color:var(--sky-ink)"><b>CLB 7</b><small>Federal Skilled Worker (FSW), en las 4 habilidades</small></div>
+      <div style="background:var(--sky);color:var(--sky-ink)"><b>CLB 7 / 5</b><small>Canadian Experience Class: 7 para TEER 0–1, 5 para TEER 2–3</small></div>
+      <div style="background:var(--sky);color:var(--sky-ink)"><b>CLB 5 / 4</b><small>Federal Skilled Trades: 5 en Speaking y Listening, 4 en Reading y Writing</small></div>
+      <div style="background:var(--sun);color:var(--sun-ink)"><b>CLB 4</b><small>Ciudadanía (18–54 años): Speaking y Listening, con el CELPIP-General LS</small></div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>✅ Lo que debes saber</h3>
+        <ul>
+          <li>Los resultados valen <b>2 años</b> desde la fecha del reporte, y deben estar vigentes cuando creas tu perfil de Express Entry <b>y</b> cuando aplicas.</li>
+          <li>Más CLB = más puntos CRS. En Express Entry, <b>CLB 10 o más</b> da el máximo de puntos por idioma.</li>
+          <li>El CELPIP <b>no</b> está aceptado por los programas provinciales de Quebec.</li>
+          <li>Hay más de 60 centros en Canadá, en todas las ciudades principales.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>💳 Costos y cambios (Canadá)</h3>
+        <ul>
+          <li>CELPIP-General: <b>CAD $299</b> + impuestos.</li>
+          <li>CELPIP-General LS: <b>CAD $199</b> + impuestos.</li>
+          <li>Primer cambio de fecha gratis; los siguientes cuestan CAD $50 + impuestos (mínimo 7 días antes).</li>
+          <li>Si cancelas con 7 días o más, te devuelven el 50%. Después, nada.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="australia">
+    <div class="country-head"><span class="flag">🇦🇺</span><h2>Si estás en Australia o vas para allá</h2></div>
+    <p class="intro">Desde el <b>7 de agosto de 2025</b>, el Department of Home Affairs acepta el CELPIP-General para visas como las skilled (189, 190, 491), de empleador (482, 186), de graduado (485) y de estudiante (500). Necesitas el nivel en <b>cada</b> habilidad.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Nivel en Australia</th><th class="num">🎧 L</th><th class="num">📖 R</th><th class="num">✍️ W</th><th class="num">🗣️ S</th><th>Puntos</th></tr></thead>
+      <tbody>
+        <tr><td><b>Superior English</b></td><td class="num">10</td><td class="num">10</td><td class="num">12</td><td class="num">10</td><td>+20 puntos</td></tr>
+        <tr><td><b>Proficient English</b></td><td class="num">9</td><td class="num">8</td><td class="num">10</td><td class="num">8</td><td>+10 puntos</td></tr>
+        <tr><td><b>Competent English</b></td><td class="num">7</td><td class="num">7</td><td class="num">7</td><td class="num">7</td><td>0 · mínimo skilled</td></tr>
+        <tr><td><b>Vocational English</b></td><td class="num">5</td><td class="num">5</td><td class="num">5</td><td class="num">5</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><span class="ic">⚠️</span><p><b>Ojo con Writing.</b> Para Australia los niveles no son iguales en las 4 habilidades: Proficient pide <b>10 en Writing</b> y Superior pide <b>12 en Writing</b>. Son niveles mínimos por habilidad: no se promedian.</p></div>
+    <div class="two">
+      <div class="card">
+        <h3>📍 Dónde presentarlo</h3>
+        <div class="places"><span>Sydney</span><span>Parramatta</span><span>Melbourne</span><span>Brisbane</span><span>Perth</span><span>Adelaide</span></div>
+        <p>En Melbourne hay sesiones en el CBD (por ejemplo, Melbourne International Graduate College en Lonsdale St). Las fechas y direcciones exactas aparecen al reservar en celpip.ca.</p>
+      </div>
+      <div class="card">
+        <h3>✅ Lo que debes saber</h3>
+        <ul>
+          <li>Costo aproximado: <b>AUD $355</b>.</li>
+          <li>Solo vale presencial en centro. <b>No</b> CELPIP Online, <b>no</b> CELPIP-General LS.</li>
+          <li>Para visas australianas el resultado vale <b>3 años</b> desde la fecha del examen.</li>
+          <li>Un mismo examen puede servirte para Canadá y Australia (si está vigente en cada país).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="mundo">
+    <div class="country-head"><span class="flag">🌎</span><h2>Si estás en otro país</h2></div>
+    <p class="intro">El CELPIP se presenta en más de 40 países. El precio cambia según el país y se ve al momento de pagar. Puedes presentarlo en cualquier centro oficial y usar el resultado para Canadá o Australia.</p>
+    <div class="two">
+      <div class="card lav">
+        <h3>🌮 América Latina y el Caribe</h3>
+        <div class="places"><span>🇨🇴 Chía, Colombia</span><span>🇪🇨 Quito</span><span>🇲🇽 Ciudad de México</span><span>🇨🇷 San José</span><span>🇧🇷 Río de Janeiro</span><span>🇯🇲 Kingston</span><span>🇹🇹 Port of Spain</span></div>
+      </div>
+      <div class="card">
+        <h3>🗺️ Otras regiones</h3>
+        <div class="places"><span>EE. UU.</span><span>Reino Unido</span><span>Irlanda</span><span>Francia</span><span>Alemania</span><span>Italia</span><span>Países Bajos</span><span>Nueva Zelanda</span><span>India</span><span>Filipinas</span><span>EAU</span><span>Japón</span><span>Corea</span><span>Singapur</span><span>y más</span></div>
+      </div>
+    </div>
+    <div class="tip"><span class="ic">🧳</span><p><b>Antes de reservar</b> revisa en celpip.ca → "Where do we test?" si hay fechas en tu ciudad. Algunos centros tienen pocas sesiones al mes, así que reserva con tiempo, sobre todo si tienes una fecha límite de visa.</p></div>
+  </section>
+
+  <section id="dia">
+    <h2>📅 Inscripción y día del examen</h2>
+    <div class="tip" style="border:3px solid var(--lav)"><span class="ic">🚨</span><p><b>Tip muy importante: no reserves tu examen antes de estar listo.</b> Deja una buena ventana de tiempo entre tu preparación y la fecha del examen. Agenda solo cuando tus mocks y ejercicios muestren, de forma constante, que ya alcanzas el nivel que necesitas en las 4 habilidades. Si reservas antes, puedes perder tu inversión: el examen cuesta cientos de dólares y si cancelas con menos de 7 días no hay reembolso.</p></div>
+    <div class="two">
+      <div class="card">
+        <h3>🖥️ Cómo inscribirte</h3>
+        <ul class="check">
+          <li><span class="e">1️⃣</span><span>Crea tu cuenta en celpip.ca con tu nombre <b>exactamente</b> como aparece en tu pasaporte.</span></li>
+          <li><span class="e">2️⃣</span><span>Elige <b>CELPIP-General</b> (o LS solo si es para ciudadanía).</span></li>
+          <li><span class="e">3️⃣</span><span>Escoge centro y fecha, y paga con tarjeta.</span></li>
+          <li><span class="e">4️⃣</span><span>La inscripción cierra un día hábil antes o cuando se llenan los cupos.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🎒 El día del examen</h3>
+        <ul class="check">
+          <li><span class="e">⏰</span><span>Llega <b>45 minutos antes</b>.</span></li>
+          <li><span class="e">🛂</span><span>Lleva el <b>mismo documento original</b> que usaste para inscribirte. Si no coincide, no entras ni hay reembolso.</span></li>
+          <li><span class="e">🎧</span><span>Escucharás teclados y voces de otros: es normal en Speaking.</span></li>
+          <li><span class="e">🚻</span><span>Si sales al baño, el reloj sigue corriendo.</span></li>
+          <li><span class="e">📄</span><span>Al terminar, entrega todas las hojas de notas.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>🌟 5 consejos de tu coach</h2>
+    <div class="facts">
+      <div class="fact"><b>🧪</b><small><b>Empieza con un mock.</b> Saber tu nivel real en cada habilidad te dice dónde enfocar tu estudio.</small></div>
+      <div class="fact"><b>📐</b><small><b>Estructura, no memoria.</b> Las plantillas son un esqueleto; el contenido siempre debe ser tuyo.</small></div>
+      <div class="fact"><b>🔁</b><small><b>Busca el parafraseo.</b> En Listening y Reading la respuesta correcta casi nunca repite las palabras exactas.</small></div>
+      <div class="fact"><b>⏱️</b><small><b>Practica con cronómetro.</b> Writing: 27 y 26 minutos. Speaking: habla hasta que se acabe el tiempo.</small></div>
+      <div class="fact"><b>🎯</b><small><b>Apunta un nivel más alto.</b> Si necesitas 7, entrena para 8 y tendrás margen el día del examen.</small></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>🐨 ¿Te preparas para el CELPIP?</h2>
+    <p>En Bilingualearn empezamos con un mock, armamos tu plan de estudio según tus resultados y trabajamos justo lo que te falta para llegar a tu CLB. También tienes la <b>Guía Completa del CELPIP General 2026</b> en español, con estrategias para cada tarea.</p>
+    <p class="handle">📲 Escríbenos en Instagram: @bilingualearn.au</p>
+    <p>🌐 www.bilingualearn.com.au</p>
+  </section>
+
+  <div class="note">
+    <p>📚 Fuentes: CELPIP-General Overview Study Pack 2026 (celpip.ca), páginas oficiales de CELPIP, IRCC (canada.ca) y guías sobre el Department of Home Affairs de Australia. Información revisada en octubre de 2026.</p>
+    <p>⚠️ Precios, fechas, centros y requisitos de visa pueden cambiar. Confirma siempre en <a href="https://www.celpip.ca" target="_blank" rel="noopener">celpip.ca</a>, <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener">canada.ca</a> o <a href="https://immi.homeaffairs.gov.au" target="_blank" rel="noopener">immi.homeaffairs.gov.au</a> antes de pagar o aplicar. Esta guía no es asesoría migratoria.</p>
+  </div>
+
+  <footer class="foot"><span>Bilingualearn · Aura María Estacio, profesora registrada en Australia</span><span>@bilingualearn.au</span></footer>
+</main>
+</div>
+
+<div class="band" aria-hidden="true"><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</span><span>BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN · BILINGUALEARN</span></div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CELPIP Platform · Bilingualearn</title>
+<meta name="description" content="Plataforma de práctica CELPIP de Bilingualearn: Listening, Reading, Writing y Speaking con corrección de tu coach.">
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+</head>
+<body class="blp-page" data-page="index">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+
+<main class="blp-main">
+  <section class="blp-hero">
+    <div class="blp-hero-copy">
+      <span class="blp-eyebrow">Bilingualearn · Coaching CELPIP</span>
+      <h1>Tu plataforma de práctica CELPIP</h1>
+      <p>Practica las 4 habilidades con tareas originales en formato real. Reading y Listening se corrigen al instante; tus respuestas de Writing y Speaking llegan a tu coach para que las califique.</p>
+      <img class="blp-hero-art" src="assets/koala/hello.png" alt="Koala de Bilingualearn saludando" width="360" height="360">
+    </div>
+    <div class="blp-card blp-me" id="perfil" aria-live="polite"></div>
+  </section>
+
+  <section class="blp-sec">
+    <h2>🎯 Practica por habilidad</h2>
+    <div class="blp-grid">
+      <a class="blp-tile" href="listening.html" style="--c:var(--blp-L)">
+        <img class="blp-art" src="assets/koala/listening.png" alt="" width="320" height="320" loading="lazy"><h3>Listening</h3><span class="blp-tag soon">Próximamente</span>
+        <p>6 partes, se escucha una sola vez. Puntaje automático y nivel CLB estimado.</p></a>
+      <a class="blp-tile" href="reading.html" style="--c:var(--blp-R)">
+        <img class="blp-art" src="assets/koala/reading.png" alt="" width="320" height="320" loading="lazy"><h3>Reading</h3><span class="blp-tag auto">Corrección automática</span>
+        <p>Practice Task + Partes 1–4 con cronómetro. Tu puntaje se guarda para tu coach.</p></a>
+      <a class="blp-tile" href="writing.html" style="--c:var(--blp-W)">
+        <img class="blp-art" src="assets/koala/writing.png" alt="" width="320" height="320" loading="lazy"><h3>Writing</h3><span class="blp-tag coach">Lo corrige tu coach</span>
+        <p>Email y encuesta, 150–200 palabras. Envías tu texto y se guarda como Google Doc.</p></a>
+      <a class="blp-tile" href="speaking.html" style="--c:var(--blp-S)">
+        <img class="blp-art" src="assets/koala/speaking.png" alt="" width="320" height="320" loading="lazy"><h3>Speaking</h3><span class="blp-tag coach">Lo corrige tu coach</span>
+        <p>8 tareas con tiempos reales. Te grabas aquí mismo y envías el audio a Google Drive.</p></a>
+    </div>
+  </section>
+
+  <section class="blp-sec">
+    <h2>🧭 Empieza aquí</h2>
+    <div class="blp-grid">
+      <a class="blp-tile" href="guia-celpip.html"><img class="blp-art" src="assets/koala/guia.png" alt="" width="320" height="320" loading="lazy"><h3>Todo sobre el CELPIP</h3><p>Versiones, formato, puntajes y requisitos para Canadá y Australia.</p></a>
+      <a class="blp-tile" href="onboarding.html"><img class="blp-art" src="assets/koala/onboarding.png" alt="" width="320" height="320" loading="lazy"><h3>Onboarding</h3><p>Diagnóstico, metas SMART, hábitos y tu plan de estudio en 3 pasos.</p></a>
+      <a class="blp-tile" href="notebook.html"><img class="blp-art" src="assets/koala/notebook.png" alt="" width="320" height="320" loading="lazy"><h3>Study Notebook</h3><p>Tu registro diario de errores, vocabulario, frases y simulacros.</p></a>
+      <a class="blp-tile" href="results.html"><img class="blp-art" src="assets/koala/results.png" alt="" width="320" height="320" loading="lazy"><h3>Mis resultados</h3><p>Tus puntajes, el nivel que te da tu coach y sus comentarios.</p></a>
+    </div>
+  </section>
+
+  <section class="blp-sec">
+    <h2>¿Cómo funciona la corrección?</h2>
+    <ol class="blp-steps">
+      <li><b>Entra con tu código de clase</b>Tu coach te da el código. Solo lo haces una vez por dispositivo.</li>
+      <li><b>Practica con tiempo real</b>Reading y Listening se corrigen al instante. En Writing y Speaking tocas «Enviar a mi coach».</li>
+      <li><b>Tu coach te califica</b>Tus textos y audios se guardan en su Google Drive. Te da un nivel CLB y comentarios.</li>
+      <li><b>Revisa y mejora</b>En «Mis resultados» ves tu nivel por habilidad y lo que debes trabajar.</li>
+    </ol>
+  </section>
+
+  <p class="blp-foot">@bilingualearn.au · Bilingualearn · Coaching CELPIP, PTE e IELTS</p>
+</main>
+
+<script>
+(function(){
+  const el = document.getElementById("perfil"), esc = BL.esc;
+  function paint(){
+    const s = BL.student;
+    if (!BL.connected()) {
+      el.innerHTML = `<span class="blp-eyebrow">Tu perfil</span><h2>Modo práctica</h2>
+        <p class="blp-notice">La plataforma todavía no está conectada a Google Drive, así que por ahora nada se envía a tu coach. Puedes practicar igual.</p>`;
+      return;
+    }
+    if (!s) {
+      el.innerHTML = `<span class="blp-eyebrow">Tu perfil</span><h2>Entra para guardar tu progreso</h2>
+        <p class="muted">Necesitas el código de clase que te dio tu coach.</p>
+        <button class="blp-btn" type="button" data-in>Entrar</button>`;
+      el.querySelector("[data-in]").onclick = () => BL.signIn();
+      return;
+    }
+    const pend = BL.outboxCount();
+    el.innerHTML = `<span class="blp-eyebrow">Tu perfil</span><h2>¡Hola, ${esc(s.name.split(" ")[0])}! 👋</h2>
+      <p class="muted">${esc(s.name)} · ${esc(s.email)} · Grupo ${esc(s.group)}</p>
+      <div><p class="muted" style="margin-bottom:6px">Tu código personal (para entrar desde otro dispositivo):</p><span class="code">${esc(s.key)}</span></div>
+      ${pend ? `<p class="blp-notice">Tienes ${pend} puntaje${pend > 1 ? "s" : ""} sin enviar. Se enviarán cuando haya conexión.</p>` : ""}
+      <div class="blp-row"><a class="blp-btn lav" href="results.html" style="text-align:center;text-decoration:none">📊 Mis resultados</a><button class="blp-btn ghost" type="button" data-out>Cerrar sesión</button></div>`;
+    el.querySelector("[data-out]").onclick = () => { if (confirm("¿Cerrar sesión en este dispositivo? Guarda tu código personal para volver a entrar.")) BL.signOut(); };
+  }
+  document.addEventListener("bl:student", paint);
+  paint();
+})();
+</script>
+</body>
+</html>

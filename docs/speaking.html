@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CELPIP Speaking Practice · Bilingualearn</title>
+<link rel="icon" href="assets/koala/icon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/koala/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Comfortaa:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/platform.css">
+<style>
+/* Layout: task nav on top; one exam card at a time — guide → (selection) → preparation → recording → review + checklist */
+:root{
+  --bg:#F3F1FB; --card:#FFFFFF; --ink:#17153B; --muted:#5B5878; --line:#E2DEF3;
+  --lav:#C4B5FD; --lav-soft:#EEE9FF; --navy:#17153B; --on-navy:#FFFFFF;
+  --rec:#E5484D; --rec-soft:#FDECEC; --ok:#2E8B6E; --ok-soft:#E3F5EE;
+  --c45:#F59E0B; --c78:#3B82F6; --c1012:#2E8B6E;
+  --display:"Fredoka",system-ui,sans-serif; --body:"Comfortaa",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E0D24; --card:#1B1940; --ink:#F1EEFF; --muted:#B4AFD6; --line:#2E2B5C;
+  --lav-soft:#2A2660; --navy:#0B0A1F; --rec:#FF6B6F; --rec-soft:#3A1E2A; --ok:#5FD3AB; --ok-soft:#173A33;
+  --c45:#FBBF24; --c78:#7FB0FF; --c1012:#5FD3AB; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:740px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.topbar{background:var(--navy);color:var(--on-navy);border-radius:18px;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.topbar h1{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:0}
+.topbar .sub{font-size:.78rem;opacity:.8}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font-family:var(--display);font-weight:500;border:1.5px solid rgba(196,181,253,.5);background:transparent;color:var(--on-navy);border-radius:999px;min-width:40px;height:34px;padding:0 10px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--lav);color:#17153B;border-color:var(--lav)}
+.subbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid rgba(196,181,253,.25);padding-top:10px}
+.subbar b{font-family:var(--display);font-weight:600;color:var(--lav)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.label{font-family:var(--display);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.prompt{font-size:1.05rem;line-height:1.75;margin:0;text-wrap:pretty}
+.timerrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--lav-soft);border-radius:14px;padding:12px 16px}
+.timerrow .what{font-family:var(--display);font-weight:500}
+.clock{font-family:var(--display);font-weight:600;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button.main,button.ghost,button.cta{font-family:var(--display);font-weight:600;font-size:1rem;border-radius:999px;padding:12px 22px;cursor:pointer;border:2px solid var(--navy)}
+button.main{background:var(--navy);color:var(--on-navy)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.cta{background:var(--lav);color:#17153B;border-color:var(--lav);width:100%;padding:14px 18px;text-wrap:balance}
+:root[data-theme="dark"] button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.main{background:var(--lav);color:#17153B;border-color:var(--lav)}}
+button:focus-visible,input:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.pic{background:#F7F5EF;border:1px solid var(--line);border-radius:16px;overflow:hidden;line-height:0}
+.pic svg,.pic img{width:100%;height:auto;display:block}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--card);color:var(--ink);text-align:left;font:inherit}
+button.opt{cursor:pointer}
+button.opt:hover{border-color:var(--lav)}
+.opt .ic{font-size:2rem;line-height:1}
+.opt .ph{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:10px}
+.opt b{font-family:var(--display);font-weight:600;font-size:1.02rem}
+.opt ul{margin:0;padding-left:18px;font-size:.88rem;display:flex;flex-direction:column;gap:2px}
+.opt .tag{font-family:var(--display);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.opt.mine{border-color:var(--ok)} .opt.theirs{border-color:var(--c45)}
+.rechead{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;color:var(--rec);font-size:1.1rem}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--rec);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.bar{height:18px;border-radius:999px;background:var(--rec-soft);overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;width:100%;background:var(--rec);border-radius:999px;transform-origin:left}
+.mini{font-size:.9rem;color:var(--muted);border-left:3px solid var(--lav);padding-left:12px;margin:0}
+.done{color:var(--ok);font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
+.note{font-size:.82rem;color:var(--muted);text-align:center;margin:0}
+h2{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:0;text-wrap:balance}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tabs button{font-family:var(--display);font-weight:600;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 6px;cursor:pointer;line-height:1.2}
+.tabs button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted);margin-top:2px}
+.tabs button[aria-selected="true"]{border-color:var(--lvl);background:var(--lav-soft)}
+.lvl{border:2px solid var(--lvl);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lvlhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--lvl);color:#17153B;font-family:var(--display);font-weight:600;border-radius:999px;padding:3px 12px;font-size:.85rem}
+.lvlhead span:last-child{font-size:.85rem;color:var(--muted)}
+.answer{margin:0;line-height:1.85;font-size:1rem}
+.answer .err{text-decoration:underline wavy var(--rec);text-underline-offset:4px;text-decoration-thickness:1.5px}
+.answer mark{background:var(--ok-soft);color:var(--ink);border-radius:4px;padding:0 3px}
+.fixes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.fixes li{background:var(--lav-soft);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.fixes .w{color:var(--rec);text-decoration:line-through;font-weight:700}
+.fixes .r{color:var(--ok);font-weight:700}
+.fixes .why{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.extra{font-size:.88rem;background:var(--rec-soft);border-radius:12px;padding:10px 12px;margin:0}
+.choice-note{font-size:.85rem;color:var(--muted);margin:0}
+.group{display:flex;flex-direction:column;gap:6px}
+.group h3{font-family:var(--display);font-weight:600;font-size:.95rem;margin:4px 0 2px;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+.chk:hover{background:var(--lav-soft)}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok);flex:none}
+.result{border-radius:14px;padding:14px 16px;background:var(--navy);color:var(--on-navy);display:flex;gap:14px;align-items:center}
+.score{font-family:var(--display);font-weight:600;font-size:1.8rem;font-variant-numeric:tabular-nums;color:var(--lav);flex:none}
+.result p{margin:0;font-size:.9rem}
+.intro p{margin:0}
+.lead{font-size:1rem;line-height:1.75}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:var(--lav-soft);border-radius:14px;padding:12px;text-align:center}
+.fact b{display:block;font-family:var(--display);font-weight:600;font-size:1.4rem}
+.fact span{font-size:.8rem;color:var(--muted)}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crit div{border:1px solid var(--line);border-radius:14px;padding:12px}
+.crit b{font-family:var(--display);font-weight:600;display:block}
+.crit span{font-size:.86rem;color:var(--muted)}
+.callout{background:var(--navy);color:var(--on-navy);border-radius:16px;padding:14px 16px;font-size:.92rem}
+.callout strong{color:var(--lav);font-family:var(--display);font-weight:600}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd > div{border-radius:16px;padding:14px;min-width:0}
+.dd .yes{background:var(--ok-soft)} .dd .no{background:var(--rec-soft)}
+.dd h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0 0 6px}
+.dd ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:.88rem}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.flow.f3{grid-template-columns:repeat(3,1fr)}
+.step{border:2px solid var(--lav);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.step b{font-family:var(--display);font-weight:600}
+.step small{color:var(--muted);font-size:.78rem}
+.step em{font-size:.82rem;font-style:normal}
+.phr{display:flex;flex-wrap:wrap;gap:6px}
+.phr span{background:var(--lav-soft);border-radius:999px;padding:5px 12px;font-size:.86rem}
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.topbtn{font-family:var(--display);font-weight:500;background:transparent;color:var(--on-navy);border:1.5px solid rgba(196,181,253,.5);border-radius:999px;padding:5px 12px;cursor:pointer}
+footer{text-align:center;font-family:var(--display);font-weight:500;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+@media (max-width:560px){.crit,.dd,.opts{grid-template-columns:1fr}.flow,.flow.f3{grid-template-columns:1fr 1fr}.tabs button{font-size:.9rem}}
+</style>
+</head>
+<body data-page="speaking">
+<script src="assets/config.js"></script>
+<script src="assets/platform.js"></script>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <h1>CELPIP Speaking Practice</h1>
+      <div class="sub">Tasks 1–8 · Original practice by Bilingualearn</div>
+    </div>
+    <div class="row" id="tasknav" role="group" aria-label="Choose a task"></div>
+    <div class="subbar">
+      <span><b id="tname"></b></span>
+      <div class="row"><button class="topbtn" id="btn-guide">📘 Guía</button><span class="row" id="qpick" role="group" aria-label="Choose a question"></span></div>
+    </div>
+  </header>
+
+  <section class="card intro" id="s-intro"></section>
+
+  <section class="card" id="s-select" hidden>
+    <div class="label" id="sel-label"></div>
+    <p class="prompt" id="sel-prompt"></p>
+    <div class="opts" id="sel-opts"></div>
+    <div class="timerrow"><span class="what" id="sel-what">Selection Time: 60 seconds</span><span class="clock" id="sel-clock">1:00</span></div>
+    <div class="btns"><button class="main" id="btn-sel-start">Start</button></div>
+    <p class="note">Toca la opción que prefieres para pasar a la preparación.</p>
+  </section>
+
+  <section class="card" id="s-prep" hidden>
+    <div class="label" id="prep-label"></div>
+    <p class="prompt" id="prep-prompt"></p>
+    <div id="prep-ctx"></div>
+    <div class="timerrow"><span class="what" id="prep-what"></span><span class="clock" id="prep-clock"></span></div>
+    <div class="btns">
+      <button class="main" id="btn-start">Start preparation</button>
+      <button class="ghost" id="btn-skip" hidden>Start speaking now</button>
+    </div>
+    <p class="note">Tu respuesta se graba con el micrófono de este dispositivo 🎙️ Permite el acceso cuando el navegador lo pida.</p>
+  </section>
+
+  <section class="card" id="s-rec" hidden>
+    <div class="rechead"><span class="dot"></span> Recording…</div>
+    <div class="bar" role="progressbar" aria-label="Recording time"><div class="fill" id="fill"></div></div>
+    <p class="mini" id="rec-prompt"></p>
+    <div id="rec-ctx"></div>
+    <p class="note" id="rec-note" hidden>🎙️ No pudimos usar el micrófono: graba tu respuesta con el celular mientras corre el tiempo.</p>
+    <div class="btns"><button class="ghost" id="btn-stop">Finish early</button></div>
+  </section>
+
+  <section class="card" id="s-done" hidden>
+    <p class="done">✅ Time's up! Your response has ended.</p>
+    <p class="mini" id="done-prompt"></p>
+    <div id="bl-take"></div>
+    <button class="cta" id="btn-compare" aria-expanded="false">📊 Compara tu respuesta con la del score que quieres lograr</button>
+    <div id="compare" hidden>
+      <p class="choice-note" id="choice-note" hidden></p>
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-l="c45" style="--lvl:var(--c45)">CLB 4–5<small>Básico</small></button>
+        <button role="tab" data-l="c78" style="--lvl:var(--c78)">CLB 7–8<small>Bueno</small></button>
+        <button role="tab" data-l="c1012" style="--lvl:var(--c1012)">CLB 10–12<small>Excelente</small></button>
+      </div>
+      <div class="lvl" id="lvl"></div>
+    </div>
+  </section>
+
+  <section class="card" id="s-check" hidden>
+    <div>
+      <h2>✍️ Checklist de autoevaluación</h2>
+      <p class="note" style="text-align:left;margin-top:4px">Escucha tu grabación y marca lo que sí hiciste.</p>
+    </div>
+    <div id="checklist"></div>
+    <div class="result"><span class="score" id="score"></span><p id="verdict"></p></div>
+    <div class="btns">
+      <button class="main" id="btn-next">Next question</button>
+      <button class="ghost" id="btn-again">Try this one again</button>
+    </div>
+  </section>
+
+  <footer>@bilingualearn.au</footer>
+</div>
+
+<script>
+/* ---------- Pictures (original illustrations) ---------- */
+const SK="#E0AC69", SK2="#C68B59";
+function P(x,y,shirt,o={}){const sk=o.skin||SK,hr=o.hair||"#3B2A20",pn=o.pants||"#34405A";
+  let s=`<line x1="${x-3}" y1="${y-18}" x2="${o.run?x-13:x-5}" y2="${y}" stroke="${pn}" stroke-width="6" stroke-linecap="round"/>`+
+        `<line x1="${x+3}" y1="${y-18}" x2="${o.run?x+11:x+5}" y2="${o.run?y-5:y}" stroke="${pn}" stroke-width="6" stroke-linecap="round"/>`;
+  const ar=o.armUp?[x+20,y-58]:o.point?[x+30,y-44]:o.carry?[x+16,y-46]:[x+14,y-22];
+  const al=o.carry?[x-16,y-46]:o.hold?[x+2,y-30]:[x-14,y-22];
+  s+=`<line x1="${x-8}" y1="${y-38}" x2="${al[0]}" y2="${al[1]}" stroke="${shirt}" stroke-width="5" stroke-linecap="round"/>`+
+     `<line x1="${x+8}" y1="${y-38}" x2="${ar[0]}" y2="${ar[1]}" stroke="${shirt}" stroke-width="5" stroke-linecap="round"/>`+
+     `<rect x="${x-9}" y="${y-42}" width="18" height="25" rx="5" fill="${shirt}"/>`+
+     `<circle cx="${x}" cy="${y-52}" r="9" fill="${sk}"/><path d="M${x-9} ${y-53} A9 9 0 0 1 ${x+9} ${y-53} Z" fill="${hr}"/>`;
+  return s;}
+function S(x,y,shirt,o={}){const sk=o.skin||SK,hr=o.hair||"#3B2A20",pn=o.pants||"#34405A";
+  return `<path d="M${x} ${y-8} L${x+20} ${y-8} L${x+22} ${y+2}" stroke="${pn}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`+
+  `<rect x="${x-9}" y="${y-32}" width="18" height="25" rx="5" fill="${shirt}"/>`+
+  `<line x1="${x+7}" y1="${y-28}" x2="${x+18}" y2="${y-(o.armUp?40:20)}" stroke="${shirt}" stroke-width="5" stroke-linecap="round"/>`+
+  `<circle cx="${x}" cy="${y-42}" r="9" fill="${sk}"/><path d="M${x-9} ${y-43} A9 9 0 0 1 ${x+9} ${y-43} Z" fill="${hr}"/>`;}
+function tree(x,y,s=1){return `<rect x="${x-6*s}" y="${y-50*s}" width="${12*s}" height="${50*s}" fill="#7A5235"/><circle cx="${x}" cy="${y-70*s}" r="${34*s}" fill="#4F9A4A"/><circle cx="${x-22*s}" cy="${y-52*s}" r="${22*s}" fill="#5DAA55"/><circle cx="${x+22*s}" cy="${y-55*s}" r="${22*s}" fill="#5DAA55"/>`}
+const svg=(b,label)=>`<svg viewBox="0 0 640 400" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${b}</svg>`;
+
+const PIC={
+park:()=>svg(`<defs><pattern id="chk" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#E5484D"/><rect width="8" height="8" fill="#fff"/><rect x="8" y="8" width="8" height="8" fill="#fff"/></pattern></defs>
+<rect width="640" height="230" fill="#BFE3F7"/><rect y="225" width="640" height="175" fill="#8BC77A"/>
+<circle cx="70" cy="60" r="30" fill="#FFD54F"/>
+<g fill="#FFFFFF"><ellipse cx="280" cy="55" rx="40" ry="16"/><ellipse cx="310" cy="45" rx="28" ry="16"/></g>
+<g fill="#5F6675"><ellipse cx="575" cy="50" rx="55" ry="22"/><ellipse cx="540" cy="40" rx="32" ry="20"/><ellipse cx="610" cy="38" rx="30" ry="18"/></g>
+<path d="M0 360 Q90 300 150 240 L185 240 Q130 310 60 400 L0 400 Z" fill="#E8D9B5"/>
+${tree(40,240,1.1)}${tree(590,245,1.2)}
+<rect x="535" y="262" width="80" height="8" fill="#8B5E3C"/><rect x="540" y="270" width="6" height="18" fill="#8B5E3C"/><rect x="604" y="270" width="6" height="18" fill="#8B5E3C"/>
+${S(565,264,"#7C5CBF",{hair:"#D9D9D9"})}<rect x="574" y="236" width="16" height="12" fill="#2F6FDE"/>
+${P(120,300,"#E5484D",{run:true})}<path d="M110 245 A11 11 0 0 1 130 245" stroke="#17153B" stroke-width="3" fill="none"/>
+<path d="M415 75 L432 98 L415 121 L398 98 Z" fill="#F59E0B"/><line x1="415" y1="121" x2="458" y2="215" stroke="#555" stroke-width="1.5"/>
+${P(460,265,"#2E8B6E",{armUp:true,hair:"#6B4226"})}
+<polygon points="225,300 405,300 430,355 200,355" fill="url(#chk)"/>
+${S(255,318,"#3B82F6")}${S(375,318,"#F2A65A",{hair:"#8A4B2A"})}
+${S(318,330,"#F7A8C8",{hair:"#8A4B2A",armUp:true})}<polygon points="334,286 342,286 338,300" fill="#D9A066"/><circle cx="338" cy="284" r="6" fill="#F9C0D3"/>
+<rect x="340" y="320" width="34" height="22" rx="3" fill="#A0703C"/><path d="M343 320 Q357 300 371 320" stroke="#7A5235" stroke-width="3" fill="none"/>
+${P(300,262,"#F59E0B",{armUp:true})}<ellipse cx="248" cy="212" rx="14" ry="5" fill="#FFE14D" stroke="#C9A800"/>
+<g><ellipse cx="200" cy="282" rx="24" ry="10" fill="#8B5A2B"/><circle cx="224" cy="272" r="9" fill="#8B5A2B"/><path d="M226 266 L232 262 L230 272 Z" fill="#5E3A17"/><line x1="185" y1="288" x2="176" y2="300" stroke="#8B5A2B" stroke-width="4"/><line x1="214" y1="288" x2="224" y2="299" stroke="#8B5A2B" stroke-width="4"/><path d="M176 280 Q164 270 170 262" stroke="#8B5A2B" stroke-width="4" fill="none"/></g>
+<rect x="470" y="280" width="60" height="38" rx="4" fill="#FFFFFF" stroke="#999"/><circle cx="480" cy="322" r="7" fill="#444"/><circle cx="520" cy="322" r="7" fill="#444"/><line x1="500" y1="280" x2="500" y2="240" stroke="#666" stroke-width="3"/>
+<path d="M465 245 Q500 215 535 245 Z" fill="#E5484D"/><path d="M482 245 Q500 222 500 245 Z M500 245 Q500 222 518 245 Z" fill="#FFFFFF"/>
+${P(545,318,"#FFFFFF",{hair:"#222",pants:"#555"})}`,"A park on a sunny day"),
+
+moving:()=>svg(`<rect width="640" height="290" fill="#CDE8F5"/><rect y="285" width="640" height="50" fill="#D9D4CC"/><rect y="330" width="640" height="70" fill="#6B6B6B"/>
+<g fill="#FFFFFF">${[20,120,220,320,420,520].map(x=>`<rect x="${x}" y="362" width="50" height="6"/>`).join("")}</g>
+<rect x="545" y="70" width="95" height="215" fill="#C9D7E8"/><rect x="565" y="110" width="50" height="45" fill="#FFF8DC" stroke="#555" stroke-width="3"/>
+<circle cx="590" cy="135" r="9" fill="${SK}"/><path d="M581 133 A9 9 0 0 1 599 133 Z" fill="#DDDDDD"/><rect x="582" y="144" width="16" height="11" fill="#7C5CBF"/>
+<polygon points="290,100 410,35 530,100" fill="#9B4D3A"/><rect x="300" y="98" width="220" height="187" fill="#F2C38B"/>
+<rect x="320" y="120" width="50" height="40" fill="#BFE3F7" stroke="#fff" stroke-width="4"/><rect x="450" y="120" width="50" height="40" fill="#BFE3F7" stroke="#fff" stroke-width="4"/><rect x="460" y="200" width="45" height="40" fill="#BFE3F7" stroke="#fff" stroke-width="4"/>
+<rect x="398" y="205" width="36" height="80" fill="#5B3A29"/><circle cx="426" cy="248" r="3" fill="#FFD54F"/>
+<rect x="10" y="165" width="180" height="115" fill="#FFFFFF" stroke="#888" stroke-width="2"/><text x="100" y="230" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="24" fill="#3B82F6">MOVING</text>
+<rect x="190" y="205" width="62" height="75" rx="6" fill="#3B82F6"/><rect x="205" y="215" width="35" height="25" fill="#BFE3F7"/>
+<circle cx="50" cy="285" r="15" fill="#333"/><circle cx="215" cy="285" r="15" fill="#333"/>
+<rect x="290" y="232" width="100" height="30" rx="6" fill="#3E9E5B"/><rect x="284" y="226" width="14" height="38" rx="5" fill="#2F7D47"/><rect x="384" y="226" width="14" height="38" rx="5" fill="#2F7D47"/>
+${P(280,300,"#F59E0B",{carry:true})}${P(398,300,"#555F7A",{carry:true,hair:"#222"})}
+${P(250,328,"#7C5CBF",{point:true,hair:"#8A4B2A",pants:"#2A2A3A"})}<rect x="232" y="290" width="12" height="16" fill="#F7F7F7" stroke="#999"/>
+<rect x="140" y="292" width="44" height="34" fill="#C89B62" stroke="#8A6A3E"/><rect x="144" y="260" width="38" height="32" fill="#C89B62" stroke="#8A6A3E"/>
+<g transform="rotate(-18 165 245)"><rect x="146" y="226" width="40" height="30" fill="#C89B62" stroke="#8A6A3E"/><text x="166" y="246" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="9" fill="#C62828">FRAGILE</text></g>
+<rect x="70" y="302" width="40" height="28" fill="#C89B62" stroke="#8A6A3E"/>${S(88,304,"#E5484D")}<ellipse cx="102" cy="290" rx="9" ry="7" fill="#F2994A"/><circle cx="108" cy="282" r="6" fill="#F2994A"/>
+<circle cx="520" cy="385" r="14" fill="none" stroke="#222" stroke-width="4"/><circle cx="578" cy="385" r="14" fill="none" stroke="#222" stroke-width="4"/><path d="M520 385 L545 365 L578 385 M545 365 L560 365" stroke="#E5484D" stroke-width="4" fill="none"/>
+${P(548,372,"#FFD54F",{hair:"#222"})}`,"A family moving house"),
+
+umbrella:()=>svg(`<rect width="640" height="400" fill="#F7F5EF"/><ellipse cx="320" cy="388" rx="120" ry="8" fill="#E2DED3"/>
+<line x1="320" y1="62" x2="320" y2="345" stroke="#555" stroke-width="7"/>
+<path d="M150 190 Q320 20 490 190 Q462 175 435 190 Q405 175 377 190 Q348 175 320 190 Q292 175 263 190 Q235 175 205 190 Q178 175 150 190 Z" fill="#2F6FDE"/>
+<g fill="#FFD54F">${[155,180,206,235,263,292,320,348,377,406,435,462,486].map(x=>`<circle cx="${x}" cy="${x%2?193:190}" r="4"/>`).join("")}</g>
+<rect x="268" y="38" width="104" height="34" rx="3" fill="#17153B" stroke="#8FA3C7" stroke-width="2"/><g stroke="#8FA3C7" stroke-width="1.5"><line x1="294" y1="38" x2="294" y2="72"/><line x1="320" y1="38" x2="320" y2="72"/><line x1="346" y1="38" x2="346" y2="72"/><line x1="268" y1="55" x2="372" y2="55"/></g>
+<circle cx="320" cy="232" r="28" fill="#FFFFFF" stroke="#9AA0AA" stroke-width="3"/><g fill="#DDE3EA" stroke="#9AA0AA"><path d="M320 232 L320 208 Q333 214 320 232"/><path d="M320 232 L341 244 Q329 252 320 232"/><path d="M320 232 L299 244 Q305 230 320 232"/></g><circle cx="320" cy="232" r="5" fill="#9AA0AA"/>
+<circle cx="350" cy="300" r="14" fill="none" stroke="#555" stroke-width="5"/><rect x="341" y="286" width="18" height="24" rx="3" fill="#A0703C"/><line x1="323" y1="300" x2="336" y2="300" stroke="#555" stroke-width="5"/>
+<path d="M320 345 Q320 372 296 372 Q280 372 280 358" stroke="#6B4226" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M318 360 Q330 385 352 380" stroke="#222" stroke-width="3" fill="none"/><rect x="350" y="374" width="16" height="10" rx="2" fill="#888"/>`,"An unusual umbrella"),
+
+backpack:()=>svg(`<rect width="640" height="400" fill="#F7F5EF"/><ellipse cx="320" cy="382" rx="140" ry="9" fill="#E2DED3"/>
+<g stroke="#9AA0AA" stroke-width="7" stroke-linecap="round"><line x1="270" y1="285" x2="225" y2="372"/><line x1="320" y1="290" x2="320" y2="376"/><line x1="370" y1="285" x2="415" y2="372"/></g>
+<g fill="#6B7280"><circle cx="225" cy="374" r="6"/><circle cx="320" cy="378" r="6"/><circle cx="415" cy="374" r="6"/></g>
+<rect x="245" y="105" width="150" height="185" rx="28" fill="#F97316"/>
+<rect x="238" y="86" width="164" height="34" rx="16" fill="#9CA3AF"/><g stroke="#7B8290" stroke-width="2"><line x1="280" y1="90" x2="280" y2="116"/><line x1="320" y1="90" x2="320" y2="116"/><line x1="360" y1="90" x2="360" y2="116"/></g>
+<rect x="282" y="168" width="58" height="40" fill="#F5E6C4" stroke="#C9B48A"/><path d="M290 180 Q305 172 315 188 T335 190" stroke="#2E8B6E" stroke-width="2" fill="none"/>
+<rect x="272" y="160" width="96" height="90" rx="10" fill="none" stroke="#17153B" stroke-width="2"/><g stroke="#17153B" stroke-width="1.2" opacity=".75">${[0,1,2,3,4,5,6].map(i=>`<line x1="${272+i*16}" y1="160" x2="${272+i*16}" y2="250"/>`).join("")}${[0,1,2,3,4,5].map(i=>`<line x1="272" y1="${160+i*18}" x2="368" y2="${160+i*18}"/>`).join("")}</g>
+<rect x="398" y="150" width="26" height="70" rx="6" fill="#3B82F6"/><rect x="402" y="138" width="18" height="14" rx="3" fill="#1E40AF"/><rect x="392" y="185" width="38" height="45" rx="8" fill="#C2410C" opacity=".9"/>
+<path d="M255 130 Q240 200 255 270" stroke="#C2410C" stroke-width="6" fill="none"/>`,"An unusual backpack")
+};
+
+/* ---------- Content ---------- */
+const CRIT=`<h2>🎯 ¿Qué valoran los examinadores?</h2>
+<div class="crit">
+<div><b>Content / Coherence</b><span>Ideas claras, bien organizadas, con razones y ejemplos.</span></div>
+<div><b>Vocabulary</b><span>Palabras precisas y variadas, no siempre las mismas.</span></div>
+<div><b>Listenability</b><span>Ritmo fluido, pronunciación clara y gramática que no interrumpe el mensaje.</span></div>
+<div><b>Task Fulfillment</b><span>Responder exactamente lo que se pide, con el tono adecuado y usando bien el tiempo.</span></div></div>`;
+
+const COMMON_LISTEN=["Hablé con ritmo constante, sin pausas largas","Pocas muletillas (eh, um, like)","Pronuncié claro, incluidas las terminaciones -s y -ed"];
+
+const TASKS=[
+/* ===== TASK 1 ===== */
+{name:"Giving Advice",prep:30,rec:90,
+ guide:{what:"Vas a leer una situación: un amigo, familiar o colega tiene un problema o no sabe qué decisión tomar. Tu trabajo es <strong>hablarle directamente a esa persona</strong> y darle consejos útiles, como lo harías en la vida real.",
+  facts:[["30 s","para preparar"],["90 s","para hablar"],["2–3","consejos bien explicados"]],
+  callout:"<strong>💡 La clave: suena real y natural.</strong> Los examinadores quieren escuchar cómo le hablarías de verdad a un amigo, no un discurso memorizado. Una respuesta sencilla, cálida y bien explicada puntúa mejor que una plantilla recitada con palabras rebuscadas.",
+  doo:["Llama a la persona por su nombre y muestra empatía.","Da 2–3 consejos bien desarrollados en vez de 5 superficiales.","Explica el porqué de cada consejo y da un ejemplo.","Usa conectores: First, Another idea, Also, Finally.","En la preparación, anota 2–3 palabras clave, no frases completas.","Termina con un cierre amable antes de que se acabe la barra."],
+  dont:["Recitar una plantilla memorizada: suena robótico.","Hablar de la persona en tercera persona ('Daniela should…').","Repetir la pregunta palabra por palabra para rellenar tiempo.","Irte del tema con historias largas.","Quedarte callado si te equivocas: corrige y sigue.","Terminar a los 50 segundos y dejar silencio."],
+  errors:[["you can to go","you can go","Después de can / should / must, verbo sin 'to'."],["I recommend you to join","I'd recommend joining","Recommend + -ing."],["Is very important","It's very important","En inglés la frase siempre necesita sujeto."],["assist to a class · actually (actualmente)","attend a class · right now","Falsos amigos."],["explain me · take a decision","explain to me · make a decision","Colocaciones que se traducen mal del español."],["Un solo consejo · sin razones · final abrupto","2–3 consejos con porqué y cierre","Errores de contenido que bajan mucho el puntaje."]],
+  flow:[["≈10 s","1. Empatía","Hi Laura, I'm sorry you're so stressed."],["≈30 s","2. Consejo + porqué","First, I think you should… because…"],["≈30 s","3. Consejo + ejemplo","Another idea is to… For example…"],["≈15 s","4. Cierre","I'm sure you'll… Good luck!"]],
+  phrases:["I think you should…","Why don't you…?","If I were you, I'd…","It might be a good idea to…","Have you thought about…?","You could also try…"],
+  tips:["Muestra consecuencias con <em>so, that way, if you do this, you'll…</em> Así tu respuesta suena lógica y completa.","Cambia el 'eh…' por frases para pensar: <em>Well…, Let me think…, Actually, now that I think about it…</em>","¿Te sobra tiempo? Añade una experiencia personal: <em>When I moved to Melbourne, I…</em>","Grábate, escúchate y usa el checklist del final. Repite la misma pregunta hasta que suene natural."]},
+ check:[["Contenido y coherencia",["Saludé a la persona y mostré empatía","Di al menos 2 consejos claros","Cada consejo tiene una razón o un ejemplo","Usé conectores (First, Another idea, Also, Finally)","Cerré con ánimo o una despedida"]],
+  ["Vocabulario",["Variedad de frases de consejo (no solo 'you should')","Usé palabras precisas, no solo good / bad / thing","Casi no repetí las mismas palabras"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Me corregí poco y con naturalidad"]],
+  ["Cumplimiento de la tarea",["Le hablé directamente a la persona (you)","Respondí exactamente lo que pedía la pregunta","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"Your friend Daniela has just moved to a new city for work. She doesn't know anyone there and feels lonely. Give Daniela some advice on how she can meet new people and settle into her new city.",
+ c45:{t:"Hi Daniela. Eh… I am sorry you are {{alone}} in the new city. I think {{you can to go}} to the gym. In the gym {{there is many people}} and you can talk with {{the people}}. Eh… also you can… {{assist to}} a class, a dance class. {{Is very fun}}. Eh… {{I recommend you to go}} to the park also. Eh… the park is good. Ok, eh… good luck, bye.",
+  f:[["alone","lonely","Alone = estar sola físicamente. Lonely = sentirse sola."],["you can to go","you can go","Después de can, el verbo va sin 'to'."],["there is many people","there are a lot of people","People es plural → there are."],["the people","people","Para hablar de personas en general no se usa 'the'."],["assist to","attend / take","Falso amigo: assist = ayudar."],["Is very fun","It's really fun","En inglés siempre hay sujeto."],["I recommend you to go","I'd recommend going","Estructura correcta con recommend."]],
+  x:"🎧 Muchas pausas con 'eh', los consejos no tienen razones y termina a los ~40 segundos: no usa todo el tiempo."},
+ c78:{t:"Hi Daniela, I'm sorry to hear that you feel lonely. Moving to a new city is not easy. First, I think you should join a club or a class about something you like, for example a running club. In this way you {{will know people}} with the same interests, so it's {{more easy}} to talk with them. Second, I think you should accept the invitations of your coworkers, even if you feel shy. For example, if they invite you to {{drink a coffee}}, you should go. Also, you should explore the city on weekends. {{Eh… yes, I think that's all.}} I hope you feel better soon. Bye!",
+  f:[["will know people","will meet people","Meet = conocer a alguien por primera vez."],["more easy","easier","Adjetivos cortos: -er."],["drink a coffee","grab a coffee / go for a coffee","Colocación más natural."],["Eh… yes, I think that's all.","I'm sure you'll make friends in no time.","Cierre débil: se nota que no planeó el final."]],
+  x:"🔁 Repite 'you should' cuatro veces. Buena estructura, pero falta variedad de vocabulario."},
+ c1012:{t:"((Hi Daniela, I'm really sorry to hear you're feeling lonely.)) Moving to a new city is hard, so be patient with yourself. ((First, I think you should)) join a group based on something you enjoy. For example, you could sign up for a running club or a cooking class. That way, you'll meet people who already share your interests, so it's easier to start a conversation. ((Another idea is to)) say yes to invitations from your coworkers, even if you feel shy. A coffee after work can turn into a real friendship. ((If I were you,)) I'd also explore a new neighbourhood every weekend so the city starts to feel like home. ((I'm sure you'll make great friends soon. Good luck!))",
+  g:["Empatía real y una frase que la tranquiliza ('be patient with yourself').","Cada consejo tiene razón y ejemplo concreto.","Varía las frases de consejo: I think you should / Another idea is to / If I were you, I'd.","Cierre cálido y natural; usa casi todo el tiempo sin pausas largas."]}},
+{p:"Your cousin Andrés wants to start saving money, but every month he spends almost all of his salary. Give Andrés some advice on how he can manage his money better.",
+ c45:{t:"Hello Andrés. Eh… you need {{economize}} money. Eh… you {{spend all the money in}} the month. {{Is not good}}. I think you {{need make}} a list… a list of the money. Eh… and don't buy many clothes… eh… also you can cook in your house, {{is more cheap}}. Eh… {{the restaurant are}} expensive. Eh… ok, {{good luck for you}}.",
+  f:[["economize","save","Ahorrar dinero = save money."],["spend all the money in","spend all your money during","Spend money on algo; en el tiempo: during."],["Is not good","That's not good","Falta el sujeto."],["need make","need to make","Need + to + verbo."],["is more cheap","it's cheaper","Adjetivo corto: -er, y con sujeto."],["the restaurant are","restaurants are","Plural general sin 'the'."],["good luck for you","good luck!","Expresión fija."]],
+  x:"🎧 Ideas sueltas sin conectores (first, also, finally) y muchas pausas."},
+ c78:{t:"Hi Andrés, it's good that you want to save money. First, you should write down all your expenses for one month, so you can see {{where are you spending}} your money. {{Many times}} people {{spend a lot in}} food delivery {{and things like that}}. Second, you should {{open}} an automatic transfer to a savings account when you receive your salary. If the money goes out immediately, you won't spend it. Also, I think you should cook at home more. {{Is cheaper and healthier.}} Good luck, I'm sure you can do it.",
+  f:[["where are you spending","where you're spending","En preguntas indirectas no se invierte el orden."],["Many times","Often","Calco de 'muchas veces'."],["spend a lot in","spend a lot on","Spend money on something."],["and things like that","or streaming subscriptions","Sé específico en lugar de vago."],["open","set up","Set up an automatic transfer."],["Is cheaper and healthier.","It's cheaper and healthier.","Falta el sujeto."]],
+  x:"🔁 Buen contenido, pero el cierre es corto y repite 'you should'."},
+ c1012:{t:"((Hey Andrés, it's great that you want to start saving.)) That's the most important step. ((My first piece of advice is to)) write down everything you spend for one month. Many people are surprised when they see how much goes on takeaway food or subscriptions. Once you know where your money goes, it's much easier to cut back. ((Second, why don't you)) set up an automatic transfer to a savings account on payday? If the money leaves your account straight away, you won't be tempted to spend it. Even fifty dollars a fortnight adds up. ((Finally,)) try cooking at home a few nights a week. ((I know you can do it, so let me know how it goes!))",
+  g:["Vocabulario preciso: cut back, payday, straight away, adds up.","Ejemplos concretos con números.","Conectores claros que ordenan la respuesta.","Tono motivador y natural."]}},
+{p:"Your neighbour Sofía has been offered a new job with a higher salary, but the office is one hour away from her home by train. She can't decide whether to accept it. Give Sofía some advice.",
+ c45:{t:"Hi Sofía. Eh… {{congratulation for}} the job. Eh… I think… {{is a difficult decision}}. The money is good, eh… but one hour is… {{is very far}}. Eh… {{in the train}} you can read, or {{listen music}}. Eh… I think {{you accept}} the job because the money is important. Eh… ok. {{Bye bye.}}",
+  f:[["congratulation for","congratulations on","Expresión fija, siempre en plural."],["is a difficult decision","it's a difficult decision","Falta el sujeto."],["is very far","it's a long commute","Commute = viaje diario al trabajo."],["in the train","on the train","Transporte público: on."],["listen music","listen to music","Listen to + algo."],["you accept","you should accept","Para aconsejar: should."],["Bye bye.","Good luck with your decision!","Cierre demasiado informal y abrupto."]],
+  x:"🎧 Solo considera un lado (el dinero) y no explica bien por qué."},
+ c78:{t:"Hi Sofía, congratulations on your new job offer! I understand that it's a difficult decision. In my opinion, you should think about your priorities. If you need the money for something important, {{the travel}} of one hour is not {{so terrible}}. You can use the time {{in the train}} to read or study. {{But in the other hand}}, two hours every day is a lot, so maybe you can {{ask to the company}} if you can work from home some days. I think that would help you a lot. Anyway, I'm sure you will {{take a good decision}}. Good luck!",
+  f:[["the travel","the commute","Travel no se usa para el viaje diario al trabajo."],["so terrible","that bad","Más natural."],["in the train","on the train","Transporte público: on."],["But in the other hand","On the other hand","Expresión fija."],["ask to the company","ask the company","Ask no lleva 'to' antes de la persona."],["take a good decision","make a good decision","Make a decision."]],
+  x:"✅ Buena estructura con dos lados. Los errores son de colocación (palabras que van juntas)."},
+ c1012:{t:"((Hi Sofía, congratulations on the job offer!)) I understand why you're unsure. ((I think you should)) start by thinking about what matters most to you right now. If the higher salary will help you reach a big goal, like buying a house, the long commute might be worth it. ((On the other hand,)) two hours a day is a lot of time, so ask the company if you could work from home one or two days a week. That would make a huge difference. ((If I were you,)) I'd also try the train trip at rush hour before deciding, to see how tiring it really is. ((Whatever you choose, I'm sure it will be the right decision for you.))",
+  g:["Analiza los dos lados de la decisión.","Consejo original y práctico (probar el tren en hora pico).","Vocabulario preciso: commute, worth it, rush hour.","Cierre que respeta la decisión de Sofía."]}},
+{p:"Your friend Mateo has an important English exam in two months. He wants to improve his speaking quickly, but he feels nervous when he talks. Give Mateo some advice on how to prepare.",
+ c45:{t:"Hi Mateo. Eh… {{I am agree}} the exam is difficult. Eh… you {{need practice}} every day. {{You can watching}} movies in English… eh… with {{subtitules}}. Eh… and talk with {{persons}}. Eh… don't be nervous, eh… {{is normal}}. Eh… I {{have nervous}} too in my exam. Ok… good luck, {{you can do}}.",
+  f:[["I am agree","I agree","Agree es verbo, no adjetivo."],["need practice","need to practise","Need + to + verbo."],["You can watching","You can watch","Después de can, verbo base."],["subtitules","subtitles","Ojo con la pronunciación: /ˈsʌbtaɪtəlz/."],["persons","people","Plural normal de person."],["is normal","it's normal","Falta el sujeto."],["have nervous","was nervous","Nervous es adjetivo: be nervous."],["you can do","you can do it","Do necesita objeto."]],
+  x:"🎧 Respuesta corta, consejos generales y sin ejemplos claros."},
+ c78:{t:"Hi Mateo, I know you are worried, but two months is enough time. First, I {{recommend you to practise}} speaking every day, for example ten minutes. You can record yourself and {{after}} listen to the recording to {{find your errors}}. Second, {{it's a good idea that you look for}} a conversation partner or a teacher, because they can give you {{a feedback}}. Also, try to learn some phrases to have time to think. {{Eh… and don't be nervous.}} Good luck {{in your exam}}!",
+  f:[["recommend you to practise","recommend practising","Recommend + -ing."],["after","then / afterwards","After necesita complemento."],["find your errors","spot your mistakes","Mistakes es más natural al hablar."],["it's a good idea that you look for","it's a good idea to look for","Estructura: it's a good idea + to."],["a feedback","feedback","Incontable: sin 'a'."],["Eh… and don't be nervous.","Remember, everyone feels nervous at first.","Consejo vago al final, sin razón ni ejemplo."],["in your exam","on your exam","Good luck on/with your exam."]],
+  x:"✅ Buenos consejos, pero los errores gramaticales y el final débil bajan el puntaje."},
+ c1012:{t:"((Hi Mateo, I know exams can be stressful, but two months is enough time to improve.)) ((First of all, I recommend)) practising speaking every single day, even for ten minutes. You could record yourself answering a question and then listen back. It feels strange at first, but you'll quickly notice your mistakes. ((Another thing you could do is)) find a conversation partner or a teacher who can give you feedback. Speaking with a real person will help you feel less nervous. ((Also,)) learn a few useful phrases to give yourself time to think, like 'That's an interesting question.' ((Keep practising and I'm sure you'll do really well!))",
+  g:["Responde a las dos partes: mejorar rápido y los nervios.","Incluye un ejemplo de frase real.","Gramática correcta y variada (recommend + -ing, could, will).","Fluidez natural de principio a fin."]}},
+{p:"Your colleague Laura says she feels very stressed because she has too much work and no time to spend with her family. Give Laura some advice on how she can improve the situation.",
+ c45:{t:"Hi Laura. Eh… I'm sorry. You have {{too much works}}. Eh… I think {{you speak}} with your boss. Eh… and… {{in the night}} don't work, eh… {{is for the family}}. Eh… you can {{make sport}}, eh… is good for {{the stress}}. Eh… your family is {{more important that}} the work. Ok, {{that's it}}.",
+  f:[["too much works","too much work","Work es incontable."],["you speak","you should speak","Para aconsejar: should."],["in the night","at night","Expresión fija."],["is for the family","that time is for your family","Falta sujeto y es poco claro."],["make sport","do some exercise","Do exercise / play sports."],["the stress","stress","En general, sin 'the'."],["more important that","more important than","Comparativo + than."],["that's it","Take care of yourself!","Cierre abrupto, sin despedida."]],
+  x:"🎧 Frases muy cortas y pausas largas; los consejos no se desarrollan."},
+ c78:{t:"Hi Laura, I'm sorry that you are so stressed. It's a very hard situation. First, I think you should talk with your manager and {{explain him}} that you have too much work. Maybe he can give some tasks to other people. Second, you should {{put a limit to}} your working hours, for example finish at six o'clock and {{don't check}} your emails after that. {{Actually}} your family needs you, so this is very important. Also, you could do something special with them on weekends. Take care, Laura!",
+  f:[["explain him","explain to him","Explain something to someone."],["put a limit to","set a limit on","Colocación correcta."],["don't check","not check","Después de should, mantén la estructura."],["Actually","Right now","Falso amigo: actually = en realidad."]],
+  x:"✅ Respuesta clara y organizada. Para subir: más vocabulario preciso y menos 'you should'."},
+ c1012:{t:"((Hi Laura, I'm sorry you're going through such a stressful time.)) ((My first suggestion is to)) talk to your manager about your workload. Explain how much you're doing and ask which tasks are the real priority. Managers often don't realise when someone has too much on their plate. ((Second, I think you should)) set a clear finishing time each day and switch off your work notifications after that. That way, your evenings will belong to your family. ((You could also)) plan one special activity with them every weekend, like a picnic, so you have something to look forward to. ((Take care of yourself, because your health comes first!))",
+  g:["Expresiones naturales: workload, too much on their plate, switch off.","Consejos realistas y bien explicados.","Conectores y frases de consejo variadas.","Cierre empático."]}}
+]},
+
+/* ===== TASK 2 ===== */
+{name:"Talking about a Personal Experience",prep:30,rec:60,
+ guide:{what:"Te preguntan por una experiencia de tu vida: un problema que resolviste, alguien que te ayudó, un momento especial… Tienes que <strong>contar una historia</strong>: qué pasó, cuándo, dónde, cómo te sentiste y qué aprendiste.",
+  facts:[["30 s","para preparar"],["60 s","para hablar"],["1","historia específica"]],
+  callout:"<strong>💡 La clave: que suene real.</strong> Nadie va a verificar si tu historia es verdad. Puedes adaptar o inventar detalles; lo importante es que la cuentes con naturalidad, en orden y con emoción, como se la contarías a un amigo.",
+  doo:["Elige la historia en los primeros 5 segundos.","Habla de UNA ocasión concreta, no de lo que haces siempre.","Di cuándo y dónde pasó.","Cuenta los hechos en orden con conectores de tiempo.","Incluye cómo te sentiste.","Termina con el resultado o la lección."],
+  dont:["Perder la preparación buscando la historia 'perfecta'.","Hablar en general ('I always…') en vez de una vez específica.","Mezclar presente y pasado.","Dar tanto contexto que no llegas a lo importante.","Contar la historia sin emociones ni detalles.","Quedarte sin final."],
+  errors:[["Yesterday I go to the hospital","Yesterday I went to the hospital","La historia va en pasado de principio a fin."],["I didn't knew","I didn't know","Después de didn't, verbo base."],["I was very boring","I was very bored","Bored = aburrido (tú). Boring = aburrido (la cosa)."],["We were five people","There were five of us","Calco del español."],["since two years","two years ago / for two years","Ago para el pasado; for para duración."],["When I arrived, I have realized","When I arrived, I realized","No mezcles present perfect en la narración."]],
+  flow:[["≈10 s","1. Contexto","A couple of years ago, when I…"],["≈25 s","2. Qué pasó","At first… Then… Suddenly…"],["≈15 s","3. Emoción y resultado","I felt… In the end…"],["≈10 s","4. Lección","Looking back, I realize…"]],
+  phrases:["A few years ago…","It all started when…","At first…","After that…","Eventually…","Looking back, I realize…"],
+  tips:["Prepara 3 historias 'comodín' (un problema, un logro, una persona que te ayudó). Se adaptan a casi cualquier pregunta.","Usa detalles concretos: nombres, lugares, números. Hacen la historia creíble.","Muestra emoción con expresiones: <em>my heart sank, I was over the moon, I couldn't believe it</em>.","Usa <em>had + participio</em> para algo que pasó antes: <em>I had never flown alone before</em>."]},
+ check:[["Contenido y coherencia",["Hablé de UNA experiencia específica","Dije cuándo y dónde pasó","Conté los hechos en orden","Expliqué cómo me sentí","Terminé con un resultado o una lección"]],
+  ["Vocabulario",["Usé palabras de emoción variadas (relieved, nervous, grateful…)","Usé conectores de tiempo (At first, Then, Eventually)","Di detalles concretos (nombres, lugares, números)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Usé el pasado correctamente (went, felt, didn't know)"]],
+  ["Cumplimiento de la tarea",["Respondí exactamente lo que pedía la pregunta","Sonó como una conversación real","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"Talk about a time when you had to solve an unexpected problem. What happened, and how did you deal with it?",
+ c45:{t:"Eh… one time, {{I go}} to the airport {{for travel}} to Colombia. Eh… and the flight {{is cancel}}. Eh… I {{was very worry}}. Eh… I {{talk}} with the woman of the airline and… eh… she {{give me other flight}} for the next day. Eh… I {{sleeped}} in a hotel. Eh… was ok. {{Finish}}.",
+  f:[["I go","I went","La historia va en pasado."],["for travel","to fly","Propósito: to + verbo."],["is cancel","was cancelled","Pasivo en pasado."],["was very worry","was very worried","Worried es el adjetivo."],["talk","talked","Pasado regular con -ed."],["give me other flight","gave me another flight","Pasado + another (otro)."],["sleeped","slept","Verbo irregular."],["Finish","In the end, everything was fine.","Cierre con resultado, no 'finish'."]],
+  x:"🎧 Historia muy corta, sin emociones claras ni lección; mezcla presente y pasado."},
+ c78:{t:"A few years ago, I was travelling to Colombia to visit my family. When I arrived at the airport, I {{have seen}} on the screen that my flight was cancelled. At first I was really stressed because my mother {{was waiting me}} and I {{didn't had}} a hotel. So I went to the airline counter and I {{explained them}} the situation. The agent was very kind and she gave me a flight for the next morning and also a voucher for a hotel. {{In the final}}, I arrived only one day late and my family was very happy. I learned that it's important to stay calm.",
+  f:[["have seen","saw","En la narración usa pasado simple."],["was waiting me","was waiting for me","Wait for someone."],["didn't had","didn't have","Después de didn't, verbo base."],["explained them","explained to them","Explain something to someone."],["In the final","In the end","Expresión fija."]],
+  x:"✅ Buena historia y orden claro. Para subir: más emoción y vocabulario menos básico (very, kind, happy)."},
+ c1012:{t:"((A couple of years ago,)) I was flying home to Colombia for my sister's wedding. ((When I got to the airport,)) I looked at the departures board and saw the word 'cancelled' next to my flight. ((My heart sank,)) because the wedding was two days later. Instead of panicking, I joined the queue at the airline desk and politely asked about every possible option. ((Eventually,)) the agent found me a seat on a flight through Panama that left the same night. It was a long, exhausting trip, but I made it with a few hours to spare. ((Looking back,)) that experience taught me that staying calm and asking the right questions can solve almost anything.",
+  g:["Ubica la historia y explica por qué importaba (la boda).","Emoción con expresiones naturales: my heart sank, with a few hours to spare.","Secuencia clara: When / Instead of / Eventually.","Cierra con una lección (Looking back)."]}},
+{p:"Describe a time when someone helped you in an important way. Who was it, what did they do, and how did it affect you?",
+ c45:{t:"Eh… when I {{arrive to}} Australia, eh… my neighbour {{help me}}. Her name is Linda. Eh… she {{explain me}} how {{take}} the bus and… eh… where is the supermarket. Eh… she is very {{simpatic}}. Eh… I {{feel}} happy. Eh… now we are friends. Eh… {{that's all}}.",
+  f:[["arrive to","arrived in","Pasado + 'in' para países y ciudades."],["help me","helped me","Pasado."],["explain me","explained to me","Explain something to someone."],["take","to take","How to + verbo."],["simpatic","nice / friendly","Falso amigo: sympathetic = comprensivo."],["feel","felt","Pasado irregular."],["that's all","She made a huge difference in my life.","Cierra explicando el impacto."]],
+  x:"🎧 No explica bien cómo le afectó la ayuda; frases muy cortas."},
+ c78:{t:"When I moved to Australia {{three years before}}, I didn't know anybody. My neighbour Linda, who is an older lady, helped me a lot. She showed me how to use the public transport and she came with me to open a bank account. Also, she invited me to have dinner with her family {{in Christmas}}, because I was alone. This was very important for me because I felt {{more like at home}}. Thanks to her, I {{lost the fear of}} speaking English with local people. Now she is like {{a part of my family}}.",
+  f:[["three years before","three years ago","Ago para contar desde hoy."],["in Christmas","at Christmas","Festividades: at."],["more like at home","more at home","Feel at home."],["lost the fear of","stopped being afraid of","Calco de 'perdí el miedo'."],["a part of my family","part of the family","Sin 'a'."]],
+  x:"✅ Buen contenido con ejemplos concretos; errores de preposiciones y calcos del español."},
+ c1012:{t:"((When I first moved to Melbourne,)) I barely knew a soul, and my neighbour Linda completely changed that. She's a retired teacher, and ((within a week of my arrival)) she'd shown me how to top up my Myki card, which bus went to the city and where to find the cheapest groceries. ((But what really made a difference was)) Christmas. I was feeling homesick, and she invited me to spend the day with her family. Sitting at that table, chatting and laughing in English, I ((felt like I belonged)) for the first time. ((Thanks to her,)) I stopped being afraid of talking to locals, and my confidence grew enormously. ((To this day,)) she's one of the most important people in my life here.",
+  g:["Detalles locales concretos (Myki, groceries).","Past perfect natural: she'd shown me.","Momento clave con emoción: homesick, felt like I belonged.","Explica claramente el impacto en su vida."]}}
+]},
+
+/* ===== TASK 3 ===== */
+{name:"Describing a Scene",prep:30,rec:60,
+ guide:{what:"Ves una imagen con muchas cosas pasando. Tienes que <strong>describírsela a alguien que no la puede ver</strong>, para que pueda imaginarla: lugar, personas, acciones, detalles.",
+  facts:[["30 s","para preparar"],["60 s","para hablar"],["4–5","elementos principales"]],
+  callout:"<strong>💡 La clave: pinta la imagen con palabras.</strong> No es una lista de objetos. Es como llamar a un amigo y contarle lo que ves, de forma ordenada y viva, para que se lo imagine.",
+  doo:["Empieza con una frase general: lugar, momento y ambiente.","Muévete en orden: izquierda → centro → derecha, o adelante → atrás.","Usa presente continuo para las acciones (is running).","Describe ropa, colores y emociones.","Usa 'it looks like / seems' para lo que supones."],
+  dont:["Saltar de un lado a otro sin orden.","Nombrar cosas sin acciones ('a tree, a dog, a man').","Empezar cada frase con 'I see…'.","Inventar cosas que no están en la imagen.","Gastar todo el tiempo en una sola persona."],
+  errors:[["There is two children","There are two children","Plural → there are."],["A man is run","A man is running","Presente continuo: is + -ing."],["In the right","On the right","Lados: on the left / on the right."],["a shirt red","a red shirt","El adjetivo va antes del sustantivo."],["In the front of the house","In front of the house","Sin 'the'."],["The people is happy","The people are happy","People es plural."]],
+  flow:[["≈10 s","1. Panorama","This picture shows a… on a sunny day."],["≈40 s","2. Zona por zona","In the middle… On the left… In the background…"],["≈10 s","3. Impresión final","Overall, everyone seems…"]],
+  phrases:["In the foreground…","In the background…","On the left-hand side…","Right in the middle…","Next to / Behind…","It looks like…"],
+  tips:["En la preparación elige 4–5 elementos y el orden en que los vas a describir.","Usa verbos precisos: <em>strolling, chasing, sipping, leaning</em> en vez de solo 'is doing'.","Si te sobra tiempo, describe colores, ropa y emociones.","Fíjate en detalles 'de tensión' (algo que va a caer, una nube): te sirven también para Task 4."]},
+ check:[["Contenido y coherencia",["Empecé con una descripción general (lugar, momento, ambiente)","Seguí un orden espacial claro","Describí al menos 4 personas o elementos","Dije qué está haciendo cada persona","Cerré con una impresión general"]],
+  ["Vocabulario",["Usé preposiciones de lugar (in the foreground, next to, behind)","Adjetivos variados (colores, ropa, emociones)","Verbos de acción precisos (chasing, jogging, carrying)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Usé there is / there are y el presente continuo correctamente"]],
+  ["Cumplimiento de la tarea",["Le hablé a alguien que no puede ver la imagen","Solo describí lo que hay en la imagen","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"Describe some things that are happening in the picture below as well as you can. The person you are speaking to cannot see the picture.",img:"park",
+ c45:{t:"Eh… in the picture there is a park. Eh… {{there is many people}}. Eh… a family {{eat in the grass}}… a picnic. Eh… there is a dog. The dog {{is run}}. Eh… a man {{running}} also, with a {{shirt red}}. Eh… and a woman {{read}} a book. Eh… {{the weather is sun}}. Eh… ok.",
+  f:[["there is many people","there are many people","People es plural."],["eat in the grass","are eating on the grass","Presente continuo + on the grass."],["is run","is running","Is + -ing."],["running","is running","Falta el verbo 'is'."],["shirt red","red shirt","Adjetivo antes del sustantivo."],["read","is reading","Acción en este momento."],["the weather is sun","it's sunny","Sun = sol; sunny = soleado."]],
+  x:"🎧 Lista de cosas sin orden espacial ni detalles; muchas pausas."},
+ c78:{t:"This picture shows a park on a sunny day. In the middle, there is a family having a picnic {{over}} a red and white blanket. The father and the mother are sitting and the little girl is eating an ice cream. Behind them, a boy is throwing a frisbee and a brown dog is running to catch it. {{In the left side}}, there is a man jogging. He {{wears}} a red T-shirt and headphones. {{In the right}}, there is an ice cream cart with a vendor. Also, there is an old woman {{that}} is reading a book on a bench. Everybody looks happy.",
+  f:[["over","on","Sobre una superficie: on."],["In the left side","On the left-hand side","Expresión fija."],["wears","is wearing","Para describir la imagen: presente continuo."],["In the right","On the right","Lados: on."],["that","who","Para personas, 'who' suena más natural."]],
+  x:"✅ Buen orden. Faltan detalles del ambiente (el cielo, la nube) y el vocabulario es básico."},
+ c1012:{t:"((This picture shows a lively park on what seems to be a warm, sunny afternoon.)) ((Right in the centre,)) a family is enjoying a picnic on a red-and-white checked blanket. The parents are relaxing next to a wicker basket, while their little girl is happily licking an ice-cream cone. ((Just behind them,)) a boy has thrown a frisbee, and a playful brown dog is chasing it at full speed. ((On the left-hand side,)) a man in a red T-shirt and headphones is jogging along the path. ((Over on the right,)) there's an ice-cream cart with a striped umbrella, and further back an elderly woman is reading peacefully on a bench under a tree. ((In the sky,)) a kite is flying high, but there's a dark cloud starting to appear in the top corner.",
+  g:["Abre con panorama y ambiente.","Orden espacial claro con frases de ubicación variadas.","Verbos precisos (licking, chasing, jogging) y adjetivos (lively, playful, checked).","Nota un detalle clave (la nube) que sirve para predecir en Task 4."]}},
+{p:"Describe some things that are happening in the picture below as well as you can. The person you are speaking to cannot see the picture.",img:"moving",
+ c45:{t:"Eh… in this picture is a house. Eh… {{is a moving}}. Eh… two men {{carry}} a sofa, a green sofa. Eh… {{there is many boxes}}. Eh… a woman {{have a paper}}. Eh… a child {{have}} a cat. Eh… in the street there is a bicycle. Eh… {{is all}}.",
+  f:[["is a moving","a family is moving house","Move house = mudarse."],["carry","are carrying","Presente continuo."],["there is many boxes","there are a lot of boxes","Plural → there are."],["have a paper","is holding a clipboard","Vocabulario preciso + acción."],["have","is holding","Have no describe la acción."],["is all","That's what I can see.","Cierre más natural."]],
+  x:"🎧 Describe objetos sueltos, sin ubicación ni detalles."},
+ c78:{t:"In this picture a family is moving to a new house. On the left there is a big truck with the doors open. Two men are carrying a green sofa to the house, but it looks very heavy. {{In front the house}}, a woman with a clipboard is giving instructions to them. Next to her there {{is a lot of boxes}} and {{the box of the top}} says 'fragile'. A little boy is sitting on a box and holding a cat. In the house next door, an old man is {{looking by the window}}. Also, a man {{in a bicycle}} is coming down the street.",
+  f:[["In front the house","In front of the house","In front of + lugar."],["is a lot of boxes","are a lot of boxes","Boxes es plural."],["the box of the top","the box on top","Calco de 'la de arriba'."],["looking by the window","looking out of the window","Expresión fija."],["in a bicycle","on a bicycle","Bicicleta: on."]],
+  x:"✅ Buen contenido; errores de preposiciones típicos de hispanohablantes."},
+ c1012:{t:"((This scene shows a busy moving day outside a two-storey house.)) ((On the left,)) a large moving truck is parked with its back doors wide open. Two removalists are struggling to carry a bulky green sofa towards the front door, ((which looks far too narrow for it.)) ((In the foreground,)) a woman holding a clipboard is pointing and giving directions. ((Right beside her,)) there's a tall stack of cardboard boxes, and the one on top, marked 'fragile', is leaning dangerously. A little boy is perched on another box, cuddling a ginger cat. ((Meanwhile,)) an elderly neighbour is peeking out of his window next door, and ((in the background,)) a cyclist is riding down the street.",
+  g:["Vocabulario preciso: removalists, bulky, perched, peeking.","Señala tensiones (sofá vs. puerta, caja inclinada).","Estructura espacial muy clara.","Frases relativas naturales: which looks far too narrow."]}}
+]},
+
+/* ===== TASK 4 ===== */
+{name:"Making Predictions",prep:30,rec:60,
+ guide:{what:"Ves <strong>la misma imagen de Task 3</strong> y tienes que decir qué va a pasar después. Ya no describes: <strong>predices</strong>, y explicas por qué lo crees.",
+  facts:[["30 s","para preparar"],["60 s","para hablar"],["3–4","predicciones con razón"]],
+  callout:"<strong>💡 La clave: predicciones lógicas.</strong> Cada predicción tiene que salir de algo que se ve en la imagen. 'El perro va a tumbar la canasta porque corre directo hacia el picnic' es mucho mejor que 'va a pasar algo divertido'.",
+  doo:["Usa futuro variado: going to, will, might, could.","Da una pista visual para cada predicción ('because…').","Predice para 3–4 personas o elementos.","Mezcla cosas seguras y posibles.","Conecta las predicciones (As a result…, If that happens…)."],
+  dont:["Volver a describir la imagen.","Inventar predicciones exageradas o sin relación.","Usar solo 'will' todo el tiempo.","Olvidar el porqué.","Hablar en pasado o en presente."],
+  errors:[["The dog go to eat","The dog is going to eat","Going to necesita 'is/are'."],["will falls","will fall","Después de will, verbo base."],["will to cry","will cry","Will sin 'to'."],["Probably it will rain","It will probably rain","Probably va después de will."],["is going to rain","it's going to rain","Falta el sujeto 'it'."],["might to happen","might happen","Might sin 'to'."]],
+  flow:[["≈20 s","1. Predicción principal","Judging by…, I think … is going to…"],["≈30 s","2. Más predicciones","Also… If that happens…"],["≈10 s","3. Cierre","All in all, …"]],
+  phrases:["I think… is going to…","Judging by…","There's a good chance that…","…will probably…","I wouldn't be surprised if…","If that happens, …"],
+  tips:["En la preparación busca las 'tensiones' de la imagen: algo a punto de caer, alguien que va hacia otro, el clima.","Usa grados de certeza: <em>definitely, probably, might, could</em>.","Encadena predicciones: <em>If that happens, … As a result, …</em>","Si te sobra tiempo, predice cómo termina todo."]},
+ check:[["Contenido y coherencia",["Hice al menos 3 predicciones","Cada predicción tiene una razón basada en la imagen","Hablé de varias personas o elementos","Mi respuesta tuvo un orden lógico","Cerré con una predicción final"]],
+  ["Vocabulario",["Variedad de futuro (going to, will, might)","Expresiones de certeza (probably, there's a good chance)","Verbos precisos (knock over, spill, slip)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Usé will / going to correctamente (verbo base, sin 'to')"]],
+  ["Cumplimiento de la tarea",["No volví a describir la imagen","Mis predicciones son lógicas","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"In this picture, what do you think will most probably happen next?",img:"park",
+ c45:{t:"Eh… I think the dog {{go to}} the picnic. Eh… the food {{will falls}}. Eh… the girl {{will to cry}}. Eh… and… {{is going to rain}}, there is a cloud. Eh… the people {{go}} to the house. Eh… ok.",
+  f:[["go to","is going to run into","Going to necesita 'is'."],["will falls","will fall","Will + verbo base."],["will to cry","will cry","Will sin 'to'."],["is going to rain","it's going to rain","Falta el sujeto."],["go","will go home","Falta el futuro."]],
+  x:"🎧 Predicciones correctas, pero sin razones y con frases muy cortas."},
+ c78:{t:"I think the dog is going to run {{in}} the picnic blanket while it's chasing the frisbee. {{Probably it will}} knock over the basket and the drinks, and the parents will be angry. Also, the little girl is going to drop her ice cream because the dog will scare her. On the other hand, I can see a dark cloud, so {{maybe is going to rain}} soon. If it rains, the family will {{pick}} everything and run to their car, and the ice cream vendor will close his umbrella. {{The man jogging continues running}}.",
+  f:[["in","onto","Movimiento hacia una superficie."],["Probably it will","It will probably","Posición del adverbio."],["maybe is going to rain","it's probably going to rain","Falta el sujeto."],["pick","pack up","Pick up / pack up = recoger."],["The man jogging continues running","The jogger will probably keep running","Mantén el futuro."]],
+  x:"✅ Predicciones lógicas y conectadas; errores de estructura del futuro."},
+ c1012:{t:"((Judging by the dog's speed,)) I think it's about to charge straight across the picnic blanket. ((It'll probably knock over)) the basket and spill the drinks, and in all the chaos the little girl might drop her ice cream, which would definitely end in tears. ((I also noticed)) a dark cloud creeping in from the corner, ((so there's a good chance that)) it'll start pouring in the next few minutes. ((If that happens,)) the family will have to grab their things and rush to shelter, and the vendor will probably wheel his cart under the trees. ((As for the jogger,)) I wouldn't be surprised if he just keeps running and enjoys the cool rain. ((All in all,)) this peaceful afternoon is about to get a lot more exciting.",
+  g:["Cada predicción con pista visual (velocidad del perro, nube).","Grados de certeza variados: probably, might, definitely, there's a good chance.","Predicciones encadenadas: If that happens…","Cierre con estilo: All in all…"]}},
+{p:"In this picture, what do you think will most probably happen next?",img:"moving",
+ c45:{t:"Eh… I think the sofa {{no enter in}} the door. Eh… the door is small. Eh… {{the box fragile}} {{go to fall}}. Eh… and {{broken}}. Eh… the cat {{escape}}. Eh… the man of the bicycle… eh… {{maybe crash}}. Eh… ok.",
+  f:[["no enter in","won't fit through","Fit through = caber por."],["the box fragile","the fragile box","Adjetivo antes del sustantivo."],["go to fall","is going to fall","Going to necesita 'is'."],["broken","it will break","Falta sujeto y futuro."],["escape","will run away","Falta el futuro."],["maybe crash","might crash","Might + verbo base."]],
+  x:"🎧 Buenas ideas, pero sin razones ni conectores."},
+ c78:{t:"I think the men are going to have a problem with the sofa, because it's {{too much big}} for the door. Maybe they {{will must}} take off the legs or turn it to put it inside. Also, the box that says 'fragile' is going to fall, because the boxes {{is not stable}}, and probably something inside will break. The woman will be very angry. The cat {{might to}} jump from the boy's arms and run away. Finally, I think the old neighbour will come out to help them {{for carry}} things.",
+  f:[["too much big","too big","Too + adjetivo."],["will must","will have to","Must no tiene futuro."],["is not stable","aren't stable","Boxes es plural."],["might to","might","Might sin 'to'."],["for carry","carry","Help someone + verbo base."]],
+  x:"✅ Predicciones lógicas con razones; errores de modales."},
+ c1012:{t:"((I'm fairly sure)) the removalists are about to get stuck, because that sofa ((looks far too wide for)) the front door. They'll probably have to tilt it on its side or take the legs off before they can squeeze it through. ((Meanwhile,)) that tower of boxes is leaning so much that the 'fragile' one ((is bound to topple over,)) and I suspect whatever's inside won't survive. The woman with the clipboard will most likely rush over to catch it, but she might be too late. ((I also think)) the cat will wriggle out of the boy's arms and dart into the house. ((My guess is that)) the friendly neighbour will come out to lend a hand.",
+  g:["Vocabulario preciso: squeeze through, topple over, wriggle out, dart.","Expresiones de probabilidad avanzadas: is bound to, I suspect, most likely.","Predicciones con razón visual.","Respuesta fluida y bien conectada."]}}
+]},
+
+/* ===== TASK 5 ===== */
+{name:"Comparing and Persuading",prep:60,rec:60,select:60,
+ guide:{what:"Primero ves <strong>dos opciones</strong> con detalles y tienes 60 segundos para elegir una. Luego aparece <strong>otra opción que prefiere otra persona</strong> (un familiar o un amigo). Tienes que <strong>convencerla</strong> de que tu opción es mejor, comparándolas.",
+  facts:[["60 s","para elegir"],["60 s","para preparar"],["60 s","para hablar"]],
+  callout:"<strong>💡 La clave: compara, no solo describas.</strong> Cada ventaja de tu opción tiene que ir contra una desventaja de la otra. Habla como en una conversación real con alguien de tu familia: amable, seguro y convincente.",
+  doo:["Elige rápido (15–20 s) para tener más tiempo de preparación.","Usa los datos de la pantalla: precios, distancias, horarios.","Usa comparativos: cheaper than, much closer, more practical.","Háblale directamente a la persona.","Reconoce su punto antes de rebatirlo."],
+  dont:["Gastar los 60 s eligiendo.","Solo describir tu opción sin compararla.","Criticar la otra opción sin dar razones.","Ignorar los datos que te dan.","Sonar agresivo o mandón."],
+  errors:[["more cheap","cheaper","Adjetivos cortos: -er."],["more better","better","Better ya es comparativo."],["more big that","bigger than","Comparativo + than."],["the most good","the best","Superlativo irregular."],["convince you of buy","convince you to buy","Convince someone to + verbo."],["is very far","it's much farther","Compara, no solo describas."]],
+  flow:[["≈10 s","1. Reconoce su opción","I see why you like…, but…"],["≈20 s","2. Ventaja 1 comparada","Mine is cheaper than…, whereas…"],["≈20 s","3. Ventaja 2 comparada","On top of that…"],["≈10 s","4. Cierre persuasivo","Don't you think…? Let's go with…"]],
+  phrases:["I see your point, but…","…is much cheaper than…","Whereas…","On top of that…","Think about it:","Don't you think…?"],
+  tips:["Elige la opción con ventajas más fáciles de explicar, no necesariamente la que te gusta.","Haz cuentas en voz alta: <em>that's a hundred dollars cheaper</em>. Suena convincente.","Las preguntas retóricas persuaden: <em>Do we really want to…?</em>","Termina proponiendo algo: <em>Let's book the cabin and go camping in summer.</em>"]},
+ check:[["Contenido y coherencia",["Mencioné la opción de la otra persona","Di al menos 2 ventajas de mi opción","Comparé directamente las dos opciones","Usé datos concretos (precio, distancia, tiempo)","Terminé con una frase persuasiva"]],
+  ["Vocabulario",["Comparativos y superlativos correctos","Conectores de contraste (whereas, while, on the other hand)","Lenguaje persuasivo (Think about it, Don't you think…?)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Tono seguro y amable"]],
+  ["Cumplimiento de la tarea",["Hablé directamente a la persona","Convencí, no solo describí","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{sel:"Your family is planning a weekend getaway. Look at the two options below and choose the one you prefer.",
+ opts:[{ic:"🏖️",t:"Beach cabin",d:["2 hours by car","$180 per night","Full kitchen and ocean view","Quiet area"]},{ic:"🏙️",t:"City hotel",d:["1 hour by train","$220 per night","Breakfast included","Near museums and restaurants"]}],
+ third:{who:"Your sister",ic:"⛺",t:"Camping in a national park",d:["3 hours by car","$40 per night","Tents and gear needed","Hiking trails, no Wi-Fi"]},
+ p:"Your sister wants to go camping in a national park. Persuade her that your choice is better than hers. Compare the two options.",
+ c45:{t:"Eh… I know you like camping, but… eh… the cabin is {{more better}}. Eh… the cabin {{have}} a kitchen and… eh… {{a ocean view}}. Eh… camping is three hours… eh… {{is very far}}. Eh… and we need tents, we don't have. Eh… the cabin is {{more expensive that}} camping but… eh… is more comfortable. Eh… {{please}}.",
+  f:[["more better","better","Better ya es comparativo."],["have","has","Tercera persona: has."],["a ocean view","an ocean view","An antes de sonido vocal."],["is very far","it's an hour farther","Compara con números."],["more expensive that","more expensive than","Comparativo + than."],["please","So let's choose the cabin, OK?","Cierre persuasivo."]],
+  x:"🎧 Compara poco y no usa los datos (precio, horas) con claridad."},
+ c78:{t:"I understand that camping is {{more cheap}}, only forty dollars per night, but I really think the beach cabin is a better option for us. First, it's only two hours by car, while the national park is three hours, so we will spend less time driving. Second, for camping we need tents and we don't have {{none}}, so we {{will must}} buy or rent them, and that costs money too. The cabin has a kitchen and an ocean view, so we can cook and relax. Also, {{in the camping there is not Wi-Fi}}. I think the cabin is more comfortable {{for all}}. What do you think?",
+  f:[["more cheap","cheaper","Adjetivo corto: -er."],["none","any","Evita la doble negación."],["will must","will have to","Must no tiene futuro."],["in the camping there is not Wi-Fi","at the campsite there's no Wi-Fi","Camping = la actividad; campsite = el lugar."],["for all","for everyone","Calco de 'para todos'."]],
+  x:"✅ Buena comparación con datos; errores de gramática y calcos."},
+ c1012:{t:"((I totally get why camping appeals to you,)) and forty dollars a night is hard to beat. ((But hear me out.)) The cabin is just two hours away, ((whereas)) the park is a three-hour drive, so we'd gain two extra hours of holiday overall. ((On top of that,)) we don't own any tents, so once we rent equipment the price difference shrinks a lot. ((Think about it:)) with the cabin we'd have a proper kitchen, real beds and an ocean view, ((instead of)) sleeping on the ground with no Wi-Fi if the weather turns bad. We'd come home rested ((rather than)) exhausted. ((So why don't we)) book the cabin this time, and plan a camping trip for the summer?",
+  g:["Reconoce la opción de la hermana antes de rebatir.","Compara constantemente: whereas, instead of, rather than.","Usa los datos y hace cuentas (two extra hours, the difference shrinks).","Cierre persuasivo con una propuesta."]},
+ note:"Las respuestas modelo eligen la opción 🏖️ Beach cabin."},
+{sel:"Your family wants to buy a gift for your father's 60th birthday. Look at the two options below and choose the one you prefer.",
+ opts:[{ic:"🍝",t:"Italian cooking class for two",d:["$150","One evening, here in the city","Learn three Italian dishes","Dinner included"]},{ic:"⌚",t:"Smartwatch",d:["$300","Tracks health and steps","Lasts for years","Needs a smartphone"]}],
+ third:{who:"Your brother",ic:"🎸",t:"Concert tickets for two",d:["$250","His favourite band from the 80s","2 hours away by car","Saturday night"]},
+ p:"Your brother wants to buy concert tickets. Persuade him that your choice is better than his. Compare the two options.",
+ c45:{t:"Eh… the concert is good, but… eh… is {{two hour far}}. Eh… the cooking class {{is more cheap}}, only one hundred and fifty. Eh… dad {{like cook}}. Eh… and he {{can to eat}} dinner there. Eh… the concert is two hundred fifty, is expensive. Eh… I think the class is the best. {{Yes}}.",
+  f:[["two hour far","two hours away","Distancia: … hours away."],["is more cheap","is cheaper","Adjetivo corto: -er."],["like cook","likes cooking","Tercera persona + like + -ing."],["can to eat","can eat","Can sin 'to'."],["Yes","So let's get him the class!","Cierre persuasivo."]],
+  x:"🎧 Da datos, pero no los compara de forma clara ni convincente."},
+ c78:{t:"I know Dad loves that band, but I think the cooking class is {{more good}} idea. First, it's cheaper, it costs a hundred and fifty dollars and the concert costs two hundred and fifty. Also, {{the concert is two hours far}}, so they will arrive home very late, and Dad {{don't like}} driving at night. The cooking class is here in the city and they can learn Italian food together, and they also {{have dinner included}}. It's an experience that he {{will remember always}}. So I think we should choose the class.",
+  f:[["more good","a better","Good → better."],["the concert is two hours far","the concert is two hours away","Expresión de distancia."],["don't like","doesn't like","Tercera persona."],["have dinner included","dinner is included","Estructura natural."],["will remember always","will always remember","Always va antes del verbo principal."]],
+  x:"✅ Buena comparación y razones claras; errores de gramática básica."},
+ c1012:{t:"((I know Dad's a huge fan of that band,)) but hear me out on the cooking class. ((For a start,)) it's a hundred dollars cheaper than the concert tickets, ((and that's before)) we count petrol for a two-hour drive. ((Plus,)) you know how much he hates driving at night, ((whereas)) the class is right here in town. ((More importantly,)) he and Mum have been talking about learning to cook Italian food for ages, so it's something they'd genuinely enjoy together, and dinner is included. A concert is over in a couple of hours, ((but)) the recipes are something he'll keep using for years. ((Don't you think that's)) a more meaningful gift for his sixtieth?",
+  g:["Abre reconociendo el punto del hermano.","Usa datos y añade costos ocultos (petrol).","Argumento emocional fuerte: algo que disfrutarían juntos por años.","Pregunta retórica final muy persuasiva."]},
+ note:"Las respuestas modelo eligen la opción 🍝 Italian cooking class."}
+]},
+
+/* ===== TASK 6 ===== */
+{name:"Dealing with a Difficult Situation",prep:60,rec:60,
+ guide:{what:"Te presentan un problema con <strong>dos opciones</strong>. Eliges <strong>UNA</strong> y le hablas directamente a la persona indicada (un amigo, tu jefe, un vecino) para explicar tu decisión o hacer tu petición, con tacto.",
+  facts:[["60 s","para preparar"],["60 s","para hablar"],["1","opción elegida"]],
+  callout:"<strong>💡 La clave: el tono.</strong> No hay una opción correcta. Lo que puntúa es que suenes diplomático, respetuoso y claro, como en una conversación real difícil.",
+  doo:["Decide la opción en los primeros 10 segundos.","Háblale a la persona correcta desde la primera frase.","Suaviza con lenguaje cortés.","Explica tus razones con empatía.","Ofrece una solución o alternativa.","Termina agradeciendo."],
+  dont:["Hablar de las dos opciones.","Sonar brusco o exigente.","Usar solo 'I want…'.","Dejar el problema sin solución.","Olvidar a quién le estás hablando."],
+  errors:[["I need that you help me","I need you to help me","Need someone to + verbo."],["Can you borrow me…?","Can you lend me…?","Borrow = pedir prestado; lend = prestar."],["I want to say you","I want to tell you","Tell someone something."],["Sorry for disturb you","Sorry for disturbing you","Preposición + -ing."],["Do you mind to turn it down?","Would you mind turning it down?","Mind + -ing."],["the same day than","the same day as","Expresión fija."]],
+  flow:[["≈10 s","1. Saludo y contexto","Hi Mark, have you got a minute?"],["≈15 s","2. Tu decisión","I wanted to let you know that…"],["≈25 s","3. Razones + empatía","I understand that… but…"],["≈10 s","4. Solución y cierre","How about…? Thanks so much."]],
+  phrases:["I hope you don't mind me saying…","I totally understand that…","I'm afraid I can't…","I was wondering if…","Would it be possible to…?","I really appreciate it."],
+  tips:["Escoge la opción que te sea más fácil de justificar.","Una petición suave suena mejor: <em>I was wondering if…</em> en vez de <em>I want…</em>","Ofrece algo a cambio: <em>I'll prepare everything before I leave.</em>","Imagina a la persona frente a ti: tu tono cambia y suena real."]},
+ check:[["Contenido y coherencia",["Elegí una sola opción y lo dejé claro","Le hablé a la persona correcta","Expliqué mis razones","Ofrecí una solución o alternativa","Terminé de forma amable"]],
+  ["Vocabulario",["Lenguaje cortés (I was wondering if, Would it be possible)","Frases de empatía (I understand that…)","Vocabulario preciso de la situación"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Tono diplomático y tranquilo"]],
+  ["Cumplimiento de la tarea",["Resolví la situación planteada","Sonó como una conversación real","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"Your best friend is getting married on the same day as an important work conference that your manager has asked you to attend. Choose ONE of the options below and speak to that person.",
+ opts:[{ic:"💼",t:"Option A",d:["Talk to your manager, Mark, and explain why you can't go to the conference."]},{ic:"💍",t:"Option B",d:["Talk to your friend and explain why you can't go to her wedding."]}],
+ c45:{t:"Eh… {{hello boss}}. Eh… {{I need speak}} with you. Eh… the conference is {{the same day of the wedding of my friend}}. Eh… I can't go to the conference. Eh… {{is very important for me the wedding}}. Eh… maybe {{other person go}}. Eh… sorry. Eh… thank you.",
+  f:[["hello boss","Hi Mark","Usa su nombre: más profesional."],["I need speak","I need to speak","Need + to."],["the same day of the wedding of my friend","on the same day as my friend's wedding","Posesivo con 's."],["is very important for me the wedding","the wedding is very important to me","Orden: sujeto + verbo."],["other person go","someone else could go","Someone else = otra persona."]],
+  x:"🎧 Suena brusco: falta lenguaje cortés y una solución clara."},
+ c78:{t:"Hi Mark, do you have a minute? I {{want to say you}} something. I know the conference is very important for the company, but it's {{the same day than}} my best friend's wedding. She asked me to be her bridesmaid {{since a year}}, so I can't miss it. {{I'm agree}} that someone from our team should go, so maybe Sofía can go instead of me, because she knows the project very well. Also, I can prepare all the documents before. I'm really sorry for {{the inconveniences}}, and thank you for understanding.",
+  f:[["want to say you","want to tell you","Tell someone something."],["the same day than","on the same day as","Expresión fija."],["since a year","a year ago","Ago para el pasado."],["I'm agree","I agree","Agree es verbo."],["the inconveniences","the inconvenience","Singular en esta expresión."]],
+  x:"✅ Buen tono y propone solución; errores de calco del español."},
+ c1012:{t:"((Hi Mark, have you got a minute?)) ((I wanted to talk to you about)) the conference in Sydney. I know how important it is for the team, ((and I really appreciate you thinking of me.)) Unfortunately, it falls on the same day as my best friend's wedding, and I'm her maid of honour, so it's something I really can't miss. ((I was wondering if)) Sofía could go in my place. She's been working on the project with me from the start, so she knows it inside out. ((To make it easier,)) I'll prepare the presentation and brief her fully before she leaves, and I'll be available by phone. ((I'm sorry for the short notice, and thanks so much for understanding.))",
+  g:["Agradece antes de decir que no.","Petición suave: I was wondering if…","Ofrece una solución completa (Sofía + preparación).","Cierre cortés y profesional."]},
+ note:"Las respuestas modelo eligen la Option A (hablar con el jefe)."},
+{p:"Your neighbour plays loud music every night until 1 a.m., and you can't sleep before work. Choose ONE of the options below and speak to that person.",
+ opts:[{ic:"🚪",t:"Option A",d:["Talk to your neighbour directly and ask them to change the situation."]},{ic:"🏢",t:"Option B",d:["Talk to the building manager and ask them to help solve the problem."]}],
+ c45:{t:"Eh… hi, I am your neighbour. Eh… the music {{is very loud in the night}}. Eh… I {{no can}} sleep. Eh… {{I work in the morning early}}. Eh… {{please don't put music}}. Eh… {{or put more low}}. Eh… thank you.",
+  f:[["is very loud in the night","is very loud at night","At night."],["no can","can't","Negativo de can."],["I work in the morning early","I start work early in the morning","Orden natural."],["please don't put music","could you please not play music","Petición cortés; play music."],["or put more low","or turn it down","Turn down = bajar el volumen."]],
+  x:"🎧 Peticiones directas que suenan a orden; poca explicación."},
+ c78:{t:"Hi, I'm Laura from apartment 4B. Sorry {{for disturb you}}. I wanted to talk to you about the music at night. I know you like to relax after work, but the music is very loud until one o'clock in the morning and I can hear it in my bedroom. I start work at seven, so I need to sleep early. {{Do you mind to turn}} it down after ten o'clock? Or maybe you can use headphones. I prefer to talk with you {{before of}} going to the building manager. Thank you for understanding.",
+  f:[["for disturb you","for disturbing you","Preposición + -ing."],["Do you mind to turn","Would you mind turning","Mind + -ing; 'would' es más cortés."],["before of","before","Sin 'of'."]],
+  x:"✅ Buen tono y propuesta concreta. Para subir: más empatía y vocabulario natural."},
+ c1012:{t:"((Hi, I'm Laura from 4B. Sorry to bother you, have you got a second?)) ((I hope you don't mind me mentioning this,)) but the music has been coming through my bedroom wall most nights until about one. ((I totally understand)) that everyone needs to unwind after work, and I don't want to spoil your fun. ((The thing is,)) I start my shifts at seven, so I've been running on very little sleep lately. ((Would it be possible to)) turn it down after ten on weeknights? Even using headphones late at night would make a huge difference. ((I'd much rather sort this out between us)) than involve the building manager. ((Thanks so much, I really appreciate it.))",
+  g:["Abre con cortesía y suaviza el problema.","Empatía clara (everyone needs to unwind).","Petición concreta y razonable (after ten on weeknights).","Expresiones naturales: running on very little sleep, sort this out."]},
+ note:"Las respuestas modelo eligen la Option A (hablar con el vecino)."}
+]},
+
+/* ===== TASK 7 ===== */
+{name:"Expressing Opinions",prep:30,rec:90,
+ guide:{what:"Te hacen una pregunta de opinión sobre un tema social (tecnología, trabajo, ciudad, educación). Tienes que <strong>tomar una posición clara y defenderla</strong> con razones y ejemplos.",
+  facts:[["30 s","para preparar"],["90 s","para hablar"],["2","razones con ejemplo"]],
+  callout:"<strong>💡 La clave: escoge un lado.</strong> 'Depende' sin una posición clara te baja el puntaje. Puedes reconocer la otra postura, pero termina dejando tu opinión muy clara.",
+  doo:["Di tu opinión en la primera frase.","Da 2 razones fuertes en vez de 4 débiles.","Apoya cada razón con un ejemplo (personal o de la sociedad).","Reconoce la otra postura y respóndela.","Repite tu opinión al final con otras palabras."],
+  dont:["Cambiar de opinión a mitad de la respuesta.","Quedarte en 'depende'.","Dar razones sin ejemplos.","Repetir 'I think' en cada frase.","Terminar sin conclusión."],
+  errors:[["I'm agree","I agree","Agree es verbo."],["In my opinion, I think…","In my opinion, …","Redundante: elige una."],["The technology is…","Technology is…","Temas generales sin 'the'."],["The people is","People are","People es plural."],["It's depend","It depends","Depend es verbo."],["win money","earn money","Falso amigo: ganar dinero trabajando = earn."]],
+  flow:[["≈10 s","1. Opinión clara","I strongly believe that…"],["≈30 s","2. Razón 1 + ejemplo","The main reason is… For instance…"],["≈30 s","3. Razón 2 + ejemplo","On top of that…"],["≈20 s","4. Otra postura + conclusión","Some people argue…, but… That's why…"]],
+  phrases:["I strongly believe that…","The main reason is…","For instance,…","Some people argue that…, but…","Admittedly,…","All things considered,…"],
+  tips:["Decide tu lado en 5 segundos: el que puedas defender mejor, no necesariamente el que crees.","Usa ejemplos reales: tu país, Melbourne, tu trabajo, tu familia.","Reconocer la otra postura (<em>Some people argue…</em>) demuestra nivel alto.","Varía las frases de opinión: <em>From my perspective, Personally, I'm convinced that…</em>"]},
+ check:[["Contenido y coherencia",["Di mi opinión clara al inicio","Di 2 razones bien desarrolladas","Cada razón tiene un ejemplo","Mencioné y respondí a la otra postura","Cerré repitiendo mi opinión"]],
+  ["Vocabulario",["Frases de opinión variadas (I strongly believe, From my perspective)","Vocabulario específico del tema","Conectores (The main reason, On top of that, That's why)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Gramática correcta (people are, it depends, I agree)"]],
+  ["Cumplimiento de la tarea",["Mantuve la misma posición todo el tiempo","Respondí la pregunta exacta","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"Some people think that children under 12 should not have their own smartphones. Do you agree or disagree? Explain your reasons.",
+ c45:{t:"Eh… {{I'm agree}}. Eh… children {{no need}} phone. Eh… {{the children}} play all the time with the phone and… eh… {{no study}}. Eh… also {{is dangerous}}, the internet. Eh… my nephew {{have}} a phone and… eh… he {{don't talk}} with the family. Eh… {{is bad}}. Eh… children {{need play}} outside. Eh… that's my opinion.",
+  f:[["I'm agree","I agree","Agree es verbo."],["no need","don't need","Negativo con don't."],["the children","children","En general, sin 'the'."],["no study","don't study","Negativo con don't."],["is dangerous","it's dangerous","Falta el sujeto."],["have","has","Tercera persona."],["don't talk","doesn't talk","Tercera persona."],["is bad","that's bad","Falta el sujeto."],["need play","need to play","Need + to."]],
+  x:"🎧 Razones sin desarrollar y frases muy cortas para 90 segundos."},
+ c78:{t:"I agree that children under twelve shouldn't have their own smartphone. {{In my opinion, I think}} there are two main reasons. First, smartphones are very addictive. Many children spend hours playing games or watching videos and they don't do {{their homeworks}} or play outside. For example, my nephew is nine and he has a phone, and {{in the dinners}} he never talks with the family. Second, the internet can be dangerous for kids. They can see {{inappropriated}} content or talk with strangers, and {{the parents}} can't control everything. Some people say that children need a phone for safety, but they can use a simple phone only for calls. That's why I think it's better to wait until they are older.",
+  f:[["In my opinion, I think","In my opinion,","Redundante."],["their homeworks","their homework","Incontable."],["in the dinners","at dinner","Comidas: at dinner."],["inappropriated","inappropriate","Adjetivo correcto."],["the parents","parents","En general, sin 'the'."]],
+  x:"✅ Estructura sólida con contraargumento; errores de vocabulario y artículos."},
+ c1012:{t:"((I strongly agree)) that children under twelve shouldn't have smartphones of their own. ((The main reason is that)) these devices are designed to be addictive, and young kids simply don't have the self-control to put them down. ((I've seen this first-hand with)) my nine-year-old nephew. Since he got a phone, he barely looks up at dinner and has lost interest in playing outside. ((On top of that,)) the internet exposes children to risks they aren't ready for, from inappropriate content to strangers in online games, and no parent can monitor everything. ((Some people argue that)) kids need a phone for safety, ((and that's a fair point,)) ((but)) a basic phone that only makes calls and sends texts would do the job perfectly well. ((So, all things considered,)) I believe childhood is better spent with real friends than with a screen, and smartphones can wait until they're a bit older.",
+  g:["Opinión firme desde la primera frase.","Ejemplo personal concreto (el sobrino).","Reconoce y responde a la otra postura.","Conclusión que resume con otras palabras."]}},
+{p:"Do you think it is better to live in a big city or in a small town? Explain your reasons.",
+ c45:{t:"Eh… I think {{is better the big city}}. Eh… in the city {{there is more jobs}}. Eh… and {{more things for do}}, restaurants, parks. Eh… in the small town {{is boring}}. Eh… I live in Melbourne and… eh… {{I like very much}}. Eh… the transport is good. Eh… {{is my opinion}}.",
+  f:[["is better the big city","the big city is better","Orden: sujeto + verbo."],["there is more jobs","there are more jobs","Plural."],["more things for do","more things to do","Things to do."],["is boring","it's boring","Falta el sujeto."],["I like very much","I like it a lot","Like necesita objeto."],["is my opinion","That's my opinion","Falta el sujeto."]],
+  x:"🎧 Ideas válidas, pero sin ejemplos ni desarrollo para 90 segundos."},
+ c78:{t:"In my opinion, it's better to live in a big city. The first reason is the job opportunities. In big cities there are more companies, so it's {{more easy}} to find a good job and {{win more money}}. For example, when I moved to Melbourne I found a job in my area in only two months. The second reason is the services. In the city you have hospitals, universities and public transport, and you don't need a car for everything. Of course, small towns are {{more quiet}} and cheaper, but {{it depend}} on what you need, and for me the city is more convenient. That's why I prefer the city.",
+  f:[["more easy","easier","Adjetivo corto: -er."],["win more money","earn more money","Falso amigo."],["more quiet","quieter","Adjetivo corto: -er."],["it depend","it depends","Tercera persona."]],
+  x:"✅ Clara y con ejemplo personal; errores de comparativos y 'win money'."},
+ c1012:{t:"((Personally, I'm convinced that)) living in a big city is the better choice, especially for people building their careers. ((First and foremost,)) cities offer far more job opportunities. When I moved to Melbourne, I found a position in my field within two months, something that would have been almost impossible in my hometown. ((Beyond work,)) big cities give you access to world-class hospitals, universities and public transport, so you're not dependent on a car. ((Admittedly,)) small towns are quieter, safer and much more affordable, ((and I can see why)) families or retirees might prefer them. ((However,)) the variety of people, food and cultural events you get in a city makes everyday life so much richer. ((So for me, the benefits clearly outweigh the drawbacks.))",
+  g:["Opinión clara y matizada (especially for people building their careers).","Ejemplo personal con estructura avanzada (would have been).","Concede la otra postura con Admittedly.","Conclusión con expresión natural: outweigh the drawbacks."]}}
+]},
+
+/* ===== TASK 8 ===== */
+{name:"Describing an Unusual Situation",prep:30,rec:60,
+ guide:{what:"Ves la imagen de un <strong>objeto raro</strong>. Llamas por teléfono a alguien que no lo puede ver y se lo describes con detalle (forma, tamaño, colores, materiales, para qué sirve), muchas veces para que decida si comprarlo.",
+  facts:[["30 s","para preparar"],["60 s","para hablar"],["5+","detalles del objeto"]],
+  callout:"<strong>💡 La clave: que la otra persona pueda dibujarlo.</strong> Imagina que hablas por teléfono: con lo que dices, tu amigo tiene que poder imaginarse exactamente el objeto.",
+  doo:["Explica por qué llamas en la primera frase.","Empieza por la forma general y luego los detalles.","Compara con objetos conocidos ('about the size of…').","Di tamaño, forma, color y material.","Describe de arriba abajo o de afuera hacia adentro.","Termina con para qué sirve y tu recomendación."],
+  dont:["Decir solo 'it's weird' o 'it's strange'.","Saltarte la forma general.","Adivinar funciones sin 'it seems' o 'I guess'.","Olvidar a quién estás llamando.","Describir sin orden."],
+  errors:[["It's like a umbrella","It's like an umbrella","An antes de sonido vocal."],["It has form of a…","It's shaped like a…","Expresión natural."],["It's of plastic","It's made of plastic","Material: made of."],["for to carry","to carry","Propósito: to + verbo."],["a bag very big","a very big bag","Adjetivo antes del sustantivo."],["in the up / in the down","on top / at the bottom","Partes de un objeto."]],
+  flow:[["≈10 s","1. Por qué llamas","Hey, I've just found…"],["≈15 s","2. Forma general","It's about the size of…"],["≈25 s","3. Partes y detalles","On top… Underneath… On the side…"],["≈10 s","4. Función y opinión","It seems to be for… I think you'd love it."]],
+  phrases:["It's about the size of…","It's shaped like…","It's made of…","On top / At the bottom…","It looks a bit like…","It seems to be designed for…"],
+  tips:["Usa comparaciones que todos conocen: <em>the size of a shoebox, as long as my arm</em>.","Vocabulario de formas y materiales: <em>round, rectangular, foldable, metal, padded</em>.","Si no sabes una palabra, descríbela: <em>the part you hold with your hand</em>.","Termina con tu opinión: ¿vale la pena comprarlo?"]},
+ check:[["Contenido y coherencia",["Dije por qué estoy llamando","Describí la forma general primero","Mencioné tamaño, color y material","Describí las partes en orden","Expliqué para qué sirve o di mi opinión"]],
+  ["Vocabulario",["Usé comparaciones (about the size of, looks like)","Formas y materiales (round, foldable, made of)","Preposiciones de lugar (on top, underneath, on the side)"]],
+  ["Fluidez (Listenability)",[...COMMON_LISTEN,"Artículos correctos (a / an / the)"]],
+  ["Cumplimiento de la tarea",["Le hablé a la persona indicada","Alguien podría imaginar el objeto con mi descripción","Usé casi todo el tiempo sin quedarme en silencio"]]],
+ qs:[
+{p:"You are at a market and see this unusual item. Your friend Juan loves gadgets and his birthday is next week. Call Juan and describe the item in as much detail as you can.",img:"umbrella",
+ c45:{t:"Eh… hi! Eh… I am in the market. Eh… {{there is a umbrella very strange}}. Eh… is blue. Eh… on the top {{have}} a… eh… solar panel. Eh… and {{under}} there is a fan. Eh… {{for the hot}}. Eh… the handle {{have}} a… eh… a place for the coffee. Eh… {{is very crazy}}. Eh… you want? Bye.",
+  f:[["there is a umbrella very strange","there's a very strange umbrella","An umbrella + adjetivo antes."],["have","has","There's… / it has."],["under","underneath it","Más preciso."],["for the hot","to keep you cool","Propósito: to + verbo."],["is very crazy","it's really unusual","Sujeto + adjetivo más preciso."]],
+  x:"🎧 No describe tamaño, colores de cada parte ni explica bien para qué sirve."},
+ c78:{t:"Hi Juan, it's me! I'm at the market and I found a really strange umbrella, {{I think is perfect}} for your birthday. It's a big blue umbrella, but on the top it has a {{solar panel blue, rectangular}}. Under the umbrella, attached to the stick, there is a small white fan. I think the solar panel gives energy to the fan, so you can {{be fresh}} when it's hot. Also, around the edge there are small yellow lights, and on the handle there is a {{holder for put}} a cup of coffee. There's even a cable to charge your phone. It's a little crazy, but I think {{you will love}}. What do you think?",
+  f:[["I think is perfect","I think it's perfect","Falta el sujeto."],["solar panel blue, rectangular","rectangular blue solar panel","Adjetivos antes del sustantivo."],["be fresh","stay cool","Falso amigo: fresco."],["holder for put","holder to put","Propósito: to + verbo."],["you will love","you'll love it","Love necesita objeto."]],
+  x:"✅ Buena descripción y orden; errores de orden de adjetivos y falsos amigos."},
+ c1012:{t:"((Hey Juan, it's me! I think I've just found your birthday present.)) I'm at the market looking at the most bizarre umbrella. ((At first glance,)) it looks like an ordinary large blue umbrella, ((but on top of the canopy)) there's a rectangular solar panel, about the size of a laptop screen. ((Underneath,)) clipped onto the pole, there's a small white fan, so I'm guessing the panel powers it and keeps you cool on hot days. ((Running around the edge)) there's a string of tiny yellow LED lights, ((and halfway down the handle)) there's a little ring-shaped cup holder for your coffee. ((To top it all off,)) a USB cable dangles from the bottom so you can charge your phone. ((Honestly, it's ridiculous, but knowing you,)) you'd absolutely love it. Should I get it?",
+  g:["Explica por qué llama desde la primera frase.","Describe de arriba abajo con ubicaciones precisas.","Comparaciones útiles (about the size of a laptop screen).","Supone funciones con 'I'm guessing' y termina con una pregunta."]}},
+{p:"You are at an outdoor store and see this unusual product. Your brother Andrés goes hiking every weekend. Call him and describe it so he can decide whether to buy it.",img:"backpack",
+ c45:{t:"Eh… hi brother. Eh… I see a backpack… eh… {{is a chair also}}. Eh… is orange. Eh… {{in the down}} there {{is four legs}}. Eh… metal. Eh… {{in the up}} there is a… eh… a cushion, for sit. Eh… {{for the hiking is good}}. Eh… you can {{to sit}} in the mountain. Eh… ok, call me.",
+  f:[["is a chair also","that's also a chair","Falta el sujeto."],["in the down","at the bottom","Partes de un objeto."],["is four legs","are four legs","Plural."],["in the up","on top","Partes de un objeto."],["for the hiking is good","it's great for hiking","Orden y sujeto."],["to sit","sit","Can sin 'to'."]],
+  x:"🎧 Describe pocas partes y no dice tamaño ni da una opinión clara."},
+ c78:{t:"Hi Andrés! I'm at the outdoor store and I saw something you will like. It's an orange backpack, a normal size, but it turns into a chair. At the bottom it has four {{legs of metal}} that you can fold, like a camping chair, and on the top there is a grey cushion, so you can sit {{in it}} when you're tired. On the side there is a pocket for a water bottle, and on the front there are elastic cords {{for put}} a map. I think it's {{very practic}} for your hikes, because you {{don't need carry}} a chair. Do you want me to buy it?",
+  f:[["legs of metal","metal legs","Material antes del sustantivo."],["in it","on it","Sentarse sobre: on."],["for put","to put","Propósito: to + verbo."],["very practic","very practical","Adjetivo correcto."],["don't need carry","don't need to carry","Need + to."]],
+  x:"✅ Descripción ordenada y completa; errores de preposiciones y vocabulario."},
+ c1012:{t:"((Hey Andrés, quick question before I leave the shop.)) I've just spotted the coolest thing for your weekend hikes. ((It's a bright orange backpack,)) roughly the size of a normal school bag, ((but here's the clever part:)) two pairs of thin metal legs fold out from the bottom in an X shape, so the whole thing turns into a little camping stool. ((On top,)) instead of a regular flap, there's a padded grey cushion to sit on. It's got a mesh pocket on the side ((that's just right for)) a water bottle, and some elastic cords criss-crossing the front where you can tuck a map. ((It feels surprisingly sturdy,)) and it isn't much heavier than a normal pack. ((Considering how often)) you complain about sitting on wet rocks, ((I reckon)) it'd be perfect. Want me to grab one?",
+  g:["Comparación de tamaño clara (the size of a normal school bag).","Vocabulario preciso: fold out, padded, mesh, sturdy, tuck.","Conecta el objeto con la vida del hermano.","Australian English natural: I reckon, grab one."]}}
+]}
+];
+
+/* ---------- Extra practices (5 per task) ---------- */
+delete PIC.park; delete PIC.moving;
+Object.assign(PIC,{
+suitcase:()=>svg(`<rect width="640" height="400" fill="#F7F5EF"/><ellipse cx="300" cy="372" rx="160" ry="9" fill="#E2DED3"/>
+<g stroke="#9AA0AA" stroke-width="9" stroke-linecap="round"><line x1="310" y1="160" x2="310" y2="62"/><line x1="370" y1="160" x2="370" y2="62"/></g>
+<rect x="270" y="46" width="140" height="14" rx="6" fill="#1F2937"/><rect x="258" y="42" width="34" height="22" rx="10" fill="#111"/><rect x="388" y="42" width="34" height="22" rx="10" fill="#111"/>
+<rect x="322" y="78" width="36" height="54" rx="6" fill="#17153B"/><rect x="327" y="84" width="26" height="40" rx="3" fill="#3B82F6"/>
+<rect x="280" y="150" width="120" height="195" rx="20" fill="#7C5CBF"/><g stroke="#6A4BB0" stroke-width="5">${[300,320,340,360,380].map(x=>`<line x1="${x}" y1="168" x2="${x}" y2="328"/>`).join("")}</g>
+<rect x="160" y="328" width="135" height="16" rx="7" fill="#9CA3AF"/><circle cx="168" cy="336" r="7" fill="#FFD54F" stroke="#C9A800"/>
+<g fill="#333">${[185,225,300,380].map(x=>`<circle cx="${x}" cy="356" r="12"/>`).join("")}</g><g fill="#888">${[185,225,300,380].map(x=>`<circle cx="${x}" cy="356" r="4"/>`).join("")}</g>`,"An unusual suitcase"),
+lamp:()=>svg(`<rect width="640" height="400" fill="#F7F5EF"/><ellipse cx="320" cy="388" rx="110" ry="8" fill="#E2DED3"/>
+<path d="M320 95 Q380 30 432 72" stroke="#555" stroke-width="7" fill="none" stroke-linecap="round"/>
+<circle cx="432" cy="104" r="12" fill="#FFF3B0"/><path d="M394 104 Q432 40 470 104 Z" fill="#14B8A6" stroke="#0F8C80" stroke-width="2"/>
+<rect x="308" y="112" width="24" height="215" fill="#FBBF24"/><rect x="316" y="112" width="8" height="215" fill="#F59E0B"/>
+<polygon points="308,112 332,112 320,82" fill="#E8C39E"/><polygon points="316,94 324,94 320,82" fill="#333"/>
+<circle cx="320" cy="200" r="22" fill="#374151"/><g fill="#9CA3AF">${[[-8,-8],[0,-8],[8,-8],[-8,0],[0,0],[8,0],[-8,8],[0,8],[8,8]].map(([a,b])=>`<circle cx="${320+a}" cy="${200+b}" r="2"/>`).join("")}</g>
+<rect x="332" y="262" width="58" height="7" fill="#A0703C"/><rect x="342" y="240" width="26" height="22" rx="2" fill="#E5484D"/><rect x="345" y="243" width="3" height="16" fill="#fff"/>
+<g fill="#4F9A4A"><ellipse cx="290" cy="318" rx="26" ry="10" transform="rotate(-25 290 318)"/><ellipse cx="350" cy="318" rx="26" ry="10" transform="rotate(25 350 318)"/><ellipse cx="300" cy="300" rx="20" ry="8" transform="rotate(-50 300 300)"/><ellipse cx="342" cy="300" rx="20" ry="8" transform="rotate(50 342 300)"/></g>
+<path d="M266 330 L374 330 L362 386 L278 386 Z" fill="#FFFFFF" stroke="#C9C4BA" stroke-width="2"/>`,"An unusual lamp"),
+dogtable:()=>svg(`<rect width="640" height="400" fill="#F7F5EF"/><ellipse cx="330" cy="370" rx="160" ry="9" fill="#E2DED3"/>
+<rect x="236" y="338" width="14" height="24" fill="#A07A48"/><rect x="390" y="338" width="14" height="24" fill="#A07A48"/>
+<rect x="232" y="138" width="176" height="202" rx="6" fill="#E6C79C" stroke="#A07A48" stroke-width="2"/>
+<rect x="218" y="120" width="204" height="20" rx="5" fill="#D8B583" stroke="#A07A48" stroke-width="2"/>
+<circle cx="300" cy="258" r="50" fill="#4A3523"/><ellipse cx="300" cy="296" rx="42" ry="12" fill="#9CA3AF"/>
+<circle cx="300" cy="270" r="20" fill="#F5F5F5"/><ellipse cx="282" cy="262" rx="7" ry="12" fill="#B07A4A"/><ellipse cx="318" cy="262" rx="7" ry="12" fill="#B07A4A"/><circle cx="293" cy="268" r="2.5" fill="#222"/><circle cx="307" cy="268" r="2.5" fill="#222"/><circle cx="300" cy="276" r="3" fill="#222"/>
+<g fill="#A07A48"><circle cx="370" cy="198" r="9"/><circle cx="358" cy="184" r="4"/><circle cx="366" cy="179" r="4"/><circle cx="375" cy="179" r="4"/><circle cx="383" cy="184" r="4"/></g>
+<rect x="408" y="236" width="86" height="34" rx="3" fill="#D8B583" stroke="#A07A48" stroke-width="2"/><ellipse cx="432" cy="238" rx="14" ry="5" fill="#C0C7D0" stroke="#8E959E"/><ellipse cx="468" cy="238" rx="14" ry="5" fill="#C0C7D0" stroke="#8E959E"/><ellipse cx="468" cy="238" rx="9" ry="3" fill="#7FB0FF"/><ellipse cx="432" cy="238" rx="9" ry="3" fill="#B07A4A"/>
+<path d="M252 120 L248 92 L282 92 L278 120 Z" fill="#C2410C"/><g fill="#4F9A4A"><ellipse cx="258" cy="80" rx="8" ry="16" transform="rotate(-20 258 80)"/><ellipse cx="272" cy="80" rx="8" ry="16" transform="rotate(20 272 80)"/></g>
+<rect x="372" y="98" width="22" height="22" rx="3" fill="#FFFFFF" stroke="#999"/><path d="M394 104 q8 0 8 7 q0 7 -8 7" stroke="#999" fill="none" stroke-width="2"/>`,"An unusual piece of furniture")
+});
+
+["umbrella","backpack","suitcase","lamp","dogtable"].forEach(k=>delete PIC[k]);
+
+/* Task 2 */
+TASKS[1].qs.push(
+{p:"Talk about a time when you felt very proud of yourself. What did you do, and why were you proud?",
+ c45:{t:"Eh… I {{am}} proud when I {{pass}} my driving test in Australia. Eh… {{is very difficult}}. Eh… the first time I {{fail}}. Eh… then I {{practice}} a lot with my partner. Eh… the second time I pass. Eh… I was very happy. Eh… {{that's it}}.",
+  f:[["am","was","La historia va en pasado."],["pass","passed","Pasado regular."],["is very difficult","it was very difficult","Sujeto + pasado."],["fail","failed","Pasado regular."],["practice","practised","Pasado (y en inglés británico/australiano el verbo se escribe con s)."],["that's it","I felt really proud because I didn't give up.","Cierra explicando por qué estás orgulloso."]],
+  x:"🎧 No explica por qué se sintió orgulloso, que es la segunda parte de la pregunta."},
+ c78:{t:"I felt very proud when I passed my driving test in Australia {{the last year}}. In my country I {{was driving}} for ten years, but here the rules are different and the test is very strict. The first time I failed because I didn't {{stop totally}} at a stop sign, and I felt very embarrassed. After that, I practised every weekend with my partner and I took two lessons with an instructor. The second time I passed {{without no}} problems. I was proud because I didn't give up, and now I can drive my kids to school {{alone}}.",
+  f:[["the last year","last year","Sin 'the'."],["was driving","had been driving","Algo que empezó antes en el pasado."],["stop totally","come to a complete stop","Expresión correcta."],["without no","without any","Evita la doble negación."],["alone","by myself","Si vas con tus hijos no estás 'alone'."]],
+  x:"✅ Responde las dos partes de la pregunta; errores de tiempos verbales y calcos."},
+ c1012:{t:"((One moment I'm genuinely proud of is)) passing my driving test here in Melbourne last year. I'd been driving for over ten years back home, so I assumed it would be easy, ((but I was in for a surprise.)) On my first attempt, I failed for not coming to a complete stop at a stop sign, ((and I was honestly gutted.)) Instead of giving up, I practised every weekend with my partner and booked a couple of lessons with an instructor to iron out my bad habits. ((A month later,)) I passed with only one minor mistake. ((What made me proudest was)) not the licence itself, but the fact that I'd swallowed my pride and kept going. Now I can drive my kids to school on my own, ((which has made life so much easier.))",
+  g:["Emociones naturales: gutted, swallowed my pride.","Past perfect bien usado: I'd been driving.","Explica claramente POR QUÉ se siente orgulloso.","Cierre con impacto en su vida actual."]}},
+{p:"Describe a memorable celebration you attended. What was the occasion, and what made it special?",
+ c45:{t:"Eh… {{the wedding of my sister}}… eh… in Colombia, in 2023. Eh… {{was}} very beautiful. Eh… {{there was many}} people, my family, friends. Eh… we {{dance}} {{all the night}}. Eh… the food {{is}} delicious. Eh… {{I cry}} because she is my sister. Eh… ok, that's all.",
+  f:[["the wedding of my sister","my sister's wedding","Posesivo con 's."],["was","it was","Falta el sujeto."],["there was many","there were many","Plural."],["dance","danced","Pasado."],["all the night","all night","Sin 'the'."],["is","was","Mantén el pasado."],["I cry","I cried","Pasado."]],
+  x:"🎧 Lista de datos sin explicar qué la hizo especial."},
+ c78:{t:"The most memorable celebration I have attended was my sister's wedding in Colombia {{two years before}}. It was special because I {{didn't go}} back home for four years, so it was the first time I saw all my family together again. The ceremony was in a small church and after that {{we did}} a big party on a farm. There was a band playing salsa and we danced until four in the morning. My grandmother, who is 90, danced with everybody. During the reception I made a speech and everybody cried. It was {{one of the most happiest}} days of my life.",
+  f:[["two years before","two years ago","Ago para contar desde hoy."],["didn't go","hadn't been","Past perfect: algo anterior."],["we did","we had","Have a party."],["one of the most happiest","one of the happiest","Happiest ya es superlativo."]],
+  x:"✅ Historia completa con detalles; pocos errores pero importantes."},
+ c1012:{t:"((The celebration I'll never forget is)) my younger sister's wedding back in Colombia, two years ago. ((What made it so special was that)) I hadn't been home in four years, so it was the first time I'd seen my whole family together in ages. The ceremony was in a tiny colonial church, ((and afterwards)) we all headed to a farm in the mountains for the reception. A live band played salsa all night, and ((the highlight for me was)) watching my ninety-year-old grandmother dance with every single guest. ((Towards the end of the night,)) I gave a speech about growing up with my sister, and there wasn't a dry eye in the room. ((Looking back,)) it reminded me how much I miss those big family moments now that I live so far away.",
+  g:["Responde directamente qué la hizo especial.","Detalles vivos (colonial church, grandmother dancing).","Expresiones naturales: in ages, there wasn't a dry eye.","Reflexión final personal."]}},
+{p:"Talk about a time when you made a mistake. What happened, and what did you learn from it?",
+ c45:{t:"Eh… one time in my work, eh… I {{send}} an email to the wrong person. Eh… {{was}} {{a email}} for my boss but… eh… {{I send to}} a client. Eh… my boss {{is}} angry. Eh… I {{say}} sorry. Eh… now I {{check always}} the emails. Eh… ok.",
+  f:[["send","sent","Pasado irregular."],["was","it was","Falta el sujeto."],["a email","an email","An antes de sonido vocal."],["I send to","I sent it to","Pasado + objeto."],["is","was","Mantén el pasado."],["say","said","Pasado irregular."],["check always","always check","Always va antes del verbo."]],
+  x:"🎧 La lección aparece, pero sin desarrollar."},
+ c78:{t:"A few months ago, I made a big mistake at work. I was writing an email to my manager with some comments about a client, {{and accidentally I sent}} it to the client. When I {{realized about it}}, I felt terrible. I {{called immediately}} my manager and {{explained her}} what happened. She was a bit upset, but she helped me write an apology to the client. Fortunately, the client was very understanding. From that day, I always {{revise}} the recipient before I send an email. I learned that it's better to admit your mistakes quickly.",
+  f:[["and accidentally I sent","and I accidentally sent","Adverbio antes del verbo."],["realized about it","realized","Realize no lleva 'about'."],["called immediately","immediately called","Adverbio antes del verbo."],["explained her","explained to her","Explain something to someone."],["revise","check","Falso amigo: revise = estudiar o corregir un texto."]],
+  x:"✅ Buena estructura con lección clara; errores de orden de palabras."},
+ c1012:{t:"((A few months ago, I made a mistake that still makes me cringe.)) I was writing a quick email to my manager with some honest comments about a difficult client, ((and without thinking,)) I hit 'reply all', so it went straight to the client. ((The moment I realised,)) my stomach dropped. Instead of hoping nobody would notice, I went straight to my manager's office and owned up. ((To my relief,)) she stayed calm, and together we wrote a sincere apology, which the client thankfully accepted. ((Since then,)) I always double-check who I'm sending an email to. ((The biggest lesson for me was that)) admitting a mistake quickly is far better than trying to hide it.",
+  g:["Emoción con expresiones naturales: cringe, my stomach dropped, owned up.","Secuencia clara del problema a la solución.","Lección explícita al final.","Vocabulario preciso: reply all, double-check."]}});
+
+/* Tasks 3 and 4: five illustrated scenes */
+const SCENE_P3="Describe some things that are happening in the picture below as well as you can. The person you are speaking to cannot see the picture.";
+const SCENE_P4="In this picture, what do you think will most probably happen next?";
+const park3=TASKS[2].qs[0], park4=TASKS[3].qs[0];
+TASKS[2].qs=[park3,
+{p:SCENE_P3,img:"moving",
+ c45:{t:"Eh… in this picture is a house. Eh… {{is a moving}}. Eh… two men {{carry}} a sofa, a green sofa. Eh… {{there is many boxes}}. Eh… a woman {{have a paper}}. Eh… a child {{have}} a cat. Eh… in the street there is a bicycle. Eh… {{is all}}.",
+  f:[["is a moving","a family is moving house","Move house = mudarse."],["carry","are carrying","Presente continuo."],["there is many boxes","there are a lot of boxes","Plural → there are."],["have a paper","is holding a clipboard","Vocabulario preciso + acción."],["have","is holding","Have no describe la acción."],["is all","That's what I can see.","Cierre más natural."]],
+  x:"🎧 Describe objetos sueltos, sin ubicación ni detalles."},
+ c78:{t:"In this picture a family is moving to a new house. On the left there is a big white truck with the doors open. Two men in blue uniforms are carrying a green sofa to the house, and it looks very heavy. {{In front the house}}, a woman in a yellow sweater is holding a clipboard and giving instructions. On the right there {{is a lot of boxes}} and {{the box of the top}} says 'fragile' and it's falling. A little boy is sitting on a box and holding a cat, but the cat looks angry. In the house next door, two old men are {{looking by the window}}. Also, a kid {{in a bicycle}} is coming down the street.",
+  f:[["In front the house","In front of the house","In front of + lugar."],["is a lot of boxes","are a lot of boxes","Boxes es plural."],["the box of the top","the box on top","Calco de 'la de arriba'."],["looking by the window","looking out of the window","Expresión fija."],["in a bicycle","on a bicycle","Bicicleta: on."]],
+  x:"✅ Buen contenido; errores de preposiciones típicos de hispanohablantes."},
+ c1012:{t:"((This scene shows a busy moving day outside a two-storey house.)) ((On the left,)) a large white moving truck is parked with its back doors wide open and a few boxes still inside. Two removalists in blue overalls are struggling to carry a bulky green sofa towards the front door, ((and they both look exhausted.)) ((In the foreground,)) a woman in a yellow jumper is holding a clipboard and pointing, probably giving directions. ((Over on the right,)) there's a tall stack of cardboard boxes, and the one on top, marked 'fragile', is already tipping over the edge. A little boy in a striped T-shirt is perched on another box, hugging a ginger cat that clearly wants to escape. ((Meanwhile,)) two elderly neighbours are peeking out of their windows next door, and ((in the background,)) a cyclist in an orange top is riding down the street.",
+  g:["Vocabulario preciso: removalists, bulky, perched, peeking.","Señala tensiones (caja que se cae, gato que se escapa).","Estructura espacial muy clara.","Describe emociones (exhausted, clearly wants to escape)."]}},
+{p:SCENE_P3,img:"cafe",
+ c45:{t:"Eh… this is a café. Eh… {{there is many people}}. Eh… a man {{make}} coffee, he {{have}} a beard. Eh… a waiter {{carry}} drinks and a boy {{is run}}. Eh… a woman {{work in the computer}}. Eh… two old people {{have a birthday}}, there is a cake. Eh… there is a dog {{white little}}. Eh… outside {{is raining}}. Eh… ok.",
+  f:[["there is many people","there are many people","People es plural."],["make","is making","Presente continuo."],["have","has","Tercera persona."],["carry","is carrying","Presente continuo."],["is run","is running","Is + -ing."],["work in the computer","is working on a laptop","On a laptop / computer."],["have a birthday","are celebrating a birthday","Verbo preciso."],["white little","little white","Orden: tamaño antes de color."],["is raining","it's raining","Falta el sujeto 'it'."]],
+  x:"🎧 Nombra personas sin ubicarlas en la imagen ni dar detalles."},
+ c78:{t:"This picture shows a busy café on a rainy day. At the back, a barista with a beard is {{doing}} coffee, and there are three people {{doing the queue}}. One woman looks angry and is looking at her watch. In the middle, a waiter is carrying a tray with drinks, but a little boy is running {{in front to him}}. On the left, a young woman is working on her laptop and she has a coffee next to her. {{In the right}}, an old couple is celebrating a birthday with a cake with candles, and a little white dog is under the table looking at the cake. Near the door, a man is holding a wet umbrella, because outside {{is raining a lot}}.",
+  f:[["doing","making","Make coffee."],["doing the queue","waiting in line / queuing","Calco de 'haciendo la fila'."],["in front to him","in front of him","In front of."],["In the right","On the right","Lados: on."],["is raining a lot","it's pouring","Sujeto + verbo más preciso."]],
+  x:"✅ Ordenada y completa; errores de colocación (make/do) y preposiciones."},
+ c1012:{t:"((This picture shows a cosy but very busy café on a rainy morning.)) ((Behind the counter,)) a bearded barista is concentrating on making coffee at a big espresso machine, while three customers wait in line. ((One of them,)) a woman with red hair, has her arms crossed and is checking her watch impatiently. ((Right in the middle,)) a waiter is rushing across the room with a tray full of drinks, and a little boy in a striped jumper is dashing right in front of him. ((On the left,)) a young woman is typing on her laptop with a steaming cup of coffee beside her. ((Over on the right,)) an elderly couple is celebrating with a birthday cake covered in candles, and a little white dog is sitting under their table, staring up at it. ((Near the entrance,)) a man in a raincoat is holding his dripping umbrella, and through the windows you can see people walking in the pouring rain.",
+  g:["Abre con panorama y ambiente (cosy, rainy morning).","Verbos precisos: rushing, dashing, typing, staring.","Ubicaciones variadas y ordenadas.","Detalles de emoción (impatiently) que preparan el Task 4."]}},
+{p:SCENE_P3,img:"station",
+ c45:{t:"Eh… this is a train station. Eh… the train {{is in the right}}. Eh… a man {{run}} with a… eh… a bag. Eh… a man {{clean the floor}}. Eh… a girl {{have a balloon red}}… eh… the balloon {{go up}}. Eh… a man {{play}} guitar. Eh… two old {{persons}} listen. Eh… {{two young take}} a photo. Eh… ok.",
+  f:[["is in the right","is on the right","Lados: on."],["run","is running","Presente continuo."],["clean the floor","is mopping the floor","Verbo preciso + continuo."],["have a balloon red","had a red balloon","Adjetivo antes; y ya se le escapó."],["go up","is floating away","Verbo preciso."],["play","is playing","Presente continuo."],["persons","people","Plural normal."],["two young take","two teenagers are taking","Young es adjetivo; falta el verbo."]],
+  x:"🎧 Frases sueltas sin orden espacial."},
+ c78:{t:"This picture shows a big train station in the afternoon. On the right, there is a train with the doors open, and a businessman is running very fast to catch it. {{He carries}} a briefcase and a suitcase. Near him, a cleaner is mopping the floor and there is a yellow sign that says 'wet floor'. In the middle, a mother with a stroller is reading a paper, maybe the timetable, and her little daughter {{lost}} her red balloon. On the left, a young man with a hat is playing the guitar and an old couple {{are listening him}}. In the front, a teenage couple is taking a selfie, and {{in the back}} a man is eating a sandwich on a bench.",
+  f:[["He carries","He's carrying","Para describir la imagen: presente continuo."],["lost","has just let go of","Verbo más preciso."],["are listening him","are listening to him","Listen to someone."],["in the back","in the background","Expresión para imágenes."]],
+  x:"✅ Muy completa; errores de tiempos y preposiciones."},
+ c1012:{t:"((This picture shows a busy train station at sunset,)) with a huge arched glass roof and golden light pouring through the windows. ((On the right,)) a train has just pulled in, and a businessman in a suit is sprinting towards the open doors, dragging a suitcase and clutching a briefcase. ((Not far from him,)) a cleaner is mopping up a big puddle next to a yellow 'wet floor' sign. ((In the middle,)) a mother with a stroller is checking a timetable, while her little girl in a pink coat is reaching up desperately for a red balloon that has just floated away. ((Over on the left,)) a busker in a beanie is playing the guitar with his case open for coins, and an elderly couple is listening with big smiles. ((In the foreground,)) a teenage couple is taking a selfie, and ((further back,)) a man on a bench is munching a sandwich while a pigeon waits for the crumbs.",
+  g:["Ambiente con detalle (sunset, arched glass roof).","Verbos muy precisos: sprinting, dragging, clutching, munching.","Vocabulario específico: busker, puddle, timetable.","Orden claro de derecha a izquierda y de adelante hacia atrás."]}},
+{p:SCENE_P3,img:"supermarket",
+ c45:{t:"Eh… this is a supermarket. Eh… a man {{push}} a trolley and his baby {{take}} a box of cereal. Eh… a man is {{in the stair}}, he {{put}} cans. Eh… {{a old woman}} {{want}} a jar. Eh… a boy with headphones {{choose}} oranges. Eh… {{there is many people}} in the line. Eh… a man {{no have}} wallet. Eh… ok.",
+  f:[["push","is pushing","Presente continuo."],["take","is grabbing","Presente continuo + verbo preciso."],["in the stair","on a ladder","Stairs = escaleras de una casa; ladder = escalera de mano."],["put","is putting","Presente continuo."],["a old woman","an old woman","An antes de sonido vocal."],["want","is trying to reach","Describe la acción."],["choose","is choosing","Presente continuo."],["there is many people","there are many people","Plural."],["no have","can't find his","Negativo correcto y más preciso."]],
+  x:"🎧 Muchas acciones, pero sin orden y con muchos errores de verbos."},
+ c78:{t:"This is a picture of a busy supermarket. On the left, a father is pushing a {{car of shopping}} full of food, and his little son is taking a box from a big pyramid of cereal boxes. In the middle, a worker in a green uniform is {{up of}} a ladder putting cans on a shelf, and one can is falling. Next to him, an old woman is trying to {{take}} a jar from the top shelf. On the right, a teenager with headphones is choosing oranges, and one orange {{fell}} on the floor. At the checkout there is a long line, and a man is looking for something in his wallet. The woman behind him looks {{bored}}.",
+  f:[["car of shopping","shopping trolley","Calco de 'carro de compras'."],["up of","up on","Preposición correcta."],["take","reach","Reach = alcanzar."],["fell","has fallen and is rolling","Describe lo que se ve ahora."],["bored","annoyed / impatient","Adjetivo más preciso para su cara."]],
+  x:"✅ Buena descripción y orden; errores de vocabulario."},
+ c1012:{t:"((This picture shows a crowded supermarket at what looks like peak hour.)) ((In the foreground on the left,)) a dad is pushing an overflowing shopping trolley, while his toddler is pulling a cereal box out of a towering display that's already starting to wobble. ((Just behind them,)) a staff member in a green shirt is standing on a stepladder, restocking tins, and one tin is slipping out of his hand. ((Right next to him,)) an elderly woman is stretching on her tiptoes to reach a jar on the top shelf. ((Over on the right,)) a teenager wearing headphones is picking oranges, but one has rolled off the pile onto the floor. ((At the checkout,)) there's a long queue, and a man at the front is searching his wallet with an embarrassed look, while the woman behind him checks her watch impatiently. ((In the background,)) a shop assistant is handing out free samples near the entrance.",
+  g:["Vocabulario preciso: overflowing, towering, stepladder, restocking.","Detecta todas las tensiones de la imagen.","Lenguaje corporal y emociones (on her tiptoes, embarrassed).","Orden espacial impecable."]}}];
+
+TASKS[3].qs=[park4,
+{p:SCENE_P4,img:"moving",
+ c45:{t:"Eh… I think the box fragile {{go to fall}}. Eh… and {{broken}}. Eh… the cat {{escape}}. Eh… the men {{no can}} put the sofa in the door. Eh… the woman… eh… {{maybe angry}}. Eh… ok.",
+  f:[["go to fall","is going to fall","Going to necesita 'is'."],["broken","it will break","Falta sujeto y futuro."],["escape","will escape","Falta el futuro."],["no can","won't be able to","Futuro de can."],["maybe angry","might get angry","Might + verbo."]],
+  x:"🎧 Predicciones sin razones y frases muy cortas."},
+ c78:{t:"I think the box that says 'fragile' is going to fall {{in the floor}}, because it's already {{inclined}}, and probably something inside will break. The woman will be very angry. Also, the cat {{might to}} jump from the boy's arms and run away, because it looks very stressed. The two men look very tired, so maybe they {{will must}} stop and rest, or the sofa {{will fall them}}. Finally, I think one of the old neighbours will come out to help them {{for carry}} the boxes.",
+  f:[["in the floor","on the ground","Caer al suelo: on the ground / floor."],["inclined","tilting","Palabra más natural."],["might to","might","Might sin 'to'."],["will must","will have to","Must no tiene futuro."],["will fall them","they'll drop it","Drop = dejar caer algo."],["for carry","carry","Help someone + verbo base."]],
+  x:"✅ Predicciones lógicas con razones; errores de modales."},
+ c1012:{t:"((The most obvious prediction is that)) the 'fragile' box is about to crash to the ground, ((and judging by the label,)) whatever's inside probably won't survive. The woman with the clipboard will most likely rush over, but she'll be too late. ((At the same time,)) the cat is clearly desperate to escape, ((so I'm fairly sure)) it'll wriggle out of the boy's arms and dart off down the street. ((As for the removalists,)) they already look exhausted, so there's a good chance they'll have to put the sofa down for a breather before they reach the door. ((I also suspect)) one of the elderly neighbours will come outside, either to help or just to have a better look. ((All in all,)) this move is about to get a lot more stressful.",
+  g:["Cada predicción con pista visual (etiqueta, cara del gato, cansancio).","Expresiones avanzadas: is about to, I'm fairly sure, I suspect.","Vocabulario preciso: wriggle out, dart off, a breather.","Cierre con estilo."]}},
+{p:SCENE_P4,img:"cafe",
+ c45:{t:"Eh… I think the boy and the waiter {{go to crash}}. Eh… the drinks {{will falls}} on the floor. Eh… the boy {{will to cry}}. Eh… the dog {{maybe eat}} the cake. Eh… {{the woman of the line}} {{go}} because she {{no have}} time. Eh… ok.",
+  f:[["go to crash","are going to crash","Going to necesita 'are'."],["will falls","will fall","Will + verbo base."],["will to cry","will cry","Will sin 'to'."],["maybe eat","might eat","Might + verbo base."],["the woman of the line","the woman in the queue","Preposición correcta."],["go","will leave","Falta el futuro."],["no have","doesn't have","Negativo correcto."]],
+  x:"🎧 Ideas buenas, pero sin explicar por qué."},
+ c78:{t:"I think the waiter and the little boy are going to crash, because the boy is running and the waiter can't see him. {{Probably all the drinks will}} fall on the floor and {{will be a big mess}}. The boy's parents {{will must}} apologize. Also, the dog is looking at the cake, so maybe it will jump to eat it. The woman with the laptop {{could to}} spill her coffee if someone {{hit}} the table. Finally, I think the woman in the queue will leave because she is in a hurry.",
+  f:[["Probably all the drinks will","All the drinks will probably","Posición del adverbio."],["will be a big mess","there will be a big mess","Falta 'there'."],["will must","will have to","Must no tiene futuro."],["could to","could","Could sin 'to'."],["hit","hits","Tercera persona en presente."]],
+  x:"✅ Predicciones lógicas y con razones; errores de estructura."},
+ c1012:{t:"((Judging by how fast that boy is running,)) he's about to crash straight into the waiter. ((The tray will almost certainly)) go flying, and the drinks will end up all over the floor, ((and probably all over)) a few customers too. ((Once that happens,)) the boy's parents will rush over to apologise, and the waiter will have to clean up the mess. ((With all the chaos,)) the little white dog might seize the moment to jump up and grab a bite of the birthday cake. ((I also wouldn't be surprised if)) the woman checking her watch gives up and leaves without her coffee. ((Meanwhile,)) someone could easily slip on the puddle near the door. ((All in all,)) this café is about to have a very chaotic morning.",
+  g:["Predicciones encadenadas: Once that happens, With all the chaos.","Grados de certeza variados.","Expresiones naturales: go flying, seize the moment.","Usa detalles pequeños (el charco)."]}},
+{p:SCENE_P4,img:"station",
+ c45:{t:"Eh… I think the businessman {{go to slip}} because the floor is wet. Eh… he {{no catch}} the train. Eh… the girl {{will to cry}} because the balloon {{fly}}. Eh… the pigeon {{eat}} {{the bread of the man}}. Eh… the old couple {{give}} money to the man of the guitar. Eh… ok.",
+  f:[["go to slip","is going to slip","Going to necesita 'is'."],["no catch","won't catch","Futuro negativo."],["will to cry","will cry","Will sin 'to'."],["fly","flew away","Pasado + away."],["eat","will eat","Falta el futuro."],["the bread of the man","the man's sandwich","Posesivo con 's."],["give","will give","Falta el futuro."]],
+  x:"🎧 Buenas predicciones, pero sin conectores ni desarrollo."},
+ c78:{t:"I think the businessman is going to slip on the wet floor, because he is running very fast and {{he doesn't see}} the sign. If he falls, {{probably he will lose}} the train, and he will be very angry. The little girl is going to cry because her balloon {{is going away}}, and her mother {{will must}} buy her another one. Also, the pigeon will eat the crumbs of the man's sandwich. The old couple will put some coins in the guitar case. Finally, the teenagers will post their selfie on Instagram.",
+  f:[["he doesn't see","he hasn't seen","Present perfect: algo que no ha visto hasta ahora."],["probably he will lose","he'll probably miss","Miss a train (no 'lose')."],["is going away","is floating away","Verbo preciso."],["will must","will have to","Must no tiene futuro."]],
+  x:"✅ Varias predicciones con razones; errores de vocabulario (lose/miss)."},
+ c1012:{t:"((The most obvious thing is that)) the businessman is heading straight for that wet patch, and since he's sprinting and looking at the train, ((he's very likely to)) slip and go sliding across the platform. ((If that happens,)) he'll probably miss his train, and the cleaner will rush over to help him up. ((As for the little girl,)) her balloon is already out of reach, so I think she'll burst into tears and her mum will have to calm her down. ((I'd also bet that)) the pigeon will hop onto the bench to snatch some crumbs from the man's sandwich. ((On a happier note,)) the elderly couple will probably drop a few coins into the busker's guitar case. ((And the teenagers?)) They'll most likely post their selfie online within seconds.",
+  g:["Cada predicción con pista visual (sprinting, out of reach).","Expresiones de probabilidad variadas: very likely, I'd bet, most likely.","Conectores con estilo: As for…, On a happier note…","Vocabulario preciso: burst into tears, snatch, hop."]}},
+{p:SCENE_P4,img:"supermarket",
+ c45:{t:"Eh… I think the boxes of cereal {{go to fall}}. Eh… the baby {{take}} one and {{all fall}}. Eh… the can {{will falls}} on the floor. Eh… maybe {{the man of the ladder}} {{fall}} too. Eh… somebody {{slip}} with the orange. Eh… the man {{no find}} his card. Eh… ok.",
+  f:[["go to fall","are going to fall","Going to necesita 'are'."],["take","is pulling","Describe la acción."],["all fall","they'll all fall","Sujeto + futuro."],["will falls","will fall","Will + verbo base."],["the man of the ladder","the man on the ladder","Preposición correcta."],["fall","might fall","Falta el modal."],["slip","might slip","Falta el modal."],["no find","won't find","Futuro negativo."]],
+  x:"🎧 Ve las tensiones, pero no explica por qué ni las conecta."},
+ c78:{t:"I think the pyramid of cereal boxes is going to fall down, because the little boy is pulling one box {{of the bottom}}. The father will be surprised and {{he will need to pick all}} the boxes. Also, the can that is falling will hit the floor, or maybe it will hit the old woman. {{The orange in the floor}} is dangerous because someone {{can}} slip on it. At the checkout, I think the man won't find his card, and the woman behind him will complain. Maybe the cashier will call the manager.",
+  f:[["of the bottom","from the bottom","Pull something from…"],["he will need to pick all","he'll have to pick up all","Pick up = recoger."],["The orange in the floor","The orange on the floor","On the floor."],["can","could","Posibilidad futura: could."]],
+  x:"✅ Predicciones lógicas; errores de preposiciones y phrasal verbs."},
+ c1012:{t:"((The first thing that'll happen, I think,)) is that the toddler will pull out that cereal box and the whole display ((will come tumbling down)) around the trolley. His dad will be mortified and will probably spend the next ten minutes restacking boxes. ((At the same time,)) the tin slipping from the worker's hand is going to land with a crash, ((and there's a good chance)) the elderly woman will get a fright and drop the jar she's reaching for. ((Over by the fruit,)) that runaway orange could easily send someone slipping. ((As for the checkout,)) I suspect the man won't find his card, so he'll have to step aside, ((much to the relief of)) the impatient woman behind him. ((Overall,)) it looks like the staff are going to have a very hectic evening.",
+  g:["Predicciones encadenadas y con causa.","Expresiones avanzadas: come tumbling down, mortified, much to the relief of.","Cubre todas las zonas de la imagen.","Cierre que resume la escena."]}}];
+
+/* Task 5 */
+TASKS[4].qs.push(
+{sel:"Your family needs a new car. Look at the two options below and choose the one you prefer.",
+ opts:[{ic:"🚗",t:"Hybrid sedan",d:["$32,000","Uses 4.5 L per 100 km","5 seats","Large boot (trunk)"]},{ic:"🚙",t:"Used SUV",d:["$24,000","Uses 9 L per 100 km","7 seats","6 years old"]}],
+ third:{who:"Your partner",ic:"🔌",t:"Electric hatchback",d:["$45,000","No petrol needed","4 seats","350 km per charge, needs a home charger"]},
+ p:"Your partner wants to buy the electric hatchback. Persuade your partner that your choice is better. Compare the two options.",
+ c45:{t:"Eh… I know the electric car is good for the environment… eh… but {{is very expensive}}. Eh… the hybrid is thirty-two thousand, {{is more cheap}}. Eh… and {{have}} five seats, we are five. Eh… the electric {{only have}} four. Eh… and we need a charger… eh… {{more money}}. Eh… the hybrid is better.",
+  f:[["is very expensive","it's very expensive","Falta el sujeto."],["is more cheap","it's cheaper","Adjetivo corto: -er."],["have","it has","Sujeto + tercera persona."],["only have","only has","Tercera persona."],["more money","that's extra money","Frase completa."]],
+  x:"🎧 Usa datos, pero no los compara con claridad ni cierra de forma persuasiva."},
+ c78:{t:"I understand that you want an electric car because it's {{more ecological}}, but I think the hybrid is a better option for us. First, the electric car costs forty-five thousand dollars and the hybrid only thirty-two, so we {{save}} thirteen thousand. Also, we {{will must}} install a charger at home, and that is {{more expensive more}}. Second, the electric car only has four seats, and we are five in the family, so {{it's not enough big}}. The hybrid uses very little petrol, only four point five litres, so it's also good for the environment. {{What you think?}}",
+  f:[["more ecological","more eco-friendly","Palabra natural en inglés."],["save","would save","Condicional: es una hipótesis."],["will must","would have to","Must no tiene futuro."],["more expensive more","even more money","Calco del español."],["it's not enough big","it isn't big enough","Enough va después del adjetivo."],["What you think?","What do you think?","Falta el auxiliar."]],
+  x:"✅ Buena comparación con números; errores de gramática."},
+ c1012:{t:"((I completely agree that going electric sounds great,)) and I love that it doesn't need any petrol. ((But let's look at the numbers.)) The electric car is forty-five thousand, ((while)) the hybrid is thirty-two, so that's thirteen thousand dollars saved, ((and that's before)) we pay to install a charger at home. ((More importantly,)) the electric one only has four seats. ((There are five of us,)) so every family outing would be a squeeze, ((whereas)) the hybrid fits everyone comfortably and has a big boot for the shopping. ((Plus,)) at four and a half litres per hundred kilometres, the hybrid is still very kind to the environment and to our wallet. ((So why don't we)) go for the hybrid now and think about an electric car when the kids are older?",
+  g:["Reconoce la ventaja de la otra opción antes de rebatir.","Hace cuentas y añade costos ocultos (charger).","'There are five of us': estructura natural.","Cierre persuasivo con propuesta a futuro."]},
+ note:"Las respuestas modelo eligen la opción 🚗 Hybrid sedan."},
+{sel:"Your family is moving to a new home. Look at the two options below and choose the one you prefer.",
+ opts:[{ic:"🏢",t:"Apartment near work",d:["$550 per week","2 bedrooms","10-minute walk to work","No parking"]},{ic:"🏡",t:"House in the suburbs",d:["$480 per week","3 bedrooms and a garden","50-minute commute","Quiet street"]}],
+ third:{who:"Your partner",ic:"🌊",t:"Townhouse near the beach",d:["$620 per week","2 bedrooms","Ocean view","40-minute drive to work"]},
+ p:"Your partner wants to rent the townhouse near the beach. Persuade your partner that your choice is better. Compare the two options.",
+ c45:{t:"Eh… the beach house is beautiful, but… eh… {{is more expensive}}, six hundred twenty. Eh… the house in the suburbs is four hundred eighty. Eh… {{have}} three bedrooms and a garden. Eh… the kids {{can to play}}. Eh… the beach is {{very far of}} work. Eh… ok, I prefer the house.",
+  f:[["is more expensive","it's more expensive","Falta el sujeto."],["have","it has","Sujeto + tercera persona."],["can to play","can play","Can sin 'to'."],["very far of","far from","Far from."]],
+  x:"🎧 Da ventajas, pero sin compararlas ni convencer."},
+ c78:{t:"I know you love the beach, but I think the house in the suburbs is better for our family. First, it's {{more cheap}}: we would pay four hundred and eighty dollars per week, {{and the townhouse six hundred and twenty}}, so we save one hundred and forty dollars every week. Second, the house has three bedrooms, so each kid can have {{his own}} room, and there's a garden. The townhouse only has two bedrooms. It's true that the commute is fifty minutes, but the townhouse is forty minutes {{in car}}, so it's almost the same. And we can go to the beach on weekends.",
+  f:[["more cheap","cheaper","Adjetivo corto: -er."],["and the townhouse six hundred and twenty","compared to six hundred and twenty for the townhouse","Estructura comparativa completa."],["his own","their own","Para varios niños: their."],["in car","by car","Medio de transporte: by."]],
+  x:"✅ Compara con datos y responde a la objeción; errores de gramática."},
+ c1012:{t:"((I totally get the appeal of an ocean view,)) and I'd love to live by the beach too. ((But think about what we actually need right now.)) The house in the suburbs is a hundred and forty dollars a week cheaper, ((which adds up to)) more than seven thousand dollars a year. ((On top of that,)) it has three bedrooms, so the kids wouldn't have to share any more, ((whereas)) the townhouse only has two. The garden would give them somewhere safe to play, and the street is nice and quiet. ((Admittedly,)) my commute would be a bit longer, but the townhouse is a forty-minute drive anyway, so we're only talking about ten extra minutes. ((And with the money we save,)) we could spend plenty of weekends at the beach. ((Doesn't that sound like the best of both worlds?))",
+  g:["Convierte el dato semanal en anual: argumento potente.","Anticipa la objeción (Admittedly…).","Contraste constante: whereas.","Pregunta retórica final: the best of both worlds."]},
+ note:"Las respuestas modelo eligen la opción 🏡 House in the suburbs."},
+{sel:"Your family wants to sign up your 10-year-old daughter for an after-school activity. Look at the two options below and choose the one you prefer.",
+ opts:[{ic:"🏊",t:"Swimming lessons",d:["$25 per class","Twice a week","5 minutes from home","Important life skill"]},{ic:"🤖",t:"Robotics club",d:["$40 per class","Once a week","20 minutes by car","Teamwork and technology"]}],
+ third:{who:"Your partner",ic:"🎹",t:"Private piano lessons",d:["$60 per class","Once a week","Needs a piano at home (about $3,000)","30 minutes of practice every day"]},
+ p:"Your partner wants your daughter to take private piano lessons. Persuade your partner that your choice is better. Compare the two options.",
+ c45:{t:"Eh… the piano is nice, but… eh… {{is very expensive}}. Eh… sixty dollars and we need {{buy}} a piano, three thousand. Eh… {{the swimming}} {{is more cheap}}, twenty-five. Eh… and swimming is important… eh… {{for no drown}}. Eh… and the pool is near, five minutes. Eh… I prefer swimming.",
+  f:[["is very expensive","it's very expensive","Falta el sujeto."],["buy","to buy","Need + to."],["the swimming","swimming","Actividades en general sin 'the'."],["is more cheap","is cheaper","Adjetivo corto: -er."],["for no drown","so she's safe in the water","Estructura correcta y más positiva."]],
+  x:"🎧 Compara precios, pero sin desarrollar los argumentos."},
+ c78:{t:"I know you want our daughter to learn music, and the piano is a beautiful instrument, but I think swimming lessons are {{more better}} for her. First, the piano is very expensive. Each class is sixty dollars, and we {{would need buy}} a piano for three thousand dollars. Swimming is only twenty-five dollars per class. Second, swimming is a life skill. {{In Australia there is}} beaches and pools everywhere, so {{it's very important that she knows}} to swim. Also, the pool is five minutes from home, so it's {{very practic}}. Finally, she {{will must}} practise piano every day, and she already has a lot of homework.",
+  f:[["more better","better","Better ya es comparativo."],["would need buy","would need to buy","Need + to."],["In Australia there is","In Australia there are","Plural."],["it's very important that she knows","it's very important for her to know how","Estructura natural."],["very practic","very convenient","Adjetivo correcto."],["will must","would have to","Must no tiene futuro."]],
+  x:"✅ Tres argumentos sólidos; errores frecuentes de hispanohablantes."},
+ c1012:{t:"((I love the idea of her learning music,)) ((but hear me out on the swimming lessons.)) ((First of all,)) the cost difference is huge. Piano is sixty dollars a class, ((plus)) about three thousand for an instrument, ((whereas)) swimming is just twenty-five dollars. ((More importantly,)) swimming is a genuine life skill here in Australia. We go to the beach every summer, and I'd feel so much calmer knowing she can handle herself in the water. The pool is five minutes away, so we won't be stuck in traffic twice a week, ((and)) she'll get some exercise after sitting in class all day. Piano also needs half an hour of practice every day, ((which could easily turn into)) a daily battle on top of homework. ((Why don't we start with swimming,)) and if she's still keen on music next year, we can look into piano then?",
+  g:["Reconoce el valor de la música antes de rebatir.","Argumento emocional fuerte (seguridad en el agua).","Anticipa un problema real (la práctica diaria).","Cierre con compromiso: start with… and look into piano then."]},
+ note:"Las respuestas modelo eligen la opción 🏊 Swimming lessons."});
+
+/* Task 5 photos: A, B and the other person's option for each practice */
+TASKS[4].qs.forEach((q,i)=>{q.opts[0].img=`t5-${i+1}a`;q.opts[1].img=`t5-${i+1}b`;q.third.img=`t5-${i+1}c`;});
+
+/* Task 6 */
+TASKS[5].qs.push(
+{p:"Three months ago, your close friend Camila borrowed $500 from you and promised to pay it back in two weeks. She hasn't mentioned it since, and now you need the money to pay your rent. Choose ONE of the options below and speak to that person.",
+ opts:[{ic:"🙋",t:"Option A",d:["Talk to Camila and ask her to pay the money back."]},{ic:"🏠",t:"Option B",d:["Talk to your landlord and ask for more time to pay this month's rent."]}],
+ c45:{t:"Eh… hi Camila. Eh… {{I need the money}}. Eh… the five hundred dollars… eh… {{you borrow me}}. Eh… {{is three months}}. Eh… I need {{pay}} the rent. Eh… {{give me the money please}}. Eh… ok, bye.",
+  f:[["I need the money","Sorry to bring this up, but…","Empezar así suena brusco."],["you borrow me","I lent you","Borrow = pedir prestado; lend = prestar."],["is three months","it's been three months","Present perfect para duración."],["pay","to pay","Need + to."],["give me the money please","could you pay me back, please?","Petición cortés."]],
+  x:"🎧 Suena a exigencia; falta empatía y una propuesta."},
+ c78:{t:"Hi Camila, how are you? I want to talk with you about something a bit uncomfortable. Do you remember the five hundred dollars that I {{borrowed you}} three months ago? You said you {{will pay}} me in two weeks, but I think you forgot. I'm sorry to ask, but this month I need the money for the rent, {{in other case}} I will have problems with my landlord. I know maybe you don't have all the money now, so you can pay me two hundred now and the rest next month. Is that possible? Thank you for understanding.",
+  f:[["borrowed you","lent you","Lend = prestar."],["will pay","would pay","Estilo indirecto: will → would."],["in other case","otherwise","Calco de 'en otro caso'."]],
+  x:"✅ Tono amable y propone un plan de pago; pocos errores pero comunes."},
+ c1012:{t:"((Hi Camila, have you got a minute? This is a bit awkward to bring up.)) ((Do you remember)) the five hundred dollars I lent you back in July? You mentioned you'd pay it back in a couple of weeks, ((and I'm sure it just slipped your mind.)) ((The thing is,)) my rent is due next Friday and I'm really counting on that money to cover it. ((I completely understand if)) things are tight for you at the moment, so ((would it work if)) you paid me half this week and the rest by the end of the month? ((I really don't want this to come between us,)) because our friendship matters much more to me than the money. ((Just let me know what works for you.))",
+  g:["Le da a Camila una salida digna (slipped your mind).","Explica la urgencia sin culpar.","Propone un plan flexible.","Protege la amistad de forma explícita."]},
+ note:"Las respuestas modelo eligen la Option A (hablar con Camila)."},
+{p:"During a team meeting, your coworker Daniel presented an idea that you had shared with him privately, and he didn't mention your name. Your manager loved the idea. Choose ONE of the options below and speak to that person.",
+ opts:[{ic:"🤝",t:"Option A",d:["Talk to Daniel and explain how you feel about what happened."]},{ic:"💼",t:"Option B",d:["Talk to your manager, Ms. Chen, and explain that the idea was originally yours."]}],
+ c45:{t:"Eh… hello Ms. Chen. Eh… the idea of the meeting… eh… {{is my idea}}. Eh… Daniel {{steal}} my idea. Eh… {{I said him}} last week. Eh… {{is not fair}}. Eh… {{I am very angry}}. Eh… thank you.",
+  f:[["is my idea","was my idea","Pasado."],["steal","took","Pasado; y 'steal' suena muy acusador."],["I said him","I told him","Tell someone."],["is not fair","it isn't fair","Falta el sujeto."],["I am very angry","I felt a bit uncomfortable about it","Con el jefe, suaviza las emociones."]],
+  x:"🎧 Suena a queja y acusación; no propone nada."},
+ c78:{t:"Hi Ms. Chen, do you have five minutes? I need to tell you something about {{the meeting of yesterday}}. The idea that Daniel presented about the new delivery system was my idea. I explained it to him last week {{in the lunch}}, and I have the notes {{in my computer}} from two weeks ago. I don't want to create problems with Daniel, {{but I think is fair}} that you know. I would like to {{participate on}} the project, because I have more ideas. Thank you for listening.",
+  f:[["the meeting of yesterday","yesterday's meeting","Posesivo con 's."],["in the lunch","over lunch","Expresión natural."],["in my computer","on my computer","On a computer."],["but I think is fair","but I think it's fair","Falta el sujeto."],["participate on","be involved in","Preposición y verbo naturales."]],
+  x:"✅ Da pruebas y propone algo concreto; errores de preposiciones."},
+ c1012:{t:"((Hi Ms. Chen, have you got a moment? There's something I'd like to raise, and it's a bit delicate.)) ((It's about)) the delivery-tracking idea from yesterday's meeting. I was really pleased you liked it, ((but to be honest,)) it's something I developed and shared with Daniel over lunch last week. ((I still have)) my notes and a draft I emailed myself on the fifth, if that helps. ((I'm not trying to cause problems for Daniel,)) and he may not have realised how it came across. ((I just felt it was important that you knew,)) because I'd really love the chance to be involved in the project. ((Would it be possible to)) set up a short meeting with the three of us to talk about next steps? ((Thanks for hearing me out.))",
+  g:["Tono profesional y calmado.","Da pruebas sin acusar (he may not have realised).","Pide algo concreto y constructivo.","Cierre respetuoso."]},
+ note:"Las respuestas modelo eligen la Option B (hablar con la jefa)."},
+{p:"Your 16-year-old son Tomás wants to go to a music festival in another city this weekend with his friends. Your partner has already said yes, but you are worried because no adults will go with them. Choose ONE of the options below and speak to that person.",
+ opts:[{ic:"🎧",t:"Option A",d:["Talk to your son and explain why he can't go this time."]},{ic:"💬",t:"Option B",d:["Talk to your partner and explain your concerns."]}],
+ c45:{t:"Eh… I {{no agree}} with the festival. Eh… {{is very dangerous}}. Eh… he {{have sixteen years}}. Eh… no adults go. Eh… {{why you say yes}}? Eh… {{I don't like}}. Eh… ok.",
+  f:[["no agree","don't agree","Negativo con don't."],["is very dangerous","it could be dangerous","Sujeto; y suaviza la afirmación."],["have sixteen years","is sixteen","La edad se dice con 'be'."],["why you say yes","why did you say yes","Pregunta en pasado con 'did'."],["I don't like","I don't like it","Like necesita objeto."]],
+  x:"🎧 Suena a reproche; no propone una solución."},
+ c78:{t:"Hi love, can we talk about the festival? I know you already said yes to Tomás, and I'm not angry, but I'm a bit worried. He is only sixteen and {{there is not going any adult}} with them. The festival is in another city, so if something happens {{we are four hours far}}. Also, at these festivals there is a lot of alcohol. I think we should decide {{the things like this}} together. Maybe he can go next year, or one of us can go with them and stay in a hotel {{near}}. What do you think?",
+  f:[["there is not going any adult","no adults are going","Estructura natural."],["we are four hours far","we're four hours away","Distancia: … hours away."],["the things like this","things like this","Sin 'the'."],["near","nearby","Al final de la frase: nearby."]],
+  x:"✅ Explica sus preocupaciones y propone soluciones; errores de estructura."},
+ c1012:{t:"((Hey love, have you got a minute to talk about Tomás and the festival?)) ((I know you've already told him he can go,)) and I understand why. He's responsible, and it would mean a lot to him. ((But I have to be honest,)) I'm not comfortable with it yet. He's only sixteen, it's four hours away, and there won't be a single adult with them if something goes wrong. ((I also think)) decisions like this should be ones we make together, so we're on the same page with the kids. ((How about a compromise?)) One of us could drive them there and stay in a hotel nearby, so they still get their independence but we're close if they need us. ((Would you be open to that?))",
+  g:["Valida la decisión de la pareja antes de discrepar.","Razones concretas (edad, distancia, sin adultos).","Pide decidir en equipo sin reprochar.","Propone un compromiso realista."]},
+ note:"Las respuestas modelo eligen la Option B (hablar con tu pareja)."});
+
+/* Task 7 */
+TASKS[6].qs.push(
+{p:"Some people believe that working from home is better than working in an office. Do you agree or disagree? Explain your reasons.",
+ c45:{t:"Eh… {{I'm agree}}. Eh… working from home is better. Eh… you {{no need}} travel. Eh… you save time and money. Eh… and you can be with your family. Eh… in the office {{there is many noise}}. Eh… I work from home two days and… eh… {{is very good}}. Eh… that's my opinion.",
+  f:[["I'm agree","I agree","Agree es verbo."],["no need","don't need to","Negativo + to."],["there is many noise","there's a lot of noise","Noise es incontable."],["is very good","it's great","Falta el sujeto."]],
+  x:"🎧 Razones correctas pero sin desarrollo ni ejemplos para 90 segundos."},
+ c78:{t:"I agree that working from home is better {{for the most of}} people. The main reason is the time. When I worked in the office, I spent two hours every day {{in the train}}, and now I use that time to do exercise and be with my kids. Another reason is that at home you can concentrate more, because in the office there {{is always}} people talking and meetings. Some people say that at home you feel lonely, and {{it's true in part}}, but you can go to the office one day {{for week}} to see your colleagues. That's why I think working from home is the best option.",
+  f:[["for the most of","for most","Sin 'the of'."],["in the train","on the train","Transporte público: on."],["is always","are always","People es plural."],["it's true in part","that's partly true","Expresión natural."],["for week","a week","Frecuencia: once a week."]],
+  x:"✅ Opinión clara, ejemplo personal y contraargumento; errores de preposiciones."},
+ c1012:{t:"((I strongly agree)) that, for most office jobs, working from home is the better option. ((The most obvious benefit is)) the time you get back. When I worked in the city, I spent nearly two hours a day on crowded trains. ((Now I use that time to)) exercise and have breakfast with my kids, and I'm far less stressed. ((Beyond that,)) I'm genuinely more productive at home, because I'm not constantly interrupted by chatter or pointless meetings. ((Some people argue that)) remote work is isolating and makes teamwork harder, ((and I think that's a fair concern.)) ((However,)) a hybrid arrangement, where you go in once a week, solves most of that problem. ((So overall,)) I'm convinced that giving people the option to work from home makes them happier, healthier and more productive.",
+  g:["Opinión matizada (for most office jobs).","Ejemplo personal concreto.","Concede y responde a la otra postura.","Conclusión con una lista de tres (happier, healthier, more productive)."]}},
+{p:"Some people think public transport should be free for everyone. Do you agree or disagree? Explain your reasons.",
+ c45:{t:"Eh… I {{am agree}}. Eh… {{the transport free}} is good. Eh… {{the people use more}} the bus and {{no use}} the car. Eh… {{less traffic}}. Eh… and is good for the {{environmental}}. Eh… {{for the poor people is good}} too. Eh… ok.",
+  f:[["am agree","agree","Agree es verbo."],["the transport free","free public transport","Adjetivo antes del sustantivo."],["the people use more","people would use … more","Sin 'the' + condicional."],["no use","wouldn't use","Condicional negativo."],["less traffic","there would be less traffic","Frase completa."],["environmental","environment","Environmental es adjetivo."],["for the poor people is good","it would help people on low incomes","Más respetuoso y correcto."]],
+  x:"🎧 Ideas sueltas sin ejemplos ni conclusión."},
+ c78:{t:"I agree that public transport should be free. First, if it's free, more people will leave their cars at home and take the train or the bus. This will reduce the traffic and the pollution in big cities like Melbourne, where traffic {{is each time worse}}. Second, it helps people {{with low resources}}. For example, students and pensioners spend a lot of money {{in the Myki}} every week. Some people say that the government doesn't have money for this, but I think {{it's a good inversion}}, because people will spend less time in traffic and be more productive. So, {{resuming}}, I think free public transport is a great idea.",
+  f:[["is each time worse","is getting worse and worse","Calco de 'cada vez peor'."],["with low resources","on low incomes","Calco de 'de bajos recursos'."],["in the Myki","on Myki fares","Spend money on something."],["it's a good inversion","it's a good investment","Falso amigo: inversión = investment."],["resuming","to sum up","Falso amigo: resumir = sum up."]],
+  x:"✅ Estructura muy buena; varios falsos amigos bajan el puntaje de vocabulario."},
+ c1012:{t:"((I firmly believe)) public transport should be free, at least in major cities like Melbourne. ((First and foremost,)) it's one of the most effective ways to get cars off the road. If catching the train cost nothing, ((I'm sure)) thousands of commuters would leave their cars at home, which would cut both congestion and pollution. ((Beyond the environmental benefits,)) it would make a real difference to people on low incomes. Students, pensioners and casual workers can easily spend fifty dollars a week on fares, ((and that money could go towards)) food or rent instead. ((Critics often argue that)) it would be too expensive for the government, ((and that's a valid point.)) ((But in my view,)) it's an investment that pays for itself through less traffic, cleaner air and a more productive workforce. ((So all things considered,)) free public transport makes complete sense.",
+  g:["Opinión firme y acotada (in major cities).","Condicional bien usado (If … cost, … would).","Concede y responde a la crítica.","Vocabulario preciso: congestion, commuters, pays for itself."]}},
+{p:"Some people think fast food should be taxed more to encourage healthier eating. Do you agree or disagree? Explain your reasons.",
+ c45:{t:"Eh… I {{no agree}}. Eh… {{the fast food}} is cheap and… eh… {{the poor people}} eat that. Eh… if {{is more expensive}}, {{is bad}} for them. Eh… the people {{need learn}} to eat healthy. Eh… in the school. Eh… that's my opinion.",
+  f:[["no agree","don't agree","Negativo con don't."],["the fast food","fast food","En general, sin 'the'."],["the poor people","people on low incomes","Más respetuoso y natural."],["is more expensive","it's more expensive","Falta el sujeto."],["is bad","that's bad","Falta el sujeto."],["need learn","need to learn","Need + to."]],
+  x:"🎧 Tiene una postura, pero no la desarrolla."},
+ c78:{t:"I don't agree with this idea. {{In my opinion, I think}} a tax on fast food is not fair. The main reason is that families with less money eat more fast food because it's cheap and quick, so they will be the most affected. A tax doesn't make healthy food cheaper. Another reason is that adults can decide what to eat. I think a better solution is education. For example, schools can teach children to cook simple and healthy meals, and the government can {{do}} healthy food {{more cheap}}. That's why I disagree.",
+  f:[["In my opinion, I think","In my opinion,","Redundante."],["do","make","Make something cheaper."],["more cheap","cheaper","Adjetivo corto: -er."]],
+  x:"✅ Buen argumento con alternativa; para subir, más vocabulario preciso y un ejemplo personal."},
+ c1012:{t:"((I actually disagree)) with taxing fast food, even though I understand the intention behind it. ((My main concern is that)) it would hit low-income families the hardest. They often rely on fast food not because they love it, but because it's cheap and quick after a long shift. ((Making it more expensive)) doesn't magically make fresh food affordable or give people more time to cook. ((On top of that,)) I believe adults should be free to make their own choices about what they eat. ((A far more effective approach would be)) to tackle the problem from the other side: subsidise fruit and vegetables and teach kids basic cooking at school. ((Admittedly,)) taxes on sugary drinks seem to have helped in some countries, ((but)) punishing people rarely changes habits as well as education does. ((So for me,)) the answer is to make healthy food easier, not junk food harder.",
+  g:["Desacuerdo matizado (I understand the intention).","Propone una alternativa concreta.","Concede un punto de la otra postura.","Conclusión memorable con paralelismo (easier / harder)."]}});
+
+/* Task 8 */
+TASKS[7].qs.push(
+{p:"You are at a travel shop and see this unusual item. Your cousin Valentina travels a lot for work. Call her and describe it in as much detail as you can.",img:"suitcase",
+ c45:{t:"Eh… hi Vale. Eh… I {{find}} {{a suitcase very strange}}. Eh… {{it's suitcase and scooter}}. Eh… is purple. Eh… {{in the down}} {{have}} wheels and… eh… a place {{for put}} the foot. Eh… {{in the up}} there is a handle… like bicycle. Eh… you can {{to go}} fast in the airport. Eh… you like?",
+  f:[["find","found","Pasado."],["a suitcase very strange","a very strange suitcase","Adjetivo antes del sustantivo."],["it's suitcase and scooter","it's a suitcase and a scooter","Faltan los artículos."],["in the down","at the bottom","Partes de un objeto."],["have","it has","Sujeto + tercera persona."],["for put","to put","Propósito: to + verbo."],["in the up","at the top","Partes de un objeto."],["to go","go","Can sin 'to'."]],
+  x:"🎧 No describe tamaño, colores de cada parte ni detalles útiles."},
+ c78:{t:"Hi Valentina! I'm at the travel shop and I saw something perfect for you. It's a purple suitcase, {{of normal size}} for the cabin, but it {{converts in}} a scooter. At the bottom, there's a grey board where you can put your foot, and it has two small wheels at the front and two {{in the back}}. The handle is long and at the top it has a bar like a bicycle, with black {{handles}}. There's also a small light at the front and a holder for your phone. I think it's {{very util}} for big airports, because you can {{arrive faster to your gate}}.",
+  f:[["of normal size","carry-on size","Expresión de viaje."],["converts in","turns into","Phrasal verb natural."],["in the back","at the back","Partes de un objeto: at."],["handles","grips","Las partes de goma del manubrio."],["very util","very useful","Falso amigo: útil = useful."],["arrive faster to your gate","get to your gate faster","Arrive no va con 'to'."]],
+  x:"✅ Descripción ordenada y completa; errores de vocabulario."},
+ c1012:{t:"((Hi Vale, it's me! You're going to love what I've just found.)) I'm at the travel shop looking at a suitcase that turns into a scooter. ((At first glance,)) it looks like a normal purple carry-on with ridges down the front. ((But at the bottom,)) a grey footboard sticks out at the front, with two little wheels underneath it, so you can stand on it and push off with one foot. ((The pull-out handle is the clever bit:)) at the top there's a T-shaped bar with black rubber grips, just like handlebars, and a small clip in the middle to hold your phone. ((It even has)) a tiny headlight on the front of the board. ((Considering how often)) you're rushing between gates, ((I reckon)) this would save you a lot of stress. Do you want me to send you the link?",
+  g:["Explica por qué llama desde la primera frase.","Describe de abajo arriba con ubicaciones precisas.","Comparaciones útiles (just like handlebars).","Conecta el objeto con la vida de la prima."]}},
+{p:"You are at a furniture store and see this unusual lamp. Your friend Mónica has just moved into a small apartment and needs one. Call her and describe it so she can decide whether to buy it.",img:"lamp",
+ c45:{t:"Eh… hi Mónica. Eh… I {{see}} {{a lamp very funny}}. Eh… {{is like a pencil}}, yellow, very tall. Eh… {{in the down}} there is a plant. Eh… {{in the up}} there is the light, {{color blue}}. Eh… and {{have}} a speaker for music. Eh… {{is good for your apartment small}}.",
+  f:[["see","saw","Pasado."],["a lamp very funny","a really fun lamp","Adjetivo antes; funny = chistoso."],["is like a pencil","it looks like a pencil","Sujeto + look like."],["in the down","at the bottom","Partes de un objeto."],["in the up","at the top","Partes de un objeto."],["color blue","with a turquoise shade","Shade = pantalla de lámpara."],["have","it has","Sujeto + tercera persona."],["is good for your apartment small","it's perfect for your small apartment","Sujeto + adjetivo antes."]],
+  x:"🎧 Menciona partes, pero sin tamaño, materiales ni recomendación clara."},
+ c78:{t:"Hi Mónica! I'm at the furniture store and I found a lamp that you will love. It's very tall, more or less {{one meter and seventy}}, and the pole {{has the form of}} a giant yellow pencil. At the bottom, the base is a white pot with a real plant, so it's a lamp and a plant at the same time. At the top, there's a curved arm with a turquoise lampshade. In the middle of the pole there is a round speaker, so you can {{put}} music from your phone, and there's a little shelf for a book. I think it's perfect for your apartment because {{it doesn't occupy much space}}.",
+  f:[["one meter and seventy","one metre seventy","Así se dicen las alturas."],["has the form of","is shaped like","Expresión natural."],["put","play","Play music."],["it doesn't occupy much space","it doesn't take up much space","Take up space."]],
+  x:"✅ Descripción clara con recomendación; errores de calcos del español."},
+ c1012:{t:"((Hey Mónica, I think I've just found the perfect lamp for your new place.)) It's a floor lamp, about as tall as me, ((and the whole pole is shaped like)) a giant yellow pencil, with the sharpened tip pointing up towards the light. ((At the base,)) instead of a normal stand, there's a white pot with a leafy green plant growing in it. ((From the top,)) a curved metal arm holds a turquoise dome lampshade, so the light shines down nicely for reading. ((Halfway up the pole,)) there's a small round speaker you can connect to your phone, ((and just below it,)) a little shelf that's just big enough for a book. ((Since your apartment is so small,)) having a lamp, a plant, a speaker and a shelf all in one would save you heaps of space. Should I send you a photo?",
+  g:["Comparación de tamaño fácil de imaginar (about as tall as me).","Descripción de abajo arriba muy clara.","Vocabulario preciso: lampshade, leafy, halfway up.","Recomendación basada en la necesidad de la amiga."]}},
+{p:"You are at a pet store and see this unusual piece of furniture. Your neighbour Ricardo has a small dog and a very small living room. Call him and describe it so he can decide whether to buy it.",img:"dogtable",
+ c45:{t:"Eh… hi Ricardo. Eh… in the pet shop there is a table… eh… {{for put the dog}}. Eh… is {{of wood}}. Eh… {{under of}} the table there is a… eh… a house for the dog, with a cushion. Eh… and a drawer with {{two plate}} for food and water. Eh… {{is small}}, good for {{your living}}. Eh… bye.",
+  f:[["for put the dog","where your dog can sleep","Estructura correcta."],["of wood","made of wood","Material: made of."],["under of","under","Sin 'of'."],["two plate","two bowls","Bowls para mascotas; y plural."],["is small","it's small","Falta el sujeto."],["your living","your living room","Living solo no es la sala."]],
+  x:"🎧 Describe lo básico, sin tamaño ni detalles."},
+ c78:{t:"Hi Ricardo, how are you? I'm at the pet store and I saw {{a furniture}} that would be perfect for you and Lucky. It's a small side table made of {{clear wood}}, {{more or less of the size of}} a bedside table. On the top you can put a lamp or a plant. Under the top, there is a little house for the dog, with a round door and a soft grey cushion inside. On the side there is a drawer that opens and has two bowls, one for the food and one for the water. On the front there is a paw print {{draw}}. I think it's {{perfect for save space}} in your living room.",
+  f:[["a furniture","a piece of furniture","Furniture es incontable."],["clear wood","light wood","Falso amigo: claro (color) = light."],["more or less of the size of","about the size of","Expresión natural."],["draw","design","Draw es verbo; aquí es un diseño."],["perfect for save space","perfect for saving space","Preposición + -ing."]],
+  x:"✅ Descripción completa y ordenada; errores de calcos del español."},
+ c1012:{t:"((Hi Ricardo, quick call. I'm at the pet store and I've spotted something that's so you.)) ((It's a side table and a dog bed in one.)) It's made of light wood, roughly the size of a bedside table, so it would fit easily next to your couch. ((On top,)) there's a flat surface for a lamp, a plant or your morning coffee. ((Underneath,)) the whole bottom part is a cosy little den with a round opening at the front, a bit like a kennel, and inside there's a soft grey cushion. ((The clever part is)) a drawer on the side that slides out with two metal bowls for food and water, so they're not cluttering up the floor. There's even a little paw print on the front. ((Given how tiny your living room is,)) I reckon it'd be a great way to give Lucky his own space without losing any of yours. Want me to check if it comes in a darker colour?",
+  g:["Resume el objeto en una frase (a side table and a dog bed in one).","Comparaciones claras (a bit like a kennel).","Vocabulario preciso: den, slides out, cluttering up.","Recomendación personal y pregunta final natural."]}});
+
+/* ---------- App ---------- */
+let ti=0, qi=0, raf=null, t0=0, lock=null, lvl="c78", chosen=0;
+const $=id=>document.getElementById(id);
+const T=()=>TASKS[ti], Qn=()=>T().qs[qi];
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const mark=s=>esc(s).replace(/\{\{(.+?)\}\}/g,'<span class="err">$1</span>').replace(/\(\((.+?)\)\)/g,'<mark>$1</mark>');
+const optCard=(o,cls="",tag="",btn=false,i=0)=>`<${btn?'button':'div'} class="opt ${cls}" ${btn?`data-i="${i}"`:''}>${tag?`<span class="tag">${tag}</span>`:''}${o.img?`<img class="ph" src="images/${o.img}.jpg" alt="${esc(o.t)}" width="1000" height="750">`:`<span class="ic">${o.ic}</span>`}<b>${esc(o.t)}</b><ul>${o.d.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></${btn?'button':'div'}>`;
+
+function ctxHTML(){const q=Qn();
+  if(q.img)return `<div class="pic">${PIC[q.img]?PIC[q.img]():`<img src="images/${q.img}.jpg" alt="Picture for this task" width="1400" height="1045">`}</div>`;
+  if(q.third){const mine=q.opts[chosen];return `<div class="opts">${optCard(mine,"mine","Your choice")}${optCard(q.third,"theirs",q.third.who+"'s choice")}</div>`;}
+  if(q.opts)return `<div class="opts">${q.opts.map(o=>optCard(o)).join("")}</div>`;
+  return "";}
+
+function buildNav(){
+  $("tasknav").innerHTML=TASKS.map((t,i)=>`<button class="chip" aria-pressed="${i===ti}" aria-label="Task ${i+1}: ${t.name}" data-t="${i}">Task ${i+1}</button>`).join("");
+  $("tasknav").querySelectorAll("button").forEach(b=>b.onclick=()=>{ti=+b.dataset.t;qi=0;reset(true)});
+  $("tname").textContent=`Task ${ti+1} · ${T().name}`;
+  $("qpick").innerHTML=T().qs.map((_,i)=>`<button class="chip" aria-pressed="${i===qi}" aria-label="Question ${i+1}" data-q="${i}">${i+1}</button>`).join("");
+  $("qpick").querySelectorAll("button").forEach(b=>b.onclick=()=>{qi=+b.dataset.q;reset(false)});
+}
+function renderGuide(){const t=T(),g=t.guide;
+  $("s-intro").innerHTML=`<div class="label">Antes de empezar · Guía de Task ${ti+1}</div>
+  <h2 style="font-size:1.35rem">🐨 ${esc(t.name)}: cómo funciona</h2>
+  <p class="lead">${g.what}</p>
+  <div class="facts">${g.facts.map(f=>`<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+  ${CRIT}<div class="callout">${g.callout}</div>
+  <h2>✅ Qué hacer y ❌ qué no hacer</h2>
+  <div class="dd"><div class="yes"><h3>✅ Haz esto</h3><ul>${g.doo.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <div class="no"><h3>❌ Evita esto</h3><ul>${g.dont.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+  <h2>⚠️ Errores comunes de hispanohablantes</h2>
+  <ul class="fixes">${g.errors.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")}</ul>
+  <h2>🚀 Tips para boost your score</h2>
+  <div class="flow ${g.flow.length===3?'f3':''}">${g.flow.map(f=>`<div class="step"><small>${f[0]}</small><b>${esc(f[1])}</b><em>${esc(f[2])}</em></div>`).join("")}</div>
+  <div><p style="font-family:var(--display);font-weight:600;margin-bottom:8px">Frases útiles:</p><div class="phr">${g.phrases.map(p=>`<span>${esc(p)}</span>`).join("")}</div></div>
+  <ol class="tips">${g.tips.map(x=>`<li>${x}</li>`).join("")}</ol>
+  <button class="main" id="btn-begin">Empezar la práctica →</button>`;
+  $("btn-begin").onclick=()=>reset(false);
+}
+function show(ids){["s-intro","s-select","s-prep","s-rec","s-done","s-check"].forEach(s=>$(s).hidden=!ids.includes(s))}
+function stopLoop(){if(raf)cancelAnimationFrame(raf);raf=null}
+function countdown(sec,el,onEnd){t0=performance.now();const tick=now=>{const left=sec-(now-t0)/1000;if(el)el.textContent=fmt(left);if(left<=0){onEnd();return}raf=requestAnimationFrame(tick)};stopLoop();raf=requestAnimationFrame(tick)}
+
+function renderLevel(){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.l===lvl));
+  const q=Qn(),d=q[lvl],L={c45:["CLB 4–5","Básico: frases simples, muchas pausas y errores frecuentes","var(--c45)"],c78:["CLB 7–8","Bueno: estructura clara con algunos errores","var(--c78)"],c1012:["CLB 10–12","Excelente: natural, preciso y variado","var(--c1012)"]}[lvl];
+  const box=$("lvl");box.style.setProperty("--lvl",L[2]);
+  let h=`<div class="lvlhead"><span class="badge">${L[0]}</span><span>${L[1]}</span></div><p class="answer">${mark(d.t)}</p>`;
+  if(d.f){h+=`<h2 style="font-size:1rem">❌ Errores típicos y cómo corregirlos</h2><ul class="fixes">`+d.f.map(([w,r,y])=>`<li><span class="w">${esc(w)}</span> → <span class="r">${esc(r)}</span><span class="why">${esc(y)}</span></li>`).join("")+`</ul><p class="extra">${esc(d.x)}</p>`;}
+  else h+=`<h2 style="font-size:1rem">⭐ Por qué es CLB 10–12</h2><ul class="fixes">`+d.g.map(g=>`<li>${esc(g)}</li>`).join("")+`</ul>`;
+  box.innerHTML=h;
+}
+function buildChecklist(){let h="",k=0;
+  T().check.forEach(([g,items])=>{h+=`<div class="group"><h3>${g}</h3>`;items.forEach(it=>{h+=`<label class="chk"><input type="checkbox" id="c${ti}-${k}"><span>${esc(it)}</span></label>`;k++});h+=`</div>`});
+  $("checklist").innerHTML=h;$("checklist").querySelectorAll("input").forEach(i=>i.onchange=updateScore);updateScore();}
+function updateScore(){const all=$("checklist").querySelectorAll("input").length,n=$("checklist").querySelectorAll("input:checked").length,r=n/all;
+  $("score").textContent=n+"/"+all;
+  $("verdict").textContent=r<=.45?"Zona CLB 4–5 (orientativo). Enfócate en la estructura de la tarea y en completar el tiempo.":r<=.78?"Zona CLB 6–8 (orientativo). Vas bien. Ahora trabaja vocabulario variado y menos pausas.":"Zona CLB 9+ (orientativo). ¡Excelente! Pule precisión y naturalidad para llegar a 10–12.";}
+
+function reset(intro){
+  stopLoop();if(window.BL)BL.rec.cancel();buildNav();renderGuide();const t=T(),q=Qn();chosen=0;
+  $("prep-label").textContent=`Task ${ti+1} · ${t.name}`;
+  $("prep-prompt").textContent=q.p;$("rec-prompt").textContent=q.p;$("done-prompt").textContent=q.p;
+  $("prep-what").textContent=`Preparation Time: ${t.prep} seconds`;$("prep-clock").textContent=fmt(t.prep);
+  $("btn-start").hidden=false;$("btn-skip").hidden=true;
+  $("compare").hidden=true;$("btn-compare").setAttribute("aria-expanded","false");
+  $("choice-note").hidden=!q.note;$("choice-note").textContent=q.note||"";
+  lvl="c78";renderLevel();buildChecklist();
+  if(intro){show(["s-intro"]);}
+  else if(t.select){
+    $("sel-label").textContent=`Task ${ti+1} · ${t.name}`;$("sel-prompt").textContent=q.sel;
+    $("sel-opts").innerHTML=q.opts.map((o,i)=>optCard(o,"","Option "+"AB"[i],true,i)).join("");
+    $("sel-opts").querySelectorAll("button").forEach(b=>{b.disabled=true;b.onclick=()=>choose(+b.dataset.i)});
+    $("sel-what").textContent="Selection Time: 60 seconds";$("sel-clock").textContent=fmt(t.select);$("btn-sel-start").hidden=false;
+    show(["s-select"]);
+  } else {$("prep-ctx").innerHTML=ctxHTML();show(["s-prep"]);}
+  window.scrollTo(0,0);
+}
+let actx=null;
+function beep(freq=880,dur=.25){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=freq;o.connect(g);g.connect(actx.destination);
+  g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+dur);o.start();o.stop(actx.currentTime+dur)}catch(e){}}
+async function wake(){try{lock=await navigator.wakeLock?.request("screen")}catch(e){}}
+
+function startSelect(){wake();if(window.BL)BL.rec.prepare();beep(660,.15);$("btn-sel-start").hidden=true;$("sel-what").textContent="Selection time remaining";
+  $("sel-opts").querySelectorAll("button").forEach(b=>b.disabled=false);
+  countdown(T().select,$("sel-clock"),()=>choose(0));}
+function choose(i){chosen=i;$("prep-ctx").innerHTML=ctxHTML();show(["s-prep"]);window.scrollTo(0,0);startPrep();}
+function startPrep(){wake();if(window.BL)BL.rec.prepare();$("btn-start").hidden=true;$("btn-skip").hidden=false;$("prep-what").textContent="Preparation time remaining";beep(660,.15);
+  countdown(T().prep,$("prep-clock"),startRec);}
+function startRec(){stopLoop();$("rec-note").hidden=true;if(window.BL)BL.rec.start().then(ok=>{$("rec-note").hidden=ok});$("rec-ctx").innerHTML=ctxHTML();show(["s-rec"]);window.scrollTo(0,0);beep(880,.3);
+  const fill=$("fill"),R=T().rec;t0=performance.now();
+  const tick=now=>{const left=R-(now-t0)/1000;fill.style.transform="scaleX("+Math.max(0,left/R)+")";if(left<=0){finish();return}raf=requestAnimationFrame(tick)};
+  fill.style.transform="scaleX(1)";raf=requestAnimationFrame(tick);}
+function finish(){stopLoop();beep(520,.4);try{lock?.release()}catch(e){}
+  if(window.BL){const t=T(),q=Qn(),i=ti,k=qi,ch=t.select&&q.opts?q.opts[chosen].t:"";$("bl-take").innerHTML="";BL.rec.stop().then(take=>{if(ti!==i||qi!==k)return;BL.mountTake($("bl-take"),take,{filename:`speaking-task${i+1}-practica${k+1}`,build:()=>({skill:"Speaking",task:`Task ${i+1} · ${t.name}`,practice:k+1,prompt:q.p,choice:ch,selfCheck:$("score").textContent})})});}show(["s-done","s-check"]);window.scrollTo(0,0)}
+
+$("btn-sel-start").onclick=startSelect;
+$("btn-start").onclick=startPrep;
+$("btn-skip").onclick=startRec;
+$("btn-stop").onclick=finish;
+$("btn-again").onclick=()=>reset(false);
+$("btn-next").onclick=()=>{if(qi<T().qs.length-1)qi++;else{ti=(ti+1)%TASKS.length;qi=0;reset(true);return}reset(false)};
+$("btn-guide").onclick=()=>reset(true);
+$("btn-compare").onclick=()=>{const c=$("compare");c.hidden=!c.hidden;$("btn-compare").setAttribute("aria-expanded",!c.hidden)};
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{lvl=b.dataset.l;renderLevel()});
+reset(true);
+</script>
+</body>
+</html>

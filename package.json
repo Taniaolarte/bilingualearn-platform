@@ -1,0 +1,11 @@
+{
+  "name": "bilingualearn-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Bilingualearn CELPIP practice platform: static site + Google Apps Script backend (Drive/Docs/Sheets).",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/dev-server.mjs --mock",
+    "start": "node tools/dev-server.mjs"
+  }
+}
