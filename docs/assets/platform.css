@@ -173,3 +173,8 @@ img{max-width:100%}
 .blp-cta h2{font-size:1.25rem;margin:2px 0 4px}
 .blp-cta p{margin:0;color:var(--blp-muted);font-size:.9rem}
 @media (max-width:620px){.blp-cta{grid-template-columns:auto 1fr}.blp-cta img{width:72px}.blp-cta .blp-btn{grid-column:1/-1;text-align:center}}
+.blp-hero-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;position:relative;z-index:1}
+.blp-hero-btns .blp-btn{text-decoration:none;display:inline-flex;align-items:center}
+.blp-hero-btns .blp-btn.ghost{color:#fff;border-color:rgba(196,181,253,.6)}
+.blp-hero-btns .blp-btn.lav{background:#C4B5FD;border-color:#C4B5FD;color:#17153B}
+.blp-hero-btns .blp-btn{padding:9px 14px;font-size:.9rem;min-height:42px}

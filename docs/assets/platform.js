@@ -119,7 +119,7 @@
 
   /* ---------- nav bar ---------- */
   const LINKS = [
-    ["index", "index.html", "Inicio"], ["guia", "guia-celpip.html", "Guía CELPIP"], ["onboarding", "onboarding.html", "Onboarding"],
+    ["index", "index.html", "Inicio"],
     ["notebook", "notebook.html", "Cuaderno"], ["listening", "listening.html", "Listening"], ["reading", "reading.html", "Reading"],
     ["writing", "writing.html", "Writing"], ["speaking", "speaking.html", "Speaking"], ["mock", "mock.html", "🏁 Simulacro"],
     ["results", "results.html", "Mis resultados"],
