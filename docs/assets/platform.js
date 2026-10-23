@@ -1,4 +1,5 @@
 /* Bilingualearn platform layer, loaded by every page before the page's own script.
+   - Access-key gate: the page stays hidden until the student enters a key from config.js.
    - Student profile (name, email, class code, personal code) kept on this device.
    - Nav bar across all pages.
    - window.BL API used by the practice pages:
@@ -23,6 +24,42 @@
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const connected = () => !!CFG.apiUrl;
   let student = store.get(LS_PROFILE, null);
+
+  /* ---------- access key ----------
+     platform.js runs at the top of <body>, so the page is hidden before any of it renders. */
+  const LS_ACCESS = "bl-platform-access";
+  const KEYS = (CFG.accessKeys || []).map(h => String(h).toLowerCase());
+  const keyHash = async k => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(k.toUpperCase().replace(/[^A-Z0-9]/g, "")))))
+    .map(b => b.toString(16).padStart(2, "0")).join("");
+  if (KEYS.length && !KEYS.includes(store.get(LS_ACCESS, ""))) {
+    const root = document.documentElement;
+    root.classList.add("blp-locked");
+    const lock = document.createElement("div");
+    lock.className = "blp-gate blp-lock";
+    lock.innerHTML = `<form class="blp-gate-card" novalidate>
+      <img src="assets/koala/logo.png" alt="" width="110" height="110">
+      <h2>🔒 Plataforma privada</h2>
+      <p class="muted">Escribe la clave de acceso que te dio tu coach.</p>
+      <label class="blp-field">Clave de acceso<input name="k" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="BL-XXXX-XXXX" maxlength="30" required></label>
+      <p class="blp-err" hidden></p>
+      <div class="blp-row"><button class="blp-btn" type="submit">Entrar</button></div>
+    </form>`;
+    document.body.appendChild(lock);
+    const f = lock.querySelector("form"), inp = f.querySelector("input"), err = f.querySelector(".blp-err"), go = f.querySelector("button");
+    f.addEventListener("submit", async ev => {
+      ev.preventDefault();
+      err.hidden = true;
+      go.disabled = true;
+      let h = "";
+      try { h = await keyHash(inp.value); } catch (e) {}
+      go.disabled = false;
+      if (!KEYS.includes(h)) { err.textContent = h ? "Esa clave no es válida. Pídesela a tu coach." : "Este navegador no puede comprobar la clave. Prueba con Chrome o Safari actualizados."; err.hidden = false; inp.select(); return; }
+      store.set(LS_ACCESS, h);
+      lock.remove();
+      root.classList.remove("blp-locked");
+    });
+    setTimeout(() => inp.focus(), 0);
+  }
 
   /* ---------- API ---------- */
   const ERR = {

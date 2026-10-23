@@ -156,6 +156,8 @@ img{max-width:100%}
 .blp-mocktag{color:#fff;font-size:.9rem;font-weight:600;padding:6px 10px;white-space:nowrap}
 /* exam mode: no part/practice pickers, guides or retries inside a section */
 .blp-mock #tasknav,.blp-mock #qpick,.blp-mock #btn-guide,.blp-mock #btn-again,.blp-mock #btn-next,.blp-mock #btn-clear,.blp-mock #bl-send,.blp-mock #bl-take{display:none!important}
+html.blp-locked body>:not(.blp-lock){display:none!important}
+html.blp-locked{overflow:hidden}
 .blp-gate{position:fixed;inset:0;z-index:60;background:var(--blp-bg);display:grid;place-items:center;padding:20px 16px;overflow:auto;font-family:var(--blp-body);color:var(--blp-ink)}
 .blp-gate-card{background:var(--blp-card);border:1px solid var(--blp-line);border-radius:24px;padding:26px 22px;width:min(520px,100%);display:flex;flex-direction:column;gap:10px;text-align:center;box-shadow:0 20px 60px rgba(23,21,59,.12)}
 .blp-gate-card img{width:110px;height:auto;align-self:center}

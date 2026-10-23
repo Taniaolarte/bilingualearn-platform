@@ -103,7 +103,8 @@ http.createServer(async (req, res) => {
     }
     if (MOCK && url.pathname === "/assets/config.js") {
       res.writeHead(200, { "Content-Type": TYPES[".js"] });
-      return res.end('window.BL_CONFIG = { apiUrl: "/api", course: "CELPIP" };\n');
+      // Real config (so the access keys work the same), pointed at the fake backend.
+      return res.end((await readFile(path.join(SITE, "assets/config.js"), "utf8")) + 'window.BL_CONFIG.apiUrl = "/api";\n');
     }
     let p = path.normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, "");
     if (!p || p.endsWith("/")) p += "index.html";

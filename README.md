@@ -25,6 +25,12 @@ apps-script/Code.gs   backend: paste into the Sheet's Apps Script editor
 tools/dev-server.mjs  local preview, with a fake backend
 ```
 
+## Access keys
+
+Every page is hidden behind a key screen until the student enters one of the keys in `claves-acceso.txt` (that file stays on this computer and is never uploaded). `docs/assets/config.js` → `accessKeys` holds only their SHA-256 hashes. A device remembers its key. To block a key, delete its line from `accessKeys` and publish. To add one, hash it with `printf %s BLXXXXXXXX | shasum -a 256` (uppercase, no dashes).
+
+This is a simple barrier for a static site: it stops people who only have the link, but someone technical could still get around it.
+
 ## Try it locally
 
 ```bash
